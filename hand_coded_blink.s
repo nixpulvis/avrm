@@ -9,9 +9,9 @@ main:
 	sbi 0x5,5
 
 	# set r23-25 to 500,000.
-	ldi r23,lo8(500000)
-	ldi r24,hi8(500000)
-	ldi r25,hlo8(500000)
+	ldi r23,lo8(3199999)
+	ldi r24,hi8(3199999)
+	ldi r25,hlo8(3199999)
 
 	# decrement r23-25.
 	1:
@@ -26,9 +26,9 @@ main:
 	cbi 0x5,5
 
 	# set r23-25 to 500,000.
-	ldi r23,lo8(500000)
-	ldi r24,hi8(500000)
-	ldi r25,hlo8(500000)
+	ldi r23,lo8(3199999)
+	ldi r24,hi8(3199999)
+	ldi r25,hlo8(3199999)
 
 	# decrement r23-25.
 	1:
