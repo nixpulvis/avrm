@@ -18,8 +18,8 @@ AVRDUDE_FLAGS = -F -V -c arduino -p ATMEGA328P
 AVRDUDE_PORT ?= /dev/tty.usbmodem1421
 AVRDUDE_BAUD ?= 115200
 
-# The program to build, by default "led.c".
-SOURCE ?= led.c
+# The program to build, by default "blink.c".
+SOURCE ?= blink.c
 
 # The target name is the source file name without the extension.
 ifneq (, $(findstring .c,$(SOURCE)))
