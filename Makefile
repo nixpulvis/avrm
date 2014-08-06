@@ -25,7 +25,7 @@ SOURCE ?= blink.c
 ifneq (, $(findstring .c,$(SOURCE)))
 	TARGET = $(SOURCE:.c=)
 else
-	TARGET = $(SOURCE:.s=)
+	TARGET = $(SOURCE:.asm=)
 endif
 
 # upload
@@ -44,7 +44,7 @@ upload: $(TARGET).hex
 	$(CC) -mmcu=$(MMCU) $< -o $@
 
 # Compile the assembly for a .c file.
-%.s: %.c
+%.asm: %.c
 	$(CC) -S $(C_FLAGS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
 
 ifneq (, $(findstring .c,$(SOURCE)))
@@ -52,8 +52,8 @@ ifneq (, $(findstring .c,$(SOURCE)))
 %.o: %.c
 	$(CC) $(C_FLAGS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
 else
-# Generate a .o file from a .s file, when the source is a .s file.
-%.o: %.s
+# Generate a .o file from a .asm file, when the source is a .asm file.
+%.o: %.asm
 	$(AS) -mmcu=$(MMCU) -o $@ $<
 endif
 
