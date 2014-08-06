@@ -1,6 +1,6 @@
 # Microcontroller options.
-DF_CPU = 16000000UL
-MMCU = atmega328p
+DF_CPU ?= 16000000UL
+MMCU   ?= atmega328p
 
 # Compiler options.
 CC = avr-gcc
@@ -15,29 +15,55 @@ OBJ_COPY_FLAGS = -O ihex -R .eeprom
 # The `avrdude` executable.
 AVRDUDE = avrdude
 AVRDUDE_FLAGS = -F -V -c arduino -p ATMEGA328P
-AVRDUDE_PORT = /dev/tty.usbmodem1421
-AVRDUDE_BAUD = 115200
+AVRDUDE_PORT ?= /dev/tty.usbmodem1421
+AVRDUDE_BAUD ?= 115200
 
-# The program to build.
-TARGET = led
+# The program to build, by default "led.c".
+SOURCE ?= led.c
 
+# The target name is the source file name without the extension.
+ifneq (, $(findstring .c,$(SOURCE)))
+	TARGET = $(SOURCE:.c=)
+else
+	TARGET = $(SOURCE:.s=)
+endif
+
+# upload
+#
+# Given a hex file using `avrdude` this target flashes the AVR with the
+# new program contained in the hex file.
+#
+# This process does not involve setting fuse bits on the AVR, and does
+# not affect the bootloader.
+#
 upload: $(TARGET).hex
 	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(AVRDUDE_PORT) -b $(AVRDUDE_BAUD) -U flash:w:$<
 
-clean:
-	rm -rf *.asm_obj *.c_obj *.hex $(TARGET)
-
-$(TARGET): $(TARGET).o
+# Generate a .bin file from a .o file.
+%.bin: %.o
 	$(CC) -mmcu=$(MMCU) $< -o $@
 
+# Compile the assembly for a .c file.
 %.s: %.c
 	$(CC) -S $(C_FLAGS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
 
-%.asm_obj: %.s
-	$(AS) -mmcu=$(MMCU) -o $@ $<
-
-%.c_obj: %.c
+ifneq (, $(findstring .c,$(SOURCE)))
+# Generate a .o file from a .c file, when the source is a .c file.
+%.o: %.c
 	$(CC) $(C_FLAGS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
+else
+# Generate a .o file from a .s file, when the source is a .s file.
+%.o: %.s
+	$(AS) -mmcu=$(MMCU) -o $@ $<
+endif
 
-%.hex: %
+# Generate a .hex file from a .bin file.
+%.hex: %.bin
 	$(OBJ_COPY) $(OBJ_COPY_FLAGS) $< $@
+
+# Remove non-source files.
+clean:
+	rm -rf *.o *.bin *.hex
+
+# Mark the hex file as intermediate.
+.INTERMEDIATE: $(TARGET).hex
