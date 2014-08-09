@@ -27,3 +27,9 @@ and `avrdude`. These are the requirements of the Makefile in this project.
     # Assemble and upload "bar.asm"
     SOURCE = bar.asm
     make
+
+
+Reference
+---------
+
+- [avr-libc manual](http://www.nongnu.org/avr-libc/user-manual/pages.html)
