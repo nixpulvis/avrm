@@ -1,9 +1,5 @@
 #include <avr/io.h>
 
-enum {
-  BLINK_DELAY_MS = 1000,
-};
-
 int main (void)
 {
   /* set pin 5 of PORTB for output. */
