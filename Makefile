@@ -46,8 +46,8 @@ upload: $(TARGET).hex
 	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(AVRDUDE_PORT) -b $(AVRDUDE_BAUD) -U flash:w:$<
 
 # Generate a .bin file from a .o file.
-%.bin: %.o
-	$(CC) -mmcu=$(MMCU) $< -o $@
+%.bin: %.o avr.o
+	$(CC) -mmcu=$(MMCU) $? -o $@
 
 # Compile the assembly for a .c file.
 %.asm: %.c
