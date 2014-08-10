@@ -5,7 +5,7 @@ enum {
   BLINK_DELAY_MS = 1000,
 };
 
-int main (void)
+int main(void)
 {
   /* set pin 5 of PORTB for output. */
   DDRB |= _BV(DDB5);
