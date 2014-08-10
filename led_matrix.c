@@ -15,6 +15,12 @@ void main(void)
   _delay_ms(1000);
   MAX7221_send(0x0F, 0x00);
 
+  // Turn off decoding.
+  MAX7221_send(0x09, 0x00);
+
+  // Set scan limiter to display all registers.
+  MAX7221_send(0x0B, 0x07);
+
   // Set display intensity (0-F).
   MAX7221_send(0x0A, 0x05);
 
