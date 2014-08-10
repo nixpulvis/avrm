@@ -4,7 +4,7 @@ MMCU   ?= atmega328p
 
 # Compiler options.
 CC = avr-gcc
-C_FLAGS = -Os
+C_FLAGS = -Os -std=c99
 
 AS = avr-as
 
