@@ -15,7 +15,13 @@ OBJ_COPY_FLAGS = -O ihex -R .eeprom
 # The `avrdude` executable.
 AVRDUDE = avrdude
 AVRDUDE_FLAGS = -F -V -c arduino -p ATMEGA328P
+
+# Port to upload to.
 AVRDUDE_PORT ?= /dev/tty.usbmodem1421
+
+# Upload rate.
+# 115200 - Arduino Uno
+# 57600  - Arduino Mini Pro
 AVRDUDE_BAUD ?= 115200
 
 # The program to build, by default "blink.c".
