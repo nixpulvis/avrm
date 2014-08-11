@@ -6,6 +6,7 @@
 
 #define MATRIX_SIZE 8
 #define MAX_GENERATION MATRIX_SIZE * MATRIX_SIZE
+#define GENERATION_TIME 250
 
 // Boolean type.
 typedef enum { FALSE, TRUE } bool;
@@ -40,6 +41,11 @@ bool evolve(bool matrix[MATRIX_SIZE][MATRIX_SIZE], unsigned int generation);
 // y - The y coordinate of the cell to check.
 //
 byte neighbors(bool matrix[MATRIX_SIZE][MATRIX_SIZE], byte x, byte y);
+
+// MAX7221_wipe
+// Flashes the display.
+//
+void MAX7221_wipe(void);
 
 // MAX7221_display
 // Write the matrix to the MAX7221, FALSE representing 0 (LED off),
@@ -88,7 +94,7 @@ void main(void)
     else
       generation = 0;
     // Wait half a second.
-    _delay_ms(500);
+    _delay_ms(GENERATION_TIME);
   }
 }
 
@@ -161,6 +167,7 @@ bool evolve(bool matrix[MATRIX_SIZE][MATRIX_SIZE], unsigned int generation)
   if (eq || generation > MAX_GENERATION)
   {
     _delay_ms(2000);
+    MAX7221_wipe();
     randomize(matrix);
     return FALSE;
   }
@@ -180,12 +187,6 @@ bool evolve(bool matrix[MATRIX_SIZE][MATRIX_SIZE], unsigned int generation)
 byte neighbors(bool matrix[MATRIX_SIZE][MATRIX_SIZE], byte x, byte y)
 {
   byte count = 0;
-  // for (byte dx = -1; dx <= 1; dx++)
-  // for (byte dy = -1; dy <= 1; dy++)
-  // {
-  //   if ( (dx || dy) && matrix[(x + dx) % 8][(y + dy) % 8] )
-  //     count++;
-  // }
   for (char dx = -1; dx <= 1; dx++)
   for (char dy = -1; dy <= 1; dy++)
   {
@@ -198,6 +199,22 @@ byte neighbors(bool matrix[MATRIX_SIZE][MATRIX_SIZE], byte x, byte y)
     }
   }
   return count;
+}
+
+//
+// MAX7221_wipe implementation.
+//
+void MAX7221_wipe(void)
+{
+  for (int y = 0; y < MATRIX_SIZE; y++)
+  {
+    MAX7221_send(y + 1, 255);
+    _delay_ms(25);
+  }
+  _delay_ms(GENERATION_TIME);
+  for (int y = 0; y < MATRIX_SIZE; y++)
+    MAX7221_send(y + 1, 0);
+  _delay_ms(GENERATION_TIME);
 }
 
 //
