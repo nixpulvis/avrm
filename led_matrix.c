@@ -4,19 +4,225 @@
 #include <util/delay.h>
 #include "avr.h"
 
+#define MATRIX_SIZE 8
+#define MAX_GENERATION MATRIX_SIZE * MATRIX_SIZE
+
+// Boolean type.
 typedef enum { FALSE, TRUE } bool;
 
-void randomize(unsigned char *matrix);
-void evolve(unsigned char *matrix);
-int neighbours(unsigned char *matrix, int x, int y);
-void display(unsigned char *matrix);
-bool get_bit(unsigned char *matrix, int x, int y);
-void set_bit(unsigned char *matrix, int x, int y, bool val);
-void MAX7221_send(unsigned char address, unsigned char value);
+// Byte type.
+typedef unsigned char byte;
+
+// randomize
+// Set random bits in the matrix.
+//
+// matrix - The matrix representing the game of life.
+//
+void randomize(bool matrix[MATRIX_SIZE][MATRIX_SIZE]);
+
+// evolve
+// Mutate the matrix into it's next state following Conway's
+// game of life's rules.
+//
+// matrix - The matrix representing the game of life.
+// generation - The generation of the current game.
+//
+// Returns true when it generated the next generation, false when it
+// reset.
+//
+bool evolve(bool matrix[MATRIX_SIZE][MATRIX_SIZE], unsigned int generation);
+
+// neighbors
+// Returns the number of alive neighbors for a given cell in the game.
+//
+// matrix - The matrix representing the game of life.
+// x - The x coordinate of the cell to check.
+// y - The y coordinate of the cell to check.
+//
+byte neighbors(bool matrix[MATRIX_SIZE][MATRIX_SIZE], byte x, byte y);
+
+// MAX7221_display
+// Write the matrix to the MAX7221, FALSE representing 0 (LED off),
+// TRUE representing 1 (LED on).
+//
+// matrix - The matrix representing the game of life.
+//
+void MAX7221_display(bool matrix[MATRIX_SIZE][MATRIX_SIZE]);
+
+// MAX7221_setup
+// Setup the MAX7221, running a 1 second test and clearing
+// the display registers.
+//
+void MAX7221_setup(void);
+
+// MAX7221_send
+// Set register address to a value on the MAX7221.
+//
+// address - The address of the register to write to.
+// value - The value to write to the register.
+//
+void MAX7221_send(byte address, byte value);
 
 void main(void)
 {
-  /* setup SPI communication for the MAX7221. */
+  // Setup the MAX7221.
+  MAX7221_setup();
+
+  // The display matrix.
+  bool matrix[MATRIX_SIZE][MATRIX_SIZE];
+  memset(matrix, 0, sizeof(matrix));
+
+  // Randomize the initial game.
+  randomize(matrix);
+
+  unsigned int generation = 0;
+
+  // Run the game.
+  while(1)
+  {
+    // Display the matrix.
+    MAX7221_display(matrix);
+    // Evolve the game.
+    if (evolve(matrix, generation++))
+      generation++;
+    else
+      generation = 0;
+    // Wait half a second.
+    _delay_ms(500);
+  }
+}
+
+//
+// randomize implementation.
+//
+void randomize(bool matrix[MATRIX_SIZE][MATRIX_SIZE])
+{
+  for (byte x = 0; x < MATRIX_SIZE; x++)
+  for (byte y = 0; y < MATRIX_SIZE; y++)
+    matrix[y][x] = random() % 2;
+}
+
+//
+// evolve implementation.
+//
+bool evolve(bool matrix[MATRIX_SIZE][MATRIX_SIZE], unsigned int generation)
+{
+  // Allocate a new empty game matrix.
+  bool new_matrix[MATRIX_SIZE][MATRIX_SIZE];
+  memset(new_matrix, 0, sizeof(new_matrix));
+
+  for (byte x = 0; x < MATRIX_SIZE; x++)
+  for (byte y = 0; y < MATRIX_SIZE; y++)
+  {
+    // Count the number of neighbors of this cell in the original matrix.
+    byte count = neighbors(matrix, x, y);
+
+    // Alive cells.
+    if (matrix[x][y])
+    {
+      // Any live cell with fewer than two live neighbors dies,
+      // as if caused by under-population.
+      if (count < 2)
+        new_matrix[x][y] = FALSE;
+
+      // Any live cell with two or three live neighbors lives on
+      // to the next generation.
+      else if ((count == 2) || (count == 3))
+        new_matrix[x][y] = TRUE;
+
+      // Any live cell with more than three live neighbors dies,
+      // as if by overcrowding.
+      else
+        new_matrix[x][y] = FALSE;
+    }
+    // Dead cells.
+    else
+    {
+      // Any dead cell with exactly three live neighbors becomes a
+      // live cell, as if by reproduction.
+      if (count == 3)
+        new_matrix[x][y] = TRUE;
+
+      // Any dead cell with not exactly three live neighbors remains
+      // dead.
+      else
+        new_matrix[x][y] = FALSE;
+    }
+  }
+
+  // Compare the two generations.
+  bool eq = 1;
+  for (int x = 0; x < MATRIX_SIZE; x++)
+  for (int y = 0; y < MATRIX_SIZE; y++)
+    eq &= matrix[x][y] == new_matrix[x][y];
+
+  // Restart the game if the two generations are the same or
+  // we've hit the MAX_GENERATIONth generation
+  if (eq || generation > MAX_GENERATION)
+  {
+    _delay_ms(2000);
+    randomize(matrix);
+    return FALSE;
+  }
+  // Copy new_matrix into matrix.
+  else
+  {
+    for (int x = 0; x < MATRIX_SIZE; x++)
+    for (int y = 0; y < MATRIX_SIZE; y++)
+      matrix[x][y] = new_matrix[x][y];
+    return TRUE;
+  }
+}
+
+//
+// neighbors implementation.
+//
+byte neighbors(bool matrix[MATRIX_SIZE][MATRIX_SIZE], byte x, byte y)
+{
+  byte count = 0;
+  // for (byte dx = -1; dx <= 1; dx++)
+  // for (byte dy = -1; dy <= 1; dy++)
+  // {
+  //   if ( (dx || dy) && matrix[(x + dx) % 8][(y + dy) % 8] )
+  //     count++;
+  // }
+  for (char dx = -1; dx <= 1; dx++)
+  for (char dy = -1; dy <= 1; dy++)
+  {
+    if (dx || dy)
+    {
+      byte _x = (byte) (x + dx) % MATRIX_SIZE;
+      byte _y = (byte) (y + dy) % MATRIX_SIZE;
+      if (matrix[_x][_y])
+        count++;
+    }
+  }
+  return count;
+}
+
+//
+// MAX7221_display implementation.
+//
+void MAX7221_display(bool matrix[MATRIX_SIZE][MATRIX_SIZE])
+{
+  for (byte y = 0; y < MATRIX_SIZE; y++)
+  {
+    // Need to create the byte because bool[8] isn't the same as byte.
+    byte data = 0;
+    for (byte x = 0; x < MATRIX_SIZE; x++)
+      data |= (matrix[x][y] << x);
+
+    // Send the row to the MAX7221 which is indexed starting at 1.
+    MAX7221_send(y + 1, data);
+  }
+}
+
+//
+// MAX7221_setup implementation.
+//
+void MAX7221_setup(void)
+{
+  // Setup SPI communication for the MAX7221.
   spi_begin();
 
   // Test for 1 second.
@@ -45,110 +251,12 @@ void main(void)
   MAX7221_send(0x06, 0x00);
   MAX7221_send(0x07, 0x00);
   MAX7221_send(0x08, 0x00);
-
-  // The display matrix.
-  unsigned char matrix[8];
-
-  // Random seed.
-  randomize(matrix);
-
-  // Run the game.
-  while(1)
-  {
-    // Display the matrix.
-    display(matrix);
-    evolve(matrix);
-    _delay_ms(400);
-  }
 }
 
-void randomize(unsigned char *matrix)
-{
-  for (int i = 0; i < 8; i++)
-  {
-    matrix[i] = random() % 256;
-  }
-}
-
-void evolve(unsigned char *matrix)
-{
-  char new_matrix[8];
-  memcpy(new_matrix, matrix, sizeof(unsigned char) * 8);
-
-  for (int x = 0; x < 8; x++)
-  for (int y = 0; y < 8; y++)
-  {
-    int count = neighbours(matrix, x, y);
-
-    // Any live cell with fewer than two live neighbours dies, as if caused by under-population.
-    if (get_bit(matrix, x, y)) {
-      if (count < 2) {
-        set_bit(new_matrix, x, y, FALSE);
-
-      // Any live cell with two or three live neighbours lives on to the next generation.
-      } else if ((count == 2) || (count == 3)) {
-        set_bit(new_matrix, x, y, TRUE);
-
-      // Any live cell with more than three live neighbours dies, as if by overcrowding.
-      } else {
-        set_bit(new_matrix, x, y, FALSE);
-      }
-    } else {
-      // Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-      if (count == 3)
-      {
-        set_bit(new_matrix, x, y, TRUE);
-      } else {
-        set_bit(new_matrix, x, y, FALSE);
-      }
-    }
-  }
-
-  // Break a static configuration.
-  if (memcmp(matrix, new_matrix, sizeof(unsigned char) * 8) == 0)
-  {
-    _delay_ms(5000);
-    randomize(matrix);
-  } else {
-    memcpy(matrix, new_matrix, sizeof(unsigned char) * 8);
-  }
-}
-
-int neighbours(unsigned char *matrix, int x, int y)
-{
-  int count = 0;
-  for (int i = -1; i <= 1; i++)
-  for (int j = -1; j <= 1; j++)
-  {
-    if ((i || j) &&
-        (x + i) < 8 &&
-        (y + j) < 8 &&
-        get_bit(matrix, x + i, y + j))
-      count++;
-  }
-  return count;
-}
-
-void display(unsigned char *matrix)
-{
-  for (int i = 0; i < 8; i++)
-    MAX7221_send(i + 1, matrix[i]);
-}
-
-/* x and y must be in the range [0, 7].
- * Result must be interpreted as 0 or 1 */
-bool get_bit(unsigned char *matrix, int x, int y)
-{
-  return matrix[y] & 1 << x;
-}
-
-/* x and y must be in the range [0, 7]. val must be 0 or 1. */
-void set_bit(unsigned char *matrix, int x, int y, bool val)
-{
-  matrix[y] = val ? matrix[y] | val << x : matrix[y] & ~(1 << x);
-}
-
-void MAX7221_send(unsigned char address, unsigned char value)
+//
+// MAX7221_send implementation.
+//
+void MAX7221_send(byte address, byte value)
 {
   PORTB &= ~_BV(PORTB2);
   spi_transfer(address & 0xF);
