@@ -45,6 +45,7 @@ int uart_put(char data, FILE *stream) {
   loop_until_bit_is_set(UCSR0A, UDRE0);
   // Send data.
   UDR0 = data;
+  return 0;
 }
 
 

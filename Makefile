@@ -21,7 +21,7 @@ LANGUAGE ?= c
 
 # The `gcc` executable.
 CC = avr-gcc
-C_FLAGS = -Os -std=c99
+C_FLAGS = -Wall -Werror -pedantic -Os -std=c99
 
 # The `as` executable.
 AS = avr-as

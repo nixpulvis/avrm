@@ -61,7 +61,7 @@ void MAX7221_setup(void);
 //
 void MAX7221_send(byte address, byte value);
 
-void main(void)
+int main(void)
 {
   // Setup the MAX7221.
   MAX7221_setup();
@@ -126,6 +126,8 @@ void main(void)
     // Wait GENERATION_TIME.
     _delay_ms(GENERATION_TIME);
   }
+
+  return 0;
 }
 
 //

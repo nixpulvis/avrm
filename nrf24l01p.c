@@ -93,7 +93,7 @@ int nRF24L01p_read(char *dst, byte count, byte pipe)
   byte chunk = count > nRF24L01p_FIFO_RX_SIZE ? nRF24L01p_FIFO_RX_SIZE : count;
 
   // The number of bytes left to read.
-  byte remaining = count - chunk;
+  // byte remaining = count - chunk;
 
   // TODO: check (nRF24L01p_rx_available(pipe))
 
@@ -124,7 +124,7 @@ int nRF24L01p_write(char *src, byte count)
   byte chunk = count > nRF24L01p_FIFO_TX_SIZE ? nRF24L01p_FIFO_TX_SIZE : count;
 
   // The number of bytes left to read.
-  byte remaining = count - chunk;
+  // byte remaining = count - chunk;
 
   // TODO: check (nRF24L01p_tx_available(pipe))
 

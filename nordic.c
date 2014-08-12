@@ -10,9 +10,7 @@
 #include "avr.h"
 #include "nRF24L01p.h"
 
-typedef unsigned char byte;
-
-void main(void)
+int main(void)
 {
   // Setup the UART, necessary for stdio actions.
   uart_init();
@@ -79,4 +77,6 @@ void main(void)
       _delay_ms(500);
     }
   }
+
+  return 0;
 }
