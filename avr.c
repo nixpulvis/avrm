@@ -17,6 +17,9 @@ void uart_begin(void) {
   // Enable RX and TX.
   UCSR0B = _BV(RXEN0) | _BV(TXEN0);
 
+  // The UART io.
+  static FILE uart_io = FDEV_SETUP_STREAM(uart_put, uart_get, _FDEV_SETUP_RW);
+
   // Set this UART as stdout and stdin.
   stdout = &uart_io;
   stdin = &uart_io;

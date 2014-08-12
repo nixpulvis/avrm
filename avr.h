@@ -16,8 +16,6 @@ void uart_begin(void);
 int uart_put(char data, FILE *stream);
 int uart_get(FILE *stream);
 
-static FILE uart_io = FDEV_SETUP_STREAM(uart_put, uart_get, _FDEV_SETUP_RW);
-
 // SPI Functions
 
 void spi_begin(void);
