@@ -195,14 +195,20 @@ void evolve(bool new_matrix[MATRIX_SIZE][MATRIX_SIZE],
 //
 byte neighbors(bool matrix[MATRIX_SIZE][MATRIX_SIZE], byte x, byte y)
 {
+  // The counter for number of neighbors.
   byte count = 0;
+
   for (char dx = -1; dx <= 1; dx++)
   for (char dy = -1; dy <= 1; dy++)
   {
+    // Check all cells within 1 of the (x, y)th cell, except itself.
     if (dx || dy)
     {
+      // Get the (x, y) of the neighboring cell wrapping around the
+      // matrix when out of bounds. This creates a toroidal matrix.
       byte _x = (byte) (x + dx) % MATRIX_SIZE;
       byte _y = (byte) (y + dy) % MATRIX_SIZE;
+      // Increment the neighbor count when the cell is on.
       if (matrix[_x][_y])
         count++;
     }
@@ -215,14 +221,22 @@ byte neighbors(bool matrix[MATRIX_SIZE][MATRIX_SIZE], byte x, byte y)
 //
 void MAX7221_wipe(void)
 {
+  // Iterate the rows.
   for (int y = 0; y < MATRIX_SIZE; y++)
   {
+    // Set all cells in this row up to MATRIX_SIZE to on.
     MAX7221_send(y + 1, pow(2, MATRIX_SIZE) - 1);
+    // Delay briefly to create a wipe effect.
     _delay_ms(25);
   }
+
   _delay_ms(GENERATION_TIME);
+
+  // Iterate the rows, again.
   for (int y = 0; y < MATRIX_SIZE; y++)
+    // Set all cells in this row to off.
     MAX7221_send(y + 1, 0);
+
   _delay_ms(GENERATION_TIME);
 }
 
@@ -231,9 +245,11 @@ void MAX7221_wipe(void)
 //
 void MAX7221_display(bool matrix[MATRIX_SIZE][MATRIX_SIZE])
 {
+  // Iterate the rows.
   for (byte y = 0; y < MATRIX_SIZE; y++)
   {
-    // Need to create the byte because bool[8] isn't the same as byte.
+    // Create a byte where it's bits are equivalent to the contiguous
+    // values of the columns in this row.
     byte data = 0;
     for (byte x = 0; x < MATRIX_SIZE; x++)
       data |= (matrix[x][y] << x);
