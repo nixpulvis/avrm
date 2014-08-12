@@ -47,8 +47,13 @@ upload: $(TARGET).hex
 	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(AVRDUDE_PORT) -b $(AVRDUDE_BAUD) -U flash:w:$<
 
 # Generate a .bin file from a .o file.
+ifneq (, $(findstring .c,$(SOURCE)))
 %.bin: %.o avr.o
 	$(CC) -mmcu=$(MMCU) $? -o $@
+else
+%.bin: %.o
+	$(CC) -mmcu=$(MMCU) $? -o $@
+endif
 
 # Compile the assembly for a .c file.
 %.asm: %.c
