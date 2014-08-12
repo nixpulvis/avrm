@@ -187,46 +187,39 @@
 void nRF24L01p_init(void);
 
 // nRF24L01p_power_up
-//
 // Set the CONFIG_PWR_UP to 1, taking the device out of
 // Power Down, into Standby-I
 //
 void nRF24L01p_power_up(void);
 
 // nRF24L01p_power_down
-//
 // Set the CONFIG_PWR_UP to 0, taking the device in to
 // Power Down.
 //
 void nRF24L01p_power_down(void);
 
 // nRF24L01p_prx
-//
 // Set the device to be PRX (primary RX) receiver.
 //
 void nRF24L01p_prx();
 
 // nRF24L01p_ptx
-//
 // Set the device to be PTX (primary TX) receiver.
 //
 void nRF24L01p_ptx();
 
 // nRF24L01p_enable
-//
 // Set the CE pin high, putting the device into either
 // RX Mode or TX Mode depending on the value of CONFIG_PRIM_RX.
 //
 void nRF24L01p_enable(void);
 
 // nRF24L01p_disable
-//
 // Set the CE pin low, putting the device into Standby-I.
 //
 void nRF24L01p_disable(void);
 
 // nRF24L01p_read
-//
 // Read data over the air.
 //
 // pipe - The data pipe to read from (0-5).
@@ -238,7 +231,6 @@ void nRF24L01p_disable(void);
 int nRF24L01p_read(char *dst, byte count, byte pipe);
 
 // nRF24L01p_write
-//
 // Write data over the air.
 //
 // src - Pointer to storage to write.
@@ -249,7 +241,6 @@ int nRF24L01p_read(char *dst, byte count, byte pipe);
 int nRF24L01p_write(char *src, byte count);
 
 // nRF24L01p_get_register
-//
 // Get the value of a register. This operation should only
 // be done while in Power Down or Standby-I. TODO: verify.
 //
@@ -260,7 +251,6 @@ int nRF24L01p_write(char *src, byte count);
 byte nRF24L01p_get_register(byte address);
 
 // nRF24L01p_set_register
-//
 // Set the value of a register. This operation should only
 // be done while in Power Down or Standby-I. TODO: verify.
 //

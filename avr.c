@@ -1,7 +1,15 @@
 #include "avr.h"
 
 // UART Functions
+/////////////////
 
+// Forward declarations of needed read and write functions.
+int uart_put(char data, FILE *stream);
+int uart_get(FILE *stream);
+
+//
+// uart_init implementation.
+//
 void uart_init(void) {
   UBRR0H = UBRRH_VALUE;
   UBRR0L = UBRRL_VALUE;
@@ -25,6 +33,10 @@ void uart_init(void) {
   stdin = &uart_io;
 }
 
+
+//
+// private uart_put implementation.
+//
 int uart_put(char data, FILE *stream) {
   // force adding a carriage return after newline.
   if (data == '\n')
@@ -35,6 +47,10 @@ int uart_put(char data, FILE *stream) {
   UDR0 = data;
 }
 
+
+//
+// private uart_get implementation.
+//
 int uart_get(FILE *stream) {
   // Wait for data.
   loop_until_bit_is_set(UCSR0A, RXC0);
@@ -42,8 +58,13 @@ int uart_get(FILE *stream) {
   return UDR0;
 }
 
-// SPI Functions
 
+// SPI Functions
+////////////////
+
+//
+// spi_init implementation.
+//
 void spi_init(void)
 {
   // SS is output.
@@ -59,16 +80,28 @@ void spi_init(void)
   SPCR |= _BV(SPE);
 }
 
+
+//
+// spi_start implementation.
+//
 void spi_start(void)
 {
   PORTB &= ~_BV(PORTB2);
 }
 
+
+//
+// spi_end implementation.
+//
 void spi_end(void)
 {
   PORTB |= _BV(PORTB2);
 }
 
+
+//
+// spi_transfer implementation.
+//
 byte spi_transfer(byte data)
 {
   // Load data into the buffer.
