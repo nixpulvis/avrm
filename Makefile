@@ -49,7 +49,7 @@ default: flash
 # Pseudo rules.
 
 # These rules are not file based.
-.PHONY: flash clean
+.PHONY: flash serial clean
 
 # Mark the hex file as intermediate.
 .INTERMEDIATE: $(TARGET).hex
@@ -67,6 +67,13 @@ default: flash
 # not affect the bootloader.
 flash: check_target $(TARGET).hex
 	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(BAUD) -U flash:w:$(word 2,$^)
+
+# serial
+#
+# Open up a screen session for communication with the AVR
+# through it's on-board UART.
+serial:
+	screen $(PORT) $(BAUD)
 
 # check_target
 #
