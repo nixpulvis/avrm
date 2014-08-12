@@ -208,7 +208,7 @@ void MAX7221_wipe(void)
 {
   for (int y = 0; y < MATRIX_SIZE; y++)
   {
-    MAX7221_send(y + 1, 255);
+    MAX7221_send(y + 1, pow(2, MATRIX_SIZE) - 1);
     _delay_ms(25);
   }
   _delay_ms(GENERATION_TIME);
