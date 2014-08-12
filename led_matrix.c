@@ -25,13 +25,11 @@ void randomize(bool matrix[MATRIX_SIZE][MATRIX_SIZE]);
 // Mutate the matrix into it's next state following Conway's
 // game of life's rules.
 //
-// matrix - The matrix representing the game of life.
-// generation - The generation of the current game.
+// new_matrix - The matrix representing the game of life after one generation.
+// matrix - The original matrix representing the game of life.
 //
-// Returns true when it generated the next generation, false when it
-// reset.
-//
-bool evolve(bool matrix[MATRIX_SIZE][MATRIX_SIZE], unsigned int generation);
+void evolve(bool new_matrix[MATRIX_SIZE][MATRIX_SIZE],
+            bool matrix[MATRIX_SIZE][MATRIX_SIZE]);
 
 // neighbors
 // Returns the number of alive neighbors for a given cell in the game.
@@ -78,6 +76,9 @@ void main(void)
   bool matrix[MATRIX_SIZE][MATRIX_SIZE];
   memset(matrix, 0, sizeof(matrix));
 
+  // The matrix for building the next generation.
+  bool new_matrix[MATRIX_SIZE][MATRIX_SIZE];
+
   // Randomize the initial game.
   randomize(matrix);
 
@@ -88,12 +89,47 @@ void main(void)
   {
     // Display the matrix.
     MAX7221_display(matrix);
-    // Evolve the game.
-    if (evolve(matrix, generation++))
-      generation++;
-    else
+
+    // Zero out new matrix.
+    memset(new_matrix, 0, sizeof(new_matrix));
+
+    // Evolve the game into new_matrix.
+    evolve(new_matrix, matrix);
+
+    // Compare the two generations.
+    bool eq = 1;
+    for (int x = 0; x < MATRIX_SIZE; x++)
+    for (int y = 0; y < MATRIX_SIZE; y++)
+      eq &= matrix[x][y] == new_matrix[x][y];
+
+    // Restart the game if the two generations are the same or
+    // we've hit the MAX_GENERATIONth generation.
+    if (eq || generation > MAX_GENERATION)
+    {
+      // Wait 2 seconds to indicate a final state.
+      _delay_ms(2000);
+
+      // Display a screen wipe.
+      MAX7221_wipe();
+
+      // Make a new random seed matrix.
+      randomize(matrix);
+
+      // Reset the generation.
       generation = 0;
-    // Wait half a second.
+    }
+    else
+    {
+      // Copy new_matrix into matrix.
+      for (int x = 0; x < MATRIX_SIZE; x++)
+      for (int y = 0; y < MATRIX_SIZE; y++)
+        matrix[x][y] = new_matrix[x][y];
+
+      // Increment the generation.
+      generation++;
+    }
+
+    // Wait GENERATION_TIME.
     _delay_ms(GENERATION_TIME);
   }
 }
@@ -111,12 +147,9 @@ void randomize(bool matrix[MATRIX_SIZE][MATRIX_SIZE])
 //
 // evolve implementation.
 //
-bool evolve(bool matrix[MATRIX_SIZE][MATRIX_SIZE], unsigned int generation)
+void evolve(bool new_matrix[MATRIX_SIZE][MATRIX_SIZE],
+            bool matrix[MATRIX_SIZE][MATRIX_SIZE])
 {
-  // Allocate a new empty game matrix.
-  bool new_matrix[MATRIX_SIZE][MATRIX_SIZE];
-  memset(new_matrix, 0, sizeof(new_matrix));
-
   for (byte x = 0; x < MATRIX_SIZE; x++)
   for (byte y = 0; y < MATRIX_SIZE; y++)
   {
@@ -154,30 +187,6 @@ bool evolve(bool matrix[MATRIX_SIZE][MATRIX_SIZE], unsigned int generation)
       else
         new_matrix[x][y] = FALSE;
     }
-  }
-
-  // Compare the two generations.
-  bool eq = 1;
-  for (int x = 0; x < MATRIX_SIZE; x++)
-  for (int y = 0; y < MATRIX_SIZE; y++)
-    eq &= matrix[x][y] == new_matrix[x][y];
-
-  // Restart the game if the two generations are the same or
-  // we've hit the MAX_GENERATIONth generation
-  if (eq || generation > MAX_GENERATION)
-  {
-    _delay_ms(2000);
-    MAX7221_wipe();
-    randomize(matrix);
-    return FALSE;
-  }
-  // Copy new_matrix into matrix.
-  else
-  {
-    for (int x = 0; x < MATRIX_SIZE; x++)
-    for (int y = 0; y < MATRIX_SIZE; y++)
-      matrix[x][y] = new_matrix[x][y];
-    return TRUE;
   }
 }
 
