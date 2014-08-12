@@ -12,13 +12,15 @@
 
 // UART Functions
 
-void uart_begin(void);
+void uart_init(void);
 int uart_put(char data, FILE *stream);
 int uart_get(FILE *stream);
 
 // SPI Functions
 
-void spi_begin(void);
+void spi_init(void);
+void spi_start(void);
+void spi_end(void);
 unsigned char spi_transfer(unsigned char data);
 
 #endif

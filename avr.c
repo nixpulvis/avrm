@@ -2,7 +2,7 @@
 
 // UART Functions
 
-void uart_begin(void) {
+void uart_init(void) {
   UBRR0H = UBRRH_VALUE;
   UBRR0L = UBRRL_VALUE;
 #if USE_2X
@@ -44,7 +44,7 @@ int uart_get(FILE *stream) {
 
 // SPI Functions
 
-void spi_begin(void)
+void spi_init(void)
 {
   // SS is output.
   PORTB |= _BV(PORTB2);
@@ -57,6 +57,16 @@ void spi_begin(void)
   // Enable SPI, and set as master.
   SPCR |= _BV(MSTR);
   SPCR |= _BV(SPE);
+}
+
+void spi_start(void)
+{
+  PORTB &= ~_BV(PORTB2);
+}
+
+void spi_end(void)
+{
+  PORTB |= _BV(PORTB2);
 }
 
 unsigned char spi_transfer(unsigned char data)

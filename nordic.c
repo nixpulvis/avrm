@@ -14,10 +14,10 @@ void nRF24L01_setup(void);
 void main(void)
 {
   // Setup the UART, necessary for stdio actions.
-  uart_begin();
+  uart_init();
 
   // Start up the SPI bus.
-  spi_begin();
+  spi_init();
 
   // Setup the nRF24L01.
   nRF24L01_setup();

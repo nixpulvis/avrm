@@ -265,7 +265,7 @@ void MAX7221_display(bool matrix[MATRIX_SIZE][MATRIX_SIZE])
 void MAX7221_setup(void)
 {
   // Setup SPI communication for the MAX7221.
-  spi_begin();
+  spi_init();
 
   // Test for 1 second.
   MAX7221_send(0x0F, 0x01);
@@ -300,8 +300,8 @@ void MAX7221_setup(void)
 //
 void MAX7221_send(byte address, byte value)
 {
-  PORTB &= ~_BV(PORTB2);
+  spi_start();
   spi_transfer(address & 0xF);
   spi_transfer(value);
-  PORTB |= _BV(PORTB2);
+  spi_end();
 }
