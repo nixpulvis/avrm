@@ -230,12 +230,14 @@ void MAX7221_wipe(void)
     _delay_ms(25);
   }
 
-  _delay_ms(GENERATION_TIME);
-
   // Iterate the rows, again.
   for (int y = 0; y < MATRIX_SIZE; y++)
+  {
     // Set all cells in this row to off.
     MAX7221_send(y + 1, 0);
+    // Delay briefly to create a wipe effect.
+    _delay_ms(25);
+  }
 
   _delay_ms(GENERATION_TIME);
 }
@@ -279,7 +281,7 @@ void MAX7221_setup(void)
   MAX7221_send(0x0B, 0x07);
 
   // Set display intensity (0-F).
-  MAX7221_send(0x0A, 0x07);
+  MAX7221_send(0x0A, 0x05);
 
   // Turn on display.
   MAX7221_send(0x0C, 0x01);
