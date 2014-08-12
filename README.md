@@ -1,11 +1,13 @@
-AVR
-===
+# AVR from Scratch
 
-Bare metal AVR tinkering using both C and Assembly.
+Bare metal AVR tinkering using both C and Assembly. This project is a collection of some libraries and code for actual projects. The code is written in either C99, or AVR assembly. One of the main goals of this project is to teach myself the needed concepts to write AVR code without the Arduino libraries. If it seems like I'm reinventing the wheel here, that's exactly the point. The other main goal is to make some cool projects, that actually do things, the `led_matrix.c` for example plays [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway's_Game_of_Life) on an 8x8 LED matrix.
 
 
-Getting Started on OSX
-----------------------
+## Getting Started
+
+I'm doing all of this excursively on OSX, so I can only speak from experience to what is needed for this operating system.
+
+### Installing Dependencies
 
 Make sure you have the following packages installed with Homebrew.
 
@@ -14,8 +16,9 @@ Make sure you have the following packages installed with Homebrew.
 - avr-libc
 - avrdude
 
-Once you have these packages, you will have `avr-gcc`, `avr-as`, `avr-objcopy`,
-and `avrdude`. These are the requirements of the Makefile in this project.
+### Make
+
+One thing that is very important to me is ease of building things. I've made a Makefile which aims to make compiling and flashing AVRs as easy as possible. It tries to help you out as much as possible, for example it will find the correct /dev/tty.usb* device automatically. You can overwrite it by setting `PORT` to the file path.
 
 ```sh
 # Compile and upload "blink.c".
@@ -31,10 +34,25 @@ TARGET=led_matrix BAUD=57600 make
 TARGET=hand_coded_blink LANGUAGE=asm make
 ```
 
-The Makefile is pretty smart, and will find the correct /dev/tty.usb* device automatically. You can overwrite it by setting `PORT` to the file path.
+## Libraries
 
+I'm building some libraries as a part of this endeavor, as I need them. Anything possibly needed in more than one project will be broken out into a library.
 
-Reference
----------
+All Libraries have their own set of header and source files, with a common name. Currently all projects get built with all libraries, but this is something that I aim to improve as I continue refining the Makefile.
+
+These are the current libraries in this repository.
+
+- [avr](#avr)
+- [nrf24l01p](#nrf24l01p)
+
+### avr
+
+TODO: Write docs.
+
+### nrf24l01p (not functional yet.)
+
+TODO: Write docs.
+
+## Reference
 
 - [avr-libc manual](http://www.nongnu.org/avr-libc/user-manual/pages.html)
