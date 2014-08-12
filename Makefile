@@ -2,10 +2,11 @@
 DF_CPU ?= 16000000UL
 MMCU   ?= atmega328p
 
-# Compiler options.
+# The `gcc` executable.
 CC = avr-gcc
 C_FLAGS = -Os -std=c99
 
+# The `as` executable.
 AS = avr-as
 
 # The `obj-copy` executable.

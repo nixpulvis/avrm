@@ -3,9 +3,9 @@
 
 #include <avr/io.h>
 
-/* Basic Functions */
+// Basic Functions
 
-/* SPI Functions */
+// SPI Functions
 
 void spi_begin(void);
 unsigned char spi_transfer(unsigned char data);
