@@ -1,6 +1,23 @@
+# Configuration variables.
+
 # Microcontroller options.
 DF_CPU ?= 16000000UL
 MMCU   ?= atmega328p
+
+# Port to flash to.
+PORT ?= /dev/$(shell ls /dev/ | grep "tty\.usb")
+
+# Flash rate.
+# 115200 - Arduino Uno
+# 57600  - Arduino Mini Pro
+BAUD ?= 115200
+
+# The language we're building from (C or Assembly), default is C.
+LANGUAGE ?= c
+
+################################
+
+# Probably should touch these.
 
 # The `gcc` executable.
 CC = avr-gcc
@@ -17,37 +34,56 @@ OBJ_COPY_FLAGS = -O ihex -R .eeprom
 AVRDUDE = avrdude
 AVRDUDE_FLAGS = -F -V -c arduino -p ATMEGA328P
 
-# Port to upload to.
-AVRDUDE_PORT ?= /dev/tty.usbmodem1421
-
-# Upload rate.
-# 115200 - Arduino Uno
-# 57600  - Arduino Mini Pro
-AVRDUDE_BAUD ?= 115200
-
-# The program to build, by default "blink.c".
-SOURCE ?= blink.c
-
-# The target name is the source file name without the extension.
-ifneq (, $(findstring .c,$(SOURCE)))
-	TARGET = $(SOURCE:.c=)
-else
-	TARGET = $(SOURCE:.asm=)
+# The source file.
+ifneq ($(TARGET),)
+SOURCE = $(TARGET).$(LANGUAGE)
 endif
 
-# upload
+################################
+
+# The default task is to flash.
+default: flash
+
+################################
+
+# Pseudo rules.
+
+# These rules are not file based.
+.PHONY: flash clean
+
+# Mark the hex file as intermediate.
+.INTERMEDIATE: $(TARGET).hex
+
+################################
+
+# Utility rules (not file based).
+
+# flash
 #
 # Given a hex file using `avrdude` this target flashes the AVR with the
 # new program contained in the hex file.
 #
 # This process does not involve setting fuse bits on the AVR, and does
 # not affect the bootloader.
-#
-upload: $(TARGET).hex
-	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(AVRDUDE_PORT) -b $(AVRDUDE_BAUD) -U flash:w:$<
+flash: check_target $(TARGET).hex
+	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(BAUD) -U flash:w:$(word 2,$^)
 
-# Generate a .bin file from a .o file.
-ifneq (, $(findstring .c,$(SOURCE)))
+# check_target
+#
+# Ensure there is a valid target.
+check_target:
+	@$ [ -f ./$(SOURCE) ] || (echo "Invalid TARGET \"$(TARGET)\"" && false)
+
+# Remove non-source files.
+clean:
+	rm -rf *.o *.bin *.hex
+
+################################
+
+# File rules.
+
+# .bin <- .o
+ifeq ($(LANGUAGE), c)
 %.bin: %.o avr.o
 	$(CC) -mmcu=$(MMCU) $? -o $@
 else
@@ -55,27 +91,19 @@ else
 	$(CC) -mmcu=$(MMCU) $? -o $@
 endif
 
-# Compile the assembly for a .c file.
+# .asm <- .c
 %.asm: %.c
 	$(CC) -S $(C_FLAGS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
 
-ifneq (, $(findstring .c,$(SOURCE)))
-# Generate a .o file from a .c file, when the source is a .c file.
+# .o <- (.c | .asm)
+ifeq ($(LANGUAGE), c)
 %.o: %.c
 	$(CC) $(C_FLAGS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
 else
-# Generate a .o file from a .asm file, when the source is a .asm file.
 %.o: %.asm
 	$(AS) -mmcu=$(MMCU) -o $@ $<
 endif
 
-# Generate a .hex file from a .bin file.
+# .hex <- .bin
 %.hex: %.bin
 	$(OBJ_COPY) $(OBJ_COPY_FLAGS) $< $@
-
-# Remove non-source files.
-clean:
-	rm -rf *.o *.bin *.hex
-
-# Mark the hex file as intermediate.
-.INTERMEDIATE: $(TARGET).hex
