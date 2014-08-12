@@ -69,7 +69,7 @@ void spi_end(void)
   PORTB |= _BV(PORTB2);
 }
 
-unsigned char spi_transfer(unsigned char data)
+byte spi_transfer(byte data)
 {
   // Load data into the buffer.
   SPDR = data;

@@ -8,6 +8,10 @@
 #include <avr/io.h>
 #include <util/setbaud.h>
 
+// Types
+
+typedef unsigned char byte;
+
 // Basic Functions
 
 // UART Functions
@@ -21,6 +25,6 @@ int uart_get(FILE *stream);
 void spi_init(void);
 void spi_start(void);
 void spi_end(void);
-unsigned char spi_transfer(unsigned char data);
+byte spi_transfer(byte data);
 
 #endif

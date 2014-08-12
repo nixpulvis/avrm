@@ -39,6 +39,9 @@ ifneq ($(TARGET),)
 SOURCE = $(TARGET).$(LANGUAGE)
 endif
 
+# Libraries.
+C_LIBS = avr nrf24l01p
+
 ################################
 
 # The default task is to flash.
@@ -91,7 +94,7 @@ clean:
 
 # .bin <- .o
 ifeq ($(LANGUAGE), c)
-%.bin: %.o avr.o
+%.bin: %.o $(C_LIBS:=.o)
 	$(CC) -mmcu=$(MMCU) $? -o $@
 else
 %.bin: %.o
