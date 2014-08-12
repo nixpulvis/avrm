@@ -227,7 +227,7 @@ void MAX7221_wipe(void)
     // Set all cells in this row up to MATRIX_SIZE to on.
     MAX7221_send(y + 1, pow(2, MATRIX_SIZE) - 1);
     // Delay briefly to create a wipe effect.
-    _delay_ms(25);
+    _delay_ms(50);
   }
 
   // Iterate the rows, again.
@@ -236,7 +236,7 @@ void MAX7221_wipe(void)
     // Set all cells in this row to off.
     MAX7221_send(y + 1, 0);
     // Delay briefly to create a wipe effect.
-    _delay_ms(25);
+    _delay_ms(50);
   }
 
   _delay_ms(GENERATION_TIME);
