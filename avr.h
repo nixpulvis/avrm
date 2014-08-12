@@ -10,6 +10,7 @@
 
 // Types
 
+typedef enum { FALSE, TRUE } bool;
 typedef unsigned char byte;
 
 // Basic Functions

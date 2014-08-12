@@ -8,12 +8,6 @@
 #define MAX_GENERATION MATRIX_SIZE * MATRIX_SIZE
 #define GENERATION_TIME 500
 
-// Boolean type.
-typedef enum { FALSE, TRUE } bool;
-
-// Byte type.
-typedef unsigned char byte;
-
 // randomize
 // Set random bits in the matrix.
 //
