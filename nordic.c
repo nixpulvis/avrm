@@ -176,12 +176,21 @@
 #define nRF24L01p_REGISTER_RF_SETUP_RF_DR_1Mbps 0x0
 #define nRF24L01p_REGISTER_RF_SETUP_RF_DR_2Mbps 0x1
 
+// Timings
+
+#define nRF24L01p_TIMING_INITIAL_US  10300 // 10.3ms
+#define nRF24L01p_TIMING_POWER_UP_US 1500  // 1.5ms
+#define nRF24L01p_TIMING_RX_SETTLING 130   // 130us
+#define nRF24L01p_TIMING_TX_SETTLING 130   // 130us
+
 
 typedef unsigned char byte;
 
-void nRF24L01p_setup(void);
+void nRF24L01p_init(void);
 void nRF24L01p_enable(void);
 void nRF24L01p_disable(void);
+byte nRF24L01p_get_register(byte address);
+void nRF24L01p_set_register(byte address, byte data);
 
 void main(void)
 {
@@ -192,30 +201,25 @@ void main(void)
   spi_init();
 
   // Setup the nRF24L01p.
-  nRF24L01p_setup();
+  nRF24L01p_init();
 }
 
-void nRF24L01p_setup(void)
+void nRF24L01p_init(void)
 {
-  // Activate command.
-  spi_start();
-  spi_transfer(0b01010000);
-  spi_transfer(0x73);
-  spi_end();
+  // Get the CONFIG register.
+  byte config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
+
+  // Set as PTX (primary TX).
+  config &= ~nRF24L01p_REGISTER_CONFIG_PRIM_RX;
+
+  // // Set as PRX (primary RX).
+  // config |= nRF24L01p_REGISTER_CONFIG_PRIM_RX;
 
   // Set CONFIG register to 00001110 (0x0E)
-  spi_start();
-  spi_transfer(0b00100000);
-  spi_transfer(0b00001110);
-  spi_end();
+  nRF24L01p_set_register(nRF24L01p_REGISTER_CONFIG, config);
 
-  // Get the status of register 00000.
-  spi_start();
-  spi_transfer(0b00000000);
-  byte status = spi_transfer(0b11111111);
-  spi_end();
-
-  printf("%X\n", status);
+  // Print the CONFIG register.
+  printf("%X\n", config);
 }
 
 void nRF24L01p_enable(void)
@@ -228,4 +232,24 @@ void nRF24L01p_disable(void)
 {
   // Pull CE high.
   PORTB &= ~_BV(PORTB0);
+}
+
+byte nRF24L01p_get_register(byte address)
+{
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_R_REGISTER |
+               (address & nRF24L01p_SPI_RW_REGISTER_MASK));
+  byte response = spi_transfer(nRF24L01p_SPI_NOP);
+  spi_end();
+
+  return response;
+}
+
+void nRF24L01p_set_register(byte address, byte data)
+{
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_W_REGISTER |
+               (address & nRF24L01p_SPI_RW_REGISTER_MASK));
+  spi_transfer(data);
+  spi_end();
 }
