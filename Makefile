@@ -40,7 +40,7 @@ SOURCE = $(TARGET).$(LANGUAGE)
 endif
 
 # Libraries.
-C_LIBS = avr nrf24l01p
+C_LIBS = avr max7221 nrf24l01p
 
 ################################
 
