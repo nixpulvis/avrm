@@ -18,14 +18,50 @@ void nRF24L01p_init(void)
 //
 // nRF24L01p_config_transceiver_mode implementation.
 //
-void nRF24L01p_config_transceiver_mode(bool mode)
+int nRF24L01p_config_transceiver_mode(byte mode)
 {
-  byte config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  if (mode == nRF24L01p_CONFIG_TRANSCEIVER_MODE_RX)
-    config |= nRF24L01p_REGISTER_CONFIG_PRIM_RX;
-  else
-    config &= ~nRF24L01p_REGISTER_CONFIG_PRIM_RX;
-  nRF24L01p_set_register(nRF24L01p_REGISTER_CONFIG, config);
+  if (!(mode == nRF24L01p_VALUE_CONFIG_PRIM_TX ||
+        mode == nRF24L01p_VALUE_CONFIG_PRIM_RX))
+    return -1;
+
+  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_CONFIG,
+                              nRF24L01p_MASK_CONFIG_PRIM_RX,
+                              mode);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_air_data_rate implementation.
+//
+int nRF24L01p_config_air_data_rate(byte mode)
+{
+  if (!(mode == nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps ||
+        mode == nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps))
+    return -1;
+
+  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_RF_SETUP,
+                              nRF24L01p_MASK_RF_SETUP_RF_DR,
+                              mode);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_output_power implementation.
+//
+int nRF24L01p_config_output_power(byte mode)
+{
+  if (!(mode == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_18dBm ||
+        mode == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm ||
+        mode == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_6dBm ||
+        mode == nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm))
+    return -1;
+
+  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_RF_SETUP,
+                              nRF24L01p_MASK_RF_SETUP_RF_PWR,
+                              mode);
+  return 0;
 }
 
 
@@ -38,9 +74,9 @@ void nRF24L01p_config_transceiver_mode(bool mode)
 //
 void nRF24L01p_power_up(void)
 {
-  byte config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  config |= nRF24L01p_REGISTER_CONFIG_PWR_UP;
-  nRF24L01p_set_register(nRF24L01p_REGISTER_CONFIG, config);
+  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_CONFIG,
+                              nRF24L01p_MASK_CONFIG_PWR_UP,
+                              nRF24L01p_VALUE_CONFIG_PWR_UP);
 }
 
 
@@ -49,9 +85,9 @@ void nRF24L01p_power_up(void)
 //
 void nRF24L01p_power_down(void)
 {
-  byte config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  config &= ~nRF24L01p_REGISTER_CONFIG_PWR_UP;
-  nRF24L01p_set_register(nRF24L01p_REGISTER_CONFIG, config);
+  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_CONFIG,
+                              nRF24L01p_MASK_CONFIG_PWR_UP,
+                              nRF24L01p_VALUE_CONFIG_PWR_DOWN);
 }
 
 
@@ -176,4 +212,15 @@ void nRF24L01p_set_register(byte address, byte data)
                (address & nRF24L01p_SPI_RW_REGISTER_MASK));
   spi_transfer(data);
   spi_end();
+}
+
+
+//
+// nRF24L01p_set_register_bits implementation.
+//
+void nRF24L01p_set_register_bits(byte address, byte mask, byte value)
+{
+  byte reg = nRF24L01p_get_register(address);
+  reg = (reg & ~mask) | value;
+  nRF24L01p_set_register(address, reg);
 }

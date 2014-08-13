@@ -58,117 +58,123 @@
 
 // Register bit masks
 
-#define nRF24L01p_REGISTER_CONFIG_PRIM_RX     (0x1 << 0)
-#define nRF24L01p_REGISTER_CONFIG_PWR_UP      (0x1 << 1)
-#define nRF24L01p_REGISTER_CONFIG_CRCO        (0x1 << 2)
-#define nRF24L01p_REGISTER_CONFIG_EN_CRC      (0x1 << 3)
-#define nRF24L01p_REGISTER_CONFIG_MASK_MAX_RT (0x1 << 4)
-#define nRF24L01p_REGISTER_CONFIG_MASK_TX_DS  (0x1 << 5)
-#define nRF24L01p_REGISTER_CONFIG_MASK_RX_DR  (0x1 << 6)
+#define nRF24L01p_MASK_CONFIG_PRIM_RX     (0x1 << 0)
+#define nRF24L01p_MASK_CONFIG_PWR_UP      (0x1 << 1)
+#define nRF24L01p_MASK_CONFIG_CRCO        (0x1 << 2)
+#define nRF24L01p_MASK_CONFIG_EN_CRC      (0x1 << 3)
+#define nRF24L01p_MASK_CONFIG_MASK_MAX_RT (0x1 << 4)
+#define nRF24L01p_MASK_CONFIG_MASK_TX_DS  (0x1 << 5)
+#define nRF24L01p_MASK_CONFIG_MASK_RX_DR  (0x1 << 6)
 
-#define nRF24L01p_REGISTER_EN_AA_ENAA_P0 (0x1 << 0)
-#define nRF24L01p_REGISTER_EN_AA_ENAA_P1 (0x1 << 1)
-#define nRF24L01p_REGISTER_EN_AA_ENAA_P2 (0x1 << 2)
-#define nRF24L01p_REGISTER_EN_AA_ENAA_P3 (0x1 << 3)
-#define nRF24L01p_REGISTER_EN_AA_ENAA_P4 (0x1 << 4)
-#define nRF24L01p_REGISTER_EN_AA_ENAA_P5 (0x1 << 5)
+#define nRF24L01p_MASK_EN_AA_ENAA_P0 (0x1 << 0)
+#define nRF24L01p_MASK_EN_AA_ENAA_P1 (0x1 << 1)
+#define nRF24L01p_MASK_EN_AA_ENAA_P2 (0x1 << 2)
+#define nRF24L01p_MASK_EN_AA_ENAA_P3 (0x1 << 3)
+#define nRF24L01p_MASK_EN_AA_ENAA_P4 (0x1 << 4)
+#define nRF24L01p_MASK_EN_AA_ENAA_P5 (0x1 << 5)
 
-#define nRF24L01p_REGISTER_EN_RXADDR_ERX_P0 (0x1 << 0)
-#define nRF24L01p_REGISTER_EN_RXADDR_ERX_P1 (0x1 << 1)
-#define nRF24L01p_REGISTER_EN_RXADDR_ERX_P2 (0x1 << 2)
-#define nRF24L01p_REGISTER_EN_RXADDR_ERX_P3 (0x1 << 3)
-#define nRF24L01p_REGISTER_EN_RXADDR_ERX_P4 (0x1 << 4)
-#define nRF24L01p_REGISTER_EN_RXADDR_ERX_P5 (0x1 << 5)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P0 (0x1 << 0)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P1 (0x1 << 1)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P2 (0x1 << 2)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P3 (0x1 << 3)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P4 (0x1 << 4)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P5 (0x1 << 5)
 
-#define nRF24L01p_REGISTER_SETUP_AW_AW 0x03
+#define nRF24L01p_MASK_SETUP_AW_AW 0x03
 
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC 0x0F
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD 0xF0
+#define nRF24L01p_MASK_SETUP_RETR_ARC 0x0F
+#define nRF24L01p_MASK_SETUP_RETR_ARD 0xF0
 
-#define nRF24L01p_REGISTER_RF_CH_RF_CH 0x7F
+#define nRF24L01p_MASK_RF_CH_RF_CH 0x7F
 
-#define nRF24L01p_REGISTER_RF_SETUP_LNA_HCURR (0x1 << 0)
-#define nRF24L01p_REGISTER_RF_SETUP_RF_PWR    (0x3 << 1)
-#define nRF24L01p_REGISTER_RF_SETUP_RF_DR     (0x1 << 3)
-#define nRF24L01p_REGISTER_RF_SETUP_PLL_LOCK  (0x1 << 4)
+#define nRF24L01p_MASK_RF_SETUP_LNA_HCURR (0x1 << 0)
+#define nRF24L01p_MASK_RF_SETUP_RF_PWR    (0x3 << 1)
+#define nRF24L01p_MASK_RF_SETUP_RF_DR     (0x1 << 3)
+#define nRF24L01p_MASK_RF_SETUP_PLL_LOCK  (0x1 << 4)
 
-#define nRF24L01p_REGISTER_STATUS_TX_FULL (0x1 << 0)
-#define nRF24L01p_REGISTER_STATUS_RX_P_NO (0x7 << 1)
-#define nRF24L01p_REGISTER_STATUS_MAX_RT  (0x1 << 4)
-#define nRF24L01p_REGISTER_STATUS_TX_DS   (0x1 << 5)
-#define nRF24L01p_REGISTER_STATUS_RX_DR   (0x1 << 6)
+#define nRF24L01p_MASK_STATUS_TX_FULL (0x1 << 0)
+#define nRF24L01p_MASK_STATUS_RX_P_NO (0x7 << 1)
+#define nRF24L01p_MASK_STATUS_MAX_RT  (0x1 << 4)
+#define nRF24L01p_MASK_STATUS_TX_DS   (0x1 << 5)
+#define nRF24L01p_MASK_STATUS_RX_DR   (0x1 << 6)
 
-#define nRF24L01p_REGISTER_OBSERVE_TX_ARC_CNT  0x0F
-#define nRF24L01p_REGISTER_OBSERVE_TX_PLOS_CNT 0xF0
+#define nRF24L01p_MASK_OBSERVE_TX_ARC_CNT  0x0F
+#define nRF24L01p_MASK_OBSERVE_TX_PLOS_CNT 0xF0
 
-#define nRF24L01p_REGISTER_CD_CD 0x1
+#define nRF24L01p_MASK_CD_CD 0x1
 
-#define nRF24L01p_REGISTER_RX_PW_PX_RX_PW_PX 0x3F // PX represents any pipe.
+#define nRF24L01p_MASK_RX_PW_PX_RX_PW_PX 0x3F // PX represents any pipe.
 
-#define nRF24L01p_REGISTER_FIFO_STATUS_RX_EMPTY (0x1 << 0)
-#define nRF24L01p_REGISTER_FIFO_STATUS_RX_FULL  (0x1 << 1)
-#define nRF24L01p_REGISTER_FIFO_STATUS_TX_EMPTY (0x1 << 4)
-#define nRF24L01p_REGISTER_FIFO_STATUS_TX_FULL  (0x1 << 5)
-#define nRF24L01p_REGISTER_FIFO_STATUS_TX_REUSE (0x1 << 6)
+#define nRF24L01p_MASK_FIFO_STATUS_RX_EMPTY (0x1 << 0)
+#define nRF24L01p_MASK_FIFO_STATUS_RX_FULL  (0x1 << 1)
+#define nRF24L01p_MASK_FIFO_STATUS_TX_EMPTY (0x1 << 4)
+#define nRF24L01p_MASK_FIFO_STATUS_TX_FULL  (0x1 << 5)
+#define nRF24L01p_MASK_FIFO_STATUS_TX_REUSE (0x1 << 6)
 
-#define nRF24L01p_REGISTER_DYNPD_DPL_P0 (0x1 << 0)
-#define nRF24L01p_REGISTER_DYNPD_DPL_P1 (0x1 << 1)
-#define nRF24L01p_REGISTER_DYNPD_DPL_P2 (0x1 << 2)
-#define nRF24L01p_REGISTER_DYNPD_DPL_P3 (0x1 << 3)
-#define nRF24L01p_REGISTER_DYNPD_DPL_P4 (0x1 << 4)
-#define nRF24L01p_REGISTER_DYNPD_DPL_P5 (0x1 << 5)
+#define nRF24L01p_MASK_DYNPD_DPL_P0 (0x1 << 0)
+#define nRF24L01p_MASK_DYNPD_DPL_P1 (0x1 << 1)
+#define nRF24L01p_MASK_DYNPD_DPL_P2 (0x1 << 2)
+#define nRF24L01p_MASK_DYNPD_DPL_P3 (0x1 << 3)
+#define nRF24L01p_MASK_DYNPD_DPL_P4 (0x1 << 4)
+#define nRF24L01p_MASK_DYNPD_DPL_P5 (0x1 << 5)
 
-#define nRF24L01p_REGISTER_FEATURE_EN_DYN_ACK (0x1 << 0)
-#define nRF24L01p_REGISTER_FEATURE_EN_ACK_PAY (0x1 << 1)
-#define nRF24L01p_REGISTER_FEATURE_EN_DPL     (0x1 << 2)
+#define nRF24L01p_MASK_FEATURE_EN_DYN_ACK (0x1 << 0)
+#define nRF24L01p_MASK_FEATURE_EN_ACK_PAY (0x1 << 1)
+#define nRF24L01p_MASK_FEATURE_EN_DPL     (0x1 << 2)
 
 // Register values
 
-#define nRF24L01p_REGISTER_SETUP_AW_AW_3 0x01
-#define nRF24L01p_REGISTER_SETUP_AW_AW_4 0x02
-#define nRF24L01p_REGISTER_SETUP_AW_AW_5 0x03
+#define nRF24L01p_VALUE_CONFIG_PRIM_TX (0x0 << 0)
+#define nRF24L01p_VALUE_CONFIG_PRIM_RX (0x1 << 0)
 
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_0  0x00
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_1  0x01
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_2  0x02
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_3  0x03
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_4  0x04
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_5  0x05
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_6  0x06
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_7  0x07
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_8  0x08
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_9  0x09
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_10 0x0A
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_11 0x0B
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_12 0x0C
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_13 0x0D
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_14 0x0E
-#define nRF24L01p_REGISTER_SETUP_RETR_ARC_15 0x0F
+#define nRF24L01p_VALUE_CONFIG_PWR_DOWN (0x0 << 1)
+#define nRF24L01p_VALUE_CONFIG_PWR_UP   (0x1 << 1)
 
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_250  0x00
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_500  0x01
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_750  0x02
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_1000 0x03
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_1250 0x04
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_1500 0x05
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_1750 0x06
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_2000 0x07
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_2250 0x08
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_2500 0x09
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_2750 0x0A
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_3000 0x0B
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_3250 0x0C
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_3500 0x0D
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_3750 0x0E
-#define nRF24L01p_REGISTER_SETUP_RETR_ARD_4000 0x0F
+// #define nRF24L01p_REGISTER_SETUP_AW_AW_3 0x01
+// #define nRF24L01p_REGISTER_SETUP_AW_AW_4 0x02
+// #define nRF24L01p_REGISTER_SETUP_AW_AW_5 0x03
 
-#define nRF24L01p_REGISTER_RF_SETUP_RF_PWR_NEG_18dBm 0x0
-#define nRF24L01p_REGISTER_RF_SETUP_RF_PWR_NEG_12dBm 0x1
-#define nRF24L01p_REGISTER_RF_SETUP_RF_PWR_NEG_6dBm  0x2
-#define nRF24L01p_REGISTER_RF_SETUP_RF_PWR_0dBm      0x3
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_0  0x00
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_1  0x01
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_2  0x02
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_3  0x03
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_4  0x04
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_5  0x05
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_6  0x06
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_7  0x07
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_8  0x08
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_9  0x09
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_10 0x0A
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_11 0x0B
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_12 0x0C
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_13 0x0D
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_14 0x0E
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARC_15 0x0F
 
-#define nRF24L01p_REGISTER_RF_SETUP_RF_DR_1Mbps 0x0
-#define nRF24L01p_REGISTER_RF_SETUP_RF_DR_2Mbps 0x1
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_250  0x00
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_500  0x01
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_750  0x02
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_1000 0x03
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_1250 0x04
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_1500 0x05
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_1750 0x06
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_2000 0x07
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_2250 0x08
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_2500 0x09
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_2750 0x0A
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_3000 0x0B
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_3250 0x0C
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_3500 0x0D
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_3750 0x0E
+// #define nRF24L01p_REGISTER_SETUP_RETR_ARD_4000 0x0F
+
+#define nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_18dBm (0x0 << 1)
+#define nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm (0x1 << 1)
+#define nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_6dBm  (0x2 << 1)
+#define nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm      (0x3 << 1)
+
+#define nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps (0x0 << 3)
+#define nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps (0x1 << 3)
 
 // Timings
 
@@ -181,11 +187,6 @@
 // Defaults
 
 #define nRF24L01p_DEFAULT_ADDRESS ((unsigned long long) 0x1337)
-
-// Our Constants
-
-#define nRF24L01p_CONFIG_TRANSCEIVER_MODE_TX 0
-#define nRF24L01p_CONFIG_TRANSCEIVER_MODE_RX 1
 
 #include "avr.h"
 
@@ -200,15 +201,30 @@ void nRF24L01p_init(void);
 // modes can send and receive, however PTX is essentially
 // the master.
 //
-// mode - Either nRF24L01p_CONFIG_TRANSCEIVER_MODE_TX or
-//               nRF24L01p_CONFIG_TRANSCEIVER_MODE_RX
+// mode - Either nRF24L01p_VALUE_CONFIG_PRIM_TX or
+//               nRF24L01p_VALUE_CONFIG_PRIM_RX
 //
-void nRF24L01p_config_transceiver_mode(bool mode);
+int nRF24L01p_config_transceiver_mode(byte mode);
 
-// nRF24L01p_ptx
-// Set the device to be PTX (primary TX) receiver.
+// nRF24L01p_config_air_data_rate
+// Set the over air data rate to either 1Mbps or 2Mbps.
+// Higher data rate uses less current, and avoids more
+// collisions.
 //
-void nRF24L01p_ptx();
+// mode - Either nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps or
+//               nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps
+//
+int nRF24L01p_config_air_data_rate(byte mode);
+
+// nRF24L01p_config_output_power
+// Set the RF power.
+//
+// mode - One of nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_18dBm or
+//               nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm or
+//               nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_6dBm or
+//               nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm
+//
+int nRF24L01p_config_output_power(byte mode);
 
 // Control
 //////////
@@ -281,5 +297,17 @@ byte nRF24L01p_get_register(byte address);
 // data - The value to set the register to.
 //
 void nRF24L01p_set_register(byte address, byte data);
+
+// nRF24L01p_set_register_bits
+// Set the bits of a masked region of a register. It's important
+// to note that the value must be aligned properly. For example
+// with a mask of 00001100 the value would need to be 00001000 to
+// update the left most bit within the range of the mask.
+//
+// address - The address of the register to write.
+// mask - A value with bits set to 1 where we are writing.
+// value - The value to write into the masked region.
+//
+void nRF24L01p_set_register_bits(byte address, byte mask, byte value);
 
 #endif
