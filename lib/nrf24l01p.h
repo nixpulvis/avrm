@@ -105,7 +105,7 @@
 
 #define nRF24L01p_MASK_CD_CD 0x1
 
-#define nRF24L01p_MASK_RX_PW 0x3F // PX represents any pipe.
+#define nRF24L01p_MASK_RX_PW 0x3F
 
 #define nRF24L01p_MASK_FIFO_STATUS_RX_EMPTY (0x1 << 0)
 #define nRF24L01p_MASK_FIFO_STATUS_RX_FULL  (0x1 << 1)
@@ -188,7 +188,11 @@
 
 // Defaults
 
-#define nRF24L01p_DEFAULT_ADDRESS ((unsigned long long) 0x1337)
+#define nRF24L01p_DEFAULT_ADDRESS 0xE7E7E7E7E7
+
+// Our Definitions
+
+#define nRF24L01p_PAYLOAD_WIDTH 32
 
 #include "avr.h"
 

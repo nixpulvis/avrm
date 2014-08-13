@@ -12,6 +12,33 @@ void nRF24L01p_init(void)
 
   // Set CE for output.
   DDRB |= _BV(DDB0);
+
+  // Set transceiver mode.
+  nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
+  nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
+
+  // Configure address width.
+  nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_3);
+  nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_5);
+
+  // Configure default address for TX and pipe 0.
+  nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR,
+                           nRF24L01p_DEFAULT_ADDRESS);
+  nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P0,
+                           nRF24L01p_DEFAULT_ADDRESS);
+
+  // Configure payload width.
+  nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P0,
+                                 nRF24L01p_PAYLOAD_WIDTH);
+
+  // Configure air data rate.
+  nRF24L01p_config_air_data_rate(nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps);
+
+  // Configure output power.
+  nRF24L01p_config_output_power(nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm);
+
+  // Power up.
+  nRF24L01p_power_up();
 }
 
 
