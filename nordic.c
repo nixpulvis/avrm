@@ -24,7 +24,7 @@ int main(void)
   if (AM_RX)
   {
     // Set RX mode.
-    nRF24L01p_prx();
+    nRF24L01p_config_transceiver_mode(nRF24L01p_CONFIG_TRANSCEIVER_MODE_RX);
 
     // Set RX address.
     unsigned long long address = nRF24L01p_DEFAULT_ADDRESS;
@@ -52,7 +52,7 @@ int main(void)
   else
   {
     // Set TX mode.
-    nRF24L01p_ptx();
+    nRF24L01p_config_transceiver_mode(nRF24L01p_CONFIG_TRANSCEIVER_MODE_TX);
 
     // Set TX address.
     unsigned long long address = nRF24L01p_DEFAULT_ADDRESS;

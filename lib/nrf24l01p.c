@@ -11,6 +11,28 @@ void nRF24L01p_init(void)
 }
 
 
+// Configuration
+////////////////
+
+
+//
+// nRF24L01p_config_transceiver_mode implementation.
+//
+void nRF24L01p_config_transceiver_mode(bool mode)
+{
+  byte config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
+  if (mode == nRF24L01p_CONFIG_TRANSCEIVER_MODE_RX)
+    config |= nRF24L01p_REGISTER_CONFIG_PRIM_RX;
+  else
+    config &= ~nRF24L01p_REGISTER_CONFIG_PRIM_RX;
+  nRF24L01p_set_register(nRF24L01p_REGISTER_CONFIG, config);
+}
+
+
+// Control
+//////////
+
+
 //
 // nRF24L01p_power_up implementation.
 //
@@ -29,27 +51,6 @@ void nRF24L01p_power_down(void)
 {
   byte config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
   config &= ~nRF24L01p_REGISTER_CONFIG_PWR_UP;
-  nRF24L01p_set_register(nRF24L01p_REGISTER_CONFIG, config);
-}
-
-//
-// nRF24L01p_prx implementation.
-//
-void nRF24L01p_prx()
-{
-  byte config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  config |= nRF24L01p_REGISTER_CONFIG_PRIM_RX;
-  nRF24L01p_set_register(nRF24L01p_REGISTER_CONFIG, config);
-}
-
-
-//
-// nRF24L01p_ptx implementation.
-//
-void nRF24L01p_ptx()
-{
-  byte config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  config &= ~nRF24L01p_REGISTER_CONFIG_PRIM_RX;
   nRF24L01p_set_register(nRF24L01p_REGISTER_CONFIG, config);
 }
 
@@ -72,6 +73,10 @@ void nRF24L01p_disable(void)
   // Pull CE high.
   PORTB &= ~_BV(PORTB0);
 }
+
+
+// IO
+/////
 
 
 //
@@ -142,6 +147,10 @@ int nRF24L01p_write(char *src, byte count)
 }
 
 
+// Utility
+//////////
+
+
 //
 // nRF24L01p_get_register implementation.
 //
@@ -168,4 +177,3 @@ void nRF24L01p_set_register(byte address, byte data)
   spi_transfer(data);
   spi_end();
 }
-

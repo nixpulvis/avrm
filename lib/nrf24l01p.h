@@ -172,19 +172,46 @@
 
 // Timings
 
-#define nRF24L01p_TIMING_INITIAL_US  10300 // 10.3ms
-#define nRF24L01p_TIMING_POWER_UP_US 1500  // 1.5ms
-#define nRF24L01p_TIMING_RX_SETTLING 130   // 130us
-#define nRF24L01p_TIMING_TX_SETTLING 130   // 130us
+#define nRF24L01p_TIMING_INITIAL_US   10300 // 10.3ms
+#define nRF24L01p_TIMING_TPD2STBY_US  1500  // 1.5ms
+#define nRF24L01p_TIMING_TSTBY2A_US   130   // 130us
+#define nRF24L01p_TIMING_THCE_US      10    // 10us
+#define nRF24L01p_TIMING_TPECE2CSN_US 4     // 4us
 
 // Defaults
 
 #define nRF24L01p_DEFAULT_ADDRESS ((unsigned long long) 0x1337)
 
+// Our Constants
+
+#define nRF24L01p_CONFIG_TRANSCEIVER_MODE_TX 0
+#define nRF24L01p_CONFIG_TRANSCEIVER_MODE_RX 1
+
 #include "avr.h"
 
 // TODO: Determine the proper interface here.
 void nRF24L01p_init(void);
+
+// Configuration
+////////////////
+
+// nRF24L01p_config_transceiver_mode
+// Set the device to be either PRX or PTX. Both
+// modes can send and receive, however PTX is essentially
+// the master.
+//
+// mode - Either nRF24L01p_CONFIG_TRANSCEIVER_MODE_TX or
+//               nRF24L01p_CONFIG_TRANSCEIVER_MODE_RX
+//
+void nRF24L01p_config_transceiver_mode(bool mode);
+
+// nRF24L01p_ptx
+// Set the device to be PTX (primary TX) receiver.
+//
+void nRF24L01p_ptx();
+
+// Control
+//////////
 
 // nRF24L01p_power_up
 // Set the CONFIG_PWR_UP to 1, taking the device out of
@@ -198,16 +225,6 @@ void nRF24L01p_power_up(void);
 //
 void nRF24L01p_power_down(void);
 
-// nRF24L01p_prx
-// Set the device to be PRX (primary RX) receiver.
-//
-void nRF24L01p_prx();
-
-// nRF24L01p_ptx
-// Set the device to be PTX (primary TX) receiver.
-//
-void nRF24L01p_ptx();
-
 // nRF24L01p_enable
 // Set the CE pin high, putting the device into either
 // RX Mode or TX Mode depending on the value of CONFIG_PRIM_RX.
@@ -218,6 +235,9 @@ void nRF24L01p_enable(void);
 // Set the CE pin low, putting the device into Standby-I.
 //
 void nRF24L01p_disable(void);
+
+// IO
+/////
 
 // nRF24L01p_read
 // Read data over the air.
@@ -239,6 +259,9 @@ int nRF24L01p_read(char *dst, byte count, byte pipe);
 // Returns the number of bytes actually written. -1 on error.
 //
 int nRF24L01p_write(char *src, byte count);
+
+// Utility
+//////////
 
 // nRF24L01p_get_register
 // Get the value of a register. This operation should only
