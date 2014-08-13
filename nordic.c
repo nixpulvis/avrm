@@ -98,10 +98,10 @@ int main(void)
   // Setup the UART, necessary for stdio actions.
   uart_init();
 
+  _delay_ms(200);
+
   // Setup the nRF24L01p.
   nRF24L01p_init();
-
-  _delay_ms(200);
 
 #ifdef TEST
   test();
