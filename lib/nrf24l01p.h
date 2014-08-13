@@ -27,6 +27,8 @@
 #define nRF24L01p_SPI_RW_REGISTER_MASK   0x1F
 #define nRF24L01p_SPI_W_ACK_PAYLOAD_MASK 0x07
 
+#define nRF24L01p_SPI_ACTIVATE_MAGIC 0x73
+
 // Registers
 
 #define nRF24L01p_REGISTER_CONFIG      0x00
@@ -219,7 +221,8 @@ int nRF24L01p_config_address_width(byte value);
 
 // nRF24L01p_config_address
 //
-int nRF24L01p_config_address(byte address_register, long long unsigned int address);
+int nRF24L01p_config_address(byte address_register,
+                             long long unsigned int address);
 
 // nRF24L01p_config_air_data_rate
 // Set the over air data rate to either 1Mbps or 2Mbps.

@@ -10,6 +10,12 @@ void nRF24L01p_init(void)
   // Start up the SPI bus.
   spi_init();
 
+  // Activate features of the device.
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_ACTIVATE);
+  spi_transfer(nRF24L01p_SPI_ACTIVATE_MAGIC);
+  spi_end();
+
   // Set CE for output.
   DDRB |= _BV(DDB0);
 }
