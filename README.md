@@ -2,7 +2,6 @@
 
 Bare metal AVR tinkering using both C and Assembly. This project is a collection of some libraries and code for actual projects. The code is written in either C99, or AVR assembly. One of the main goals of this project is to teach myself the needed concepts to write AVR code without the Arduino libraries. If it seems like I'm reinventing the wheel here, that's exactly the point. The other main goal is to make some cool projects, that actually do things, the `led_matrix.c` for example plays [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway's_Game_of_Life) on an 8x8 LED matrix.
 
-
 ## Getting Started
 
 I'm doing all of this excursively on OSX, so I can only speak from experience to what is needed for this operating system.
@@ -47,11 +46,15 @@ These are the current libraries in this repository.
 
 ### avr
 
-TODO: Write docs.
+A collection of basic functions for the AVR. These functions are meant to work in harmony with the functions included in the AVR toolkit.
+
+To view the API for this library read the [header file](https://github.com/nixpulvis/avr/blob/master/avr.h).
 
 ### nrf24l01p (not functional yet.)
 
-TODO: Write docs.
+A set of functions for using the [Nordic Transceiver nRF24L01+ Module with RP-SMA](https://www.sparkfun.com/products/705).
+
+To view the API for this library read the [header file](https://github.com/nixpulvis/avr/blob/master/nrf24l01p.h).
 
 ## Reference
 
