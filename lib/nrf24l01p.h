@@ -130,9 +130,9 @@
 #define nRF24L01p_VALUE_CONFIG_PWR_DOWN (0x0 << 1)
 #define nRF24L01p_VALUE_CONFIG_PWR_UP   (0x1 << 1)
 
-// #define nRF24L01p_REGISTER_SETUP_AW_AW_3 0x01
-// #define nRF24L01p_REGISTER_SETUP_AW_AW_4 0x02
-// #define nRF24L01p_REGISTER_SETUP_AW_AW_5 0x03
+#define nRF24L01p_VALUE_SETUP_AW_AW_3 (0x01 << 0)
+#define nRF24L01p_VALUE_SETUP_AW_AW_4 (0x02 << 0)
+#define nRF24L01p_VALUE_SETUP_AW_AW_5 (0x03 << 0)
 
 // #define nRF24L01p_REGISTER_SETUP_RETR_ARC_0  0x00
 // #define nRF24L01p_REGISTER_SETUP_RETR_ARC_1  0x01
@@ -201,30 +201,41 @@ void nRF24L01p_init(void);
 // modes can send and receive, however PTX is essentially
 // the master.
 //
-// mode - Either nRF24L01p_VALUE_CONFIG_PRIM_TX or
-//               nRF24L01p_VALUE_CONFIG_PRIM_RX
+// value - Either nRF24L01p_VALUE_CONFIG_PRIM_TX or
+//                nRF24L01p_VALUE_CONFIG_PRIM_RX
 //
-int nRF24L01p_config_transceiver_mode(byte mode);
+int nRF24L01p_config_transceiver_mode(byte value);
+
+// nRF24L01p_config_address_width
+// Set the width for the address that identifies packets
+// so the receiver can map them to the correct pipe, or
+// drop them.
+//
+// value - One of nRF24L01p_VALUE_SETUP_AW_AW_3 or
+//                nRF24L01p_VALUE_SETUP_AW_AW_4 or
+//                nRF24L01p_VALUE_SETUP_AW_AW_5
+//
+int nRF24L01p_config_address_width(byte value);
 
 // nRF24L01p_config_air_data_rate
 // Set the over air data rate to either 1Mbps or 2Mbps.
 // Higher data rate uses less current, and avoids more
 // collisions.
 //
-// mode - Either nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps or
-//               nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps
+// value - Either nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps or
+//                nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps
 //
-int nRF24L01p_config_air_data_rate(byte mode);
+int nRF24L01p_config_air_data_rate(byte value);
 
 // nRF24L01p_config_output_power
 // Set the RF power.
 //
-// mode - One of nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_18dBm or
-//               nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm or
-//               nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_6dBm or
-//               nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm
+// value - One of nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_18dBm or
+//                nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm or
+//                nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_6dBm or
+//                nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm
 //
-int nRF24L01p_config_output_power(byte mode);
+int nRF24L01p_config_output_power(byte value);
 
 // Control
 //////////

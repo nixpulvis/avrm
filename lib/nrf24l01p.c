@@ -6,8 +6,12 @@
 void nRF24L01p_init(void)
 {
   // TODO
+
   // Start up the SPI bus.
   spi_init();
+
+  // Set CE for output.
+  DDRB |= _BV(DDB0);
 }
 
 
@@ -18,15 +22,32 @@ void nRF24L01p_init(void)
 //
 // nRF24L01p_config_transceiver_mode implementation.
 //
-int nRF24L01p_config_transceiver_mode(byte mode)
+int nRF24L01p_config_transceiver_mode(byte value)
 {
-  if (!(mode == nRF24L01p_VALUE_CONFIG_PRIM_TX ||
-        mode == nRF24L01p_VALUE_CONFIG_PRIM_RX))
+  if (!(value == nRF24L01p_VALUE_CONFIG_PRIM_TX ||
+        value == nRF24L01p_VALUE_CONFIG_PRIM_RX))
     return -1;
 
   nRF24L01p_set_register_bits(nRF24L01p_REGISTER_CONFIG,
                               nRF24L01p_MASK_CONFIG_PRIM_RX,
-                              mode);
+                              value);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_address_width implementation.
+//
+int nRF24L01p_config_address_width(byte value)
+{
+  if (!(value == nRF24L01p_VALUE_SETUP_AW_AW_3 ||
+        value == nRF24L01p_VALUE_SETUP_AW_AW_4 ||
+        value == nRF24L01p_VALUE_SETUP_AW_AW_5))
+    return -1;
+
+  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_SETUP_AW,
+                              nRF24L01p_MASK_SETUP_AW_AW,
+                              value);
   return 0;
 }
 
@@ -34,15 +55,15 @@ int nRF24L01p_config_transceiver_mode(byte mode)
 //
 // nRF24L01p_config_air_data_rate implementation.
 //
-int nRF24L01p_config_air_data_rate(byte mode)
+int nRF24L01p_config_air_data_rate(byte value)
 {
-  if (!(mode == nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps ||
-        mode == nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps))
+  if (!(value == nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps ||
+        value == nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps))
     return -1;
 
   nRF24L01p_set_register_bits(nRF24L01p_REGISTER_RF_SETUP,
                               nRF24L01p_MASK_RF_SETUP_RF_DR,
-                              mode);
+                              value);
   return 0;
 }
 
@@ -50,17 +71,17 @@ int nRF24L01p_config_air_data_rate(byte mode)
 //
 // nRF24L01p_config_output_power implementation.
 //
-int nRF24L01p_config_output_power(byte mode)
+int nRF24L01p_config_output_power(byte value)
 {
-  if (!(mode == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_18dBm ||
-        mode == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm ||
-        mode == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_6dBm ||
-        mode == nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm))
+  if (!(value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_18dBm ||
+        value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm ||
+        value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_6dBm ||
+        value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm))
     return -1;
 
   nRF24L01p_set_register_bits(nRF24L01p_REGISTER_RF_SETUP,
                               nRF24L01p_MASK_RF_SETUP_RF_PWR,
-                              mode);
+                              value);
   return 0;
 }
 

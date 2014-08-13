@@ -3,6 +3,7 @@
  * about a year, and it's time to buckle down and figure it out.
  */
 
+#define TEST 1
 #define AM_RX 1
 
 #include <avr/io.h>
@@ -29,33 +30,74 @@ void printb(void const * const ptr, size_t const size)
 void assert(const char *name, bool test)
 {
   if (test)
-    printf("%s PASSED\n", name);
+    printf("%s PASS\n", name);
   else
-    printf("%s FAILED\n", name);
+    printf("%s FAIL\n", name);
 }
 
+#ifdef TEST
 void test(void)
 {
   byte config;
 
-  // Power up test.
-  nRF24L01p_power_up();
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  assert("power_up", config & nRF24L01p_MASK_CONFIG_PWR_UP);
-
-  nRF24L01p_power_down();
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  assert("power_down", !(config & nRF24L01p_MASK_CONFIG_PWR_UP));
+  printf("\nRunning Tests\n");
 
   // Transceiver mode test.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
   config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  assert("config_transceiver_mode_rx", config & nRF24L01p_MASK_CONFIG_PRIM_RX);
+  assert("config_transceiver_mode_rx", (config & nRF24L01p_MASK_CONFIG_PRIM_RX)
+                                       == nRF24L01p_VALUE_CONFIG_PRIM_RX);
 
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
   config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  assert("config_transceiver_mode_tx", !(config & nRF24L01p_MASK_CONFIG_PRIM_RX));
+  assert("config_transceiver_mode_tx", (config & nRF24L01p_MASK_CONFIG_PRIM_RX)
+                                       == nRF24L01p_VALUE_CONFIG_PRIM_TX);
+
+  // Configure address width test.
+  nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_3);
+  config = nRF24L01p_get_register(nRF24L01p_REGISTER_SETUP_AW);
+  assert("config_address_width_3", (config & nRF24L01p_MASK_SETUP_AW_AW)
+                                   == nRF24L01p_VALUE_SETUP_AW_AW_3);
+
+  nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_5);
+  config = nRF24L01p_get_register(nRF24L01p_REGISTER_SETUP_AW);
+  assert("config_address_width_5", (config & nRF24L01p_MASK_SETUP_AW_AW)
+                                   == nRF24L01p_VALUE_SETUP_AW_AW_5);
+
+  // Configure air data rate test.
+  nRF24L01p_config_air_data_rate(nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps);
+  config = nRF24L01p_get_register(nRF24L01p_REGISTER_RF_SETUP);
+  assert("config_air_data_rate_1Mbps", (config & nRF24L01p_MASK_RF_SETUP_RF_DR)
+                                       == nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps);
+
+  nRF24L01p_config_air_data_rate(nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps);
+  config = nRF24L01p_get_register(nRF24L01p_REGISTER_RF_SETUP);
+  assert("config_air_data_rate_2Mbps", (config & nRF24L01p_MASK_RF_SETUP_RF_DR)
+                                       == nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps);
+
+  // Configure output power test.
+  nRF24L01p_config_output_power(nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm);
+  config = nRF24L01p_get_register(nRF24L01p_REGISTER_RF_SETUP);
+  assert("config_output_power_-12dBm", (config & nRF24L01p_MASK_RF_SETUP_RF_PWR)
+                                       == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm);
+
+  nRF24L01p_config_output_power(nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm);
+  config = nRF24L01p_get_register(nRF24L01p_REGISTER_RF_SETUP);
+  assert("config_output_power_0dBm", (config & nRF24L01p_MASK_RF_SETUP_RF_PWR)
+                                     == nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm);
+
+  // Power up test.
+  nRF24L01p_power_up();
+  config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
+  assert("power_up", (config & nRF24L01p_MASK_CONFIG_PWR_UP)
+                     == nRF24L01p_VALUE_CONFIG_PWR_UP);
+
+  nRF24L01p_power_down();
+  config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
+  assert("power_down", (config & nRF24L01p_MASK_CONFIG_PWR_UP)
+                       == nRF24L01p_VALUE_CONFIG_PWR_DOWN);
 }
+#endif
 
 int main(void)
 {
@@ -68,14 +110,14 @@ int main(void)
   // Power up the nRF24L01p.
   nRF24L01p_power_up();
 
-  /// TODO: Just for testing.
+#ifdef TEST
   test();
-  ///
+#endif
 
   // if (AM_RX)
   // {
   //   // Set RX mode.
-  //   nRF24L01p_config_transceiver_mode(nRF24L01p_CONFIG_TRANSCEIVER_MODE_RX);
+  //   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
 
   //   // Set RX address.
   //   unsigned long long address = nRF24L01p_DEFAULT_ADDRESS;
@@ -103,7 +145,7 @@ int main(void)
   // else
   // {
   //   // Set TX mode.
-  //   nRF24L01p_config_transceiver_mode(nRF24L01p_CONFIG_TRANSCEIVER_MODE_TX);
+  //   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
 
   //   // Set TX address.
   //   unsigned long long address = nRF24L01p_DEFAULT_ADDRESS;
