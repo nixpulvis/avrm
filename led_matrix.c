@@ -2,8 +2,8 @@
 #include <string.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include "avr.h"
-#include "max7221.h"
+#include "lib/avr.h"
+#include "lib/max7221.h"
 
 #define MATRIX_SIZE 8
 #define MAX_GENERATION MATRIX_SIZE * MATRIX_SIZE

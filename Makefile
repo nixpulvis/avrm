@@ -40,7 +40,8 @@ SOURCE = $(TARGET).$(LANGUAGE)
 endif
 
 # Libraries.
-C_LIBS = avr max7221 nrf24l01p
+# C_LIBS = avr max7221 nrf24l01p
+C_LIBS = $(wildcard lib/*.c)
 
 ################################
 
@@ -94,7 +95,7 @@ clean:
 
 # .bin <- .o
 ifeq ($(LANGUAGE), c)
-%.bin: %.o $(C_LIBS:=.o)
+%.bin: %.o $(C_LIBS:.c=.o)
 	$(CC) -mmcu=$(MMCU) $? -o $@
 else
 %.bin: %.o
