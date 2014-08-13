@@ -67,6 +67,27 @@ int nRF24L01p_config_address(byte address_register,
 
 
 //
+// nRF24L01p_config_payload_width implementation.
+//
+int nRF24L01p_config_payload_width(byte address, byte width)
+{
+  if (!(address == nRF24L01p_REGISTER_RX_PW_P0 ||
+        address == nRF24L01p_REGISTER_RX_PW_P1 ||
+        address == nRF24L01p_REGISTER_RX_PW_P2 ||
+        address == nRF24L01p_REGISTER_RX_PW_P3 ||
+        address == nRF24L01p_REGISTER_RX_PW_P4 ||
+        address == nRF24L01p_REGISTER_RX_PW_P5))
+    return -1;
+
+  nRF24L01p_set_register8_bits(address,
+                               nRF24L01p_MASK_RX_PW,
+                               width);
+
+  return 0;
+}
+
+
+//
 // nRF24L01p_config_air_data_rate implementation.
 //
 int nRF24L01p_config_air_data_rate(byte value)

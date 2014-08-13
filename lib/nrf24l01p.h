@@ -105,7 +105,7 @@
 
 #define nRF24L01p_MASK_CD_CD 0x1
 
-#define nRF24L01p_MASK_RX_PW_PX_RX_PW_PX 0x3F // PX represents any pipe.
+#define nRF24L01p_MASK_RX_PW 0x3F // PX represents any pipe.
 
 #define nRF24L01p_MASK_FIFO_STATUS_RX_EMPTY (0x1 << 0)
 #define nRF24L01p_MASK_FIFO_STATUS_RX_FULL  (0x1 << 1)
@@ -223,6 +223,22 @@ int nRF24L01p_config_address_width(byte value);
 //
 int nRF24L01p_config_address(byte address_register,
                              long long unsigned int address);
+
+// nRF24L01p_config_payload_width
+// Set the payload width for use in RX mode. This value on a
+// pipe MUST match the width of the data sent from the
+// transmitter.
+//
+// address - One of nRF24L01p_REGISTER_RX_PW_P0 or
+//                  nRF24L01p_REGISTER_RX_PW_P1 or
+//                  nRF24L01p_REGISTER_RX_PW_P2 or
+//                  nRF24L01p_REGISTER_RX_PW_P3 or
+//                  nRF24L01p_REGISTER_RX_PW_P4 or
+//                  nRF24L01p_REGISTER_RX_PW_P5
+// width - The number of bytes in the payload for this pipe
+//         value can be between 0 and 32.
+//
+int nRF24L01p_config_payload_width(byte address, byte width);
 
 // nRF24L01p_config_air_data_rate
 // Set the over air data rate to either 1Mbps or 2Mbps.

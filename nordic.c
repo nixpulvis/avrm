@@ -49,7 +49,7 @@ void test(void)
   assert("config_address_width_5", (reg & nRF24L01p_MASK_SETUP_AW_AW)
                                    == nRF24L01p_VALUE_SETUP_AW_AW_5);
 
-  // Configure address.
+  // Configure address test.
   nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR, 0x374DFE620B);
   reg40 = nRF24L01p_get_register40(nRF24L01p_REGISTER_TX_ADDR);
   assert("config_address_tx", reg40 == 0x374DFE620B);
@@ -57,6 +57,11 @@ void test(void)
   nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P0, 0x374DFE620B);
   reg40 = nRF24L01p_get_register40(nRF24L01p_REGISTER_RX_ADDR_P0);
   assert("config_address_rx_p0", reg40 == 0x374DFE620B);
+
+  // Configure payload width test.
+  nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P0, 17);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_RX_PW_P0);
+  assert("config_payload_width", (reg & nRF24L01p_MASK_RX_PW) == 17);
 
   // Configure air data rate test.
   nRF24L01p_config_air_data_rate(nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps);
