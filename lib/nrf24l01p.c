@@ -28,7 +28,7 @@ int nRF24L01p_config_transceiver_mode(byte value)
         value == nRF24L01p_VALUE_CONFIG_PRIM_RX))
     return -1;
 
-  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_CONFIG,
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
                               nRF24L01p_MASK_CONFIG_PRIM_RX,
                               value);
   return 0;
@@ -45,9 +45,23 @@ int nRF24L01p_config_address_width(byte value)
         value == nRF24L01p_VALUE_SETUP_AW_AW_5))
     return -1;
 
-  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_SETUP_AW,
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_SETUP_AW,
                               nRF24L01p_MASK_SETUP_AW_AW,
                               value);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_address implementation.
+//
+int nRF24L01p_config_address(byte address_register,
+                             long long unsigned int address)
+{
+  // TODO error checking for bad addresses.
+
+  nRF24L01p_set_register40(address_register, address);
+
   return 0;
 }
 
@@ -61,7 +75,7 @@ int nRF24L01p_config_air_data_rate(byte value)
         value == nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps))
     return -1;
 
-  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_RF_SETUP,
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_RF_SETUP,
                               nRF24L01p_MASK_RF_SETUP_RF_DR,
                               value);
   return 0;
@@ -79,7 +93,7 @@ int nRF24L01p_config_output_power(byte value)
         value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm))
     return -1;
 
-  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_RF_SETUP,
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_RF_SETUP,
                               nRF24L01p_MASK_RF_SETUP_RF_PWR,
                               value);
   return 0;
@@ -95,7 +109,7 @@ int nRF24L01p_config_output_power(byte value)
 //
 void nRF24L01p_power_up(void)
 {
-  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_CONFIG,
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
                               nRF24L01p_MASK_CONFIG_PWR_UP,
                               nRF24L01p_VALUE_CONFIG_PWR_UP);
 }
@@ -106,7 +120,7 @@ void nRF24L01p_power_up(void)
 //
 void nRF24L01p_power_down(void)
 {
-  nRF24L01p_set_register_bits(nRF24L01p_REGISTER_CONFIG,
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
                               nRF24L01p_MASK_CONFIG_PWR_UP,
                               nRF24L01p_VALUE_CONFIG_PWR_DOWN);
 }
@@ -209,9 +223,9 @@ int nRF24L01p_write(char *src, byte count)
 
 
 //
-// nRF24L01p_get_register implementation.
+// nRF24L01p_get_register8 implementation.
 //
-byte nRF24L01p_get_register(byte address)
+byte nRF24L01p_get_register8(byte address)
 {
   spi_start();
   spi_transfer(nRF24L01p_SPI_R_REGISTER |
@@ -224,9 +238,9 @@ byte nRF24L01p_get_register(byte address)
 
 
 //
-// nRF24L01p_set_register implementation.
+// nRF24L01p_set_register8 implementation.
 //
-void nRF24L01p_set_register(byte address, byte data)
+void nRF24L01p_set_register8(byte address, byte data)
 {
   spi_start();
   spi_transfer(nRF24L01p_SPI_W_REGISTER |
@@ -237,11 +251,48 @@ void nRF24L01p_set_register(byte address, byte data)
 
 
 //
-// nRF24L01p_set_register_bits implementation.
+// nRF24L01p_set_register8_bits implementation.
 //
-void nRF24L01p_set_register_bits(byte address, byte mask, byte value)
+void nRF24L01p_set_register8_bits(byte address, byte mask, byte value)
 {
-  byte reg = nRF24L01p_get_register(address);
+  byte reg = nRF24L01p_get_register8(address);
   reg = (reg & ~mask) | value;
-  nRF24L01p_set_register(address, reg);
+  nRF24L01p_set_register8(address, reg);
+}
+
+
+//
+// nRF24L01p_get_register40 implementation.
+//
+long long unsigned int nRF24L01p_get_register40(byte address)
+{
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_R_REGISTER |
+               (address & nRF24L01p_SPI_RW_REGISTER_MASK));
+  long long unsigned int response = 0;
+  for (byte i = 0; i < 5; i++)
+  {
+    long long unsigned int chunk = spi_transfer(nRF24L01p_SPI_NOP);
+    response |= chunk << (8 * i);
+  }
+  spi_end();
+
+  return response;
+}
+
+
+//
+// nRF24L01p_set_register40 implementation.
+//
+void nRF24L01p_set_register40(byte address, long long unsigned int data)
+{
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_W_REGISTER |
+               (address & nRF24L01p_SPI_RW_REGISTER_MASK));
+  for (byte i = 0; i < 5; i++)
+  {
+    spi_transfer(data & 0xFF);
+    data >>= 8;
+  }
+  spi_end();
 }

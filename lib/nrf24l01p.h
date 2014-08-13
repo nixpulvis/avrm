@@ -217,6 +217,10 @@ int nRF24L01p_config_transceiver_mode(byte value);
 //
 int nRF24L01p_config_address_width(byte value);
 
+// nRF24L01p_config_address
+//
+int nRF24L01p_config_address(byte address_register, long long unsigned int address);
+
 // nRF24L01p_config_air_data_rate
 // Set the over air data rate to either 1Mbps or 2Mbps.
 // Higher data rate uses less current, and avoids more
@@ -290,26 +294,26 @@ int nRF24L01p_write(char *src, byte count);
 // Utility
 //////////
 
-// nRF24L01p_get_register
-// Get the value of a register. This operation should only
+// nRF24L01p_get_register8
+// Get the value of an 8 register. This operation should only
 // be done while in Power Down or Standby-I. TODO: verify.
 //
 // address - The address of the register to read.
 //
 // Returns the value of the register.
 //
-byte nRF24L01p_get_register(byte address);
+byte nRF24L01p_get_register8(byte address);
 
-// nRF24L01p_set_register
-// Set the value of a register. This operation should only
+// nRF24L01p_set_register8
+// Set the value of an 8 register. This operation should only
 // be done while in Power Down or Standby-I. TODO: verify.
 //
 // address - The address of the register to write.
 // data - The value to set the register to.
 //
-void nRF24L01p_set_register(byte address, byte data);
+void nRF24L01p_set_register8(byte address, byte data);
 
-// nRF24L01p_set_register_bits
+// nRF24L01p_set_register8_bits
 // Set the bits of a masked region of a register. It's important
 // to note that the value must be aligned properly. For example
 // with a mask of 00001100 the value would need to be 00001000 to
@@ -319,6 +323,25 @@ void nRF24L01p_set_register(byte address, byte data);
 // mask - A value with bits set to 1 where we are writing.
 // value - The value to write into the masked region.
 //
-void nRF24L01p_set_register_bits(byte address, byte mask, byte value);
+void nRF24L01p_set_register8_bits(byte address, byte mask, byte value);
+
+// nRF24L01p_get_register40
+// Get the value of a 40 bit register. This operation should only
+// be done while in Power Down or Standby-I. TODO: verify.
+//
+// address - The address of the register to read.
+//
+// Returns the value of the register.
+//
+long long unsigned int nRF24L01p_get_register40(byte address);
+
+// nRF24L01p_set_register40
+// Set the value of a 40 bit register. This operation should only
+// be done while in Power Down or Standby-I. TODO: verify.
+//
+// address - The address of the register to write.
+// data - The value to set the register to.
+//
+void nRF24L01p_set_register40(byte address, long long unsigned int data);
 
 #endif

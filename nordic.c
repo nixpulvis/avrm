@@ -11,22 +11,6 @@
 #include "lib/avr.h"
 #include "lib/nRF24L01p.h"
 
-// assumes little endian
-void printb(void const * const ptr, size_t const size)
-{
-  unsigned char *b = (unsigned char*) ptr;
-  unsigned char byte;
-  int i, j;
-
-  for (i = size - 1; i >= 0; i--)
-  for (j = 7; j >= 0; j--)
-  {
-    byte = b[i] & (1 << j);
-    byte >>= j;
-    printf("%u", byte);
-  }
-}
-
 void assert(const char *name, bool test)
 {
   if (test)
@@ -38,63 +22,69 @@ void assert(const char *name, bool test)
 #ifdef TEST
 void test(void)
 {
-  byte config;
+  byte reg;
+  long long unsigned int reg40;
 
   printf("\nRunning Tests\n");
 
   // Transceiver mode test.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  assert("config_transceiver_mode_rx", (config & nRF24L01p_MASK_CONFIG_PRIM_RX)
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
+  assert("config_transceiver_mode_rx", (reg & nRF24L01p_MASK_CONFIG_PRIM_RX)
                                        == nRF24L01p_VALUE_CONFIG_PRIM_RX);
 
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  assert("config_transceiver_mode_tx", (config & nRF24L01p_MASK_CONFIG_PRIM_RX)
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
+  assert("config_transceiver_mode_tx", (reg & nRF24L01p_MASK_CONFIG_PRIM_RX)
                                        == nRF24L01p_VALUE_CONFIG_PRIM_TX);
 
   // Configure address width test.
   nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_3);
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_SETUP_AW);
-  assert("config_address_width_3", (config & nRF24L01p_MASK_SETUP_AW_AW)
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_SETUP_AW);
+  assert("config_address_width_3", (reg & nRF24L01p_MASK_SETUP_AW_AW)
                                    == nRF24L01p_VALUE_SETUP_AW_AW_3);
 
   nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_5);
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_SETUP_AW);
-  assert("config_address_width_5", (config & nRF24L01p_MASK_SETUP_AW_AW)
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_SETUP_AW);
+  assert("config_address_width_5", (reg & nRF24L01p_MASK_SETUP_AW_AW)
                                    == nRF24L01p_VALUE_SETUP_AW_AW_5);
+
+  // Configure address.
+  nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR, 0x374DFE620B);
+  reg40 = nRF24L01p_get_register40(nRF24L01p_REGISTER_TX_ADDR);
+  assert("config_address", reg40 == 0x374DFE620B);
 
   // Configure air data rate test.
   nRF24L01p_config_air_data_rate(nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps);
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_RF_SETUP);
-  assert("config_air_data_rate_1Mbps", (config & nRF24L01p_MASK_RF_SETUP_RF_DR)
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_RF_SETUP);
+  assert("config_air_data_rate_1Mbps", (reg & nRF24L01p_MASK_RF_SETUP_RF_DR)
                                        == nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps);
 
   nRF24L01p_config_air_data_rate(nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps);
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_RF_SETUP);
-  assert("config_air_data_rate_2Mbps", (config & nRF24L01p_MASK_RF_SETUP_RF_DR)
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_RF_SETUP);
+  assert("config_air_data_rate_2Mbps", (reg & nRF24L01p_MASK_RF_SETUP_RF_DR)
                                        == nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps);
 
   // Configure output power test.
   nRF24L01p_config_output_power(nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm);
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_RF_SETUP);
-  assert("config_output_power_-12dBm", (config & nRF24L01p_MASK_RF_SETUP_RF_PWR)
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_RF_SETUP);
+  assert("config_output_power_-12dBm", (reg & nRF24L01p_MASK_RF_SETUP_RF_PWR)
                                        == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm);
 
   nRF24L01p_config_output_power(nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm);
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_RF_SETUP);
-  assert("config_output_power_0dBm", (config & nRF24L01p_MASK_RF_SETUP_RF_PWR)
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_RF_SETUP);
+  assert("config_output_power_0dBm", (reg & nRF24L01p_MASK_RF_SETUP_RF_PWR)
                                      == nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm);
 
   // Power up test.
   nRF24L01p_power_up();
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  assert("power_up", (config & nRF24L01p_MASK_CONFIG_PWR_UP)
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
+  assert("power_up", (reg & nRF24L01p_MASK_CONFIG_PWR_UP)
                      == nRF24L01p_VALUE_CONFIG_PWR_UP);
 
   nRF24L01p_power_down();
-  config = nRF24L01p_get_register(nRF24L01p_REGISTER_CONFIG);
-  assert("power_down", (config & nRF24L01p_MASK_CONFIG_PWR_UP)
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
+  assert("power_down", (reg & nRF24L01p_MASK_CONFIG_PWR_UP)
                        == nRF24L01p_VALUE_CONFIG_PWR_DOWN);
 }
 #endif
@@ -107,12 +97,14 @@ int main(void)
   // Setup the nRF24L01p.
   nRF24L01p_init();
 
-  // Power up the nRF24L01p.
-  nRF24L01p_power_up();
+  _delay_ms(200);
 
 #ifdef TEST
   test();
 #endif
+
+  // Power up the nRF24L01p.
+  nRF24L01p_power_up();
 
   // if (AM_RX)
   // {

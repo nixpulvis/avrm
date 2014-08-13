@@ -18,6 +18,16 @@ typedef _Bool bool;
 // The byte type.
 typedef unsigned char byte;
 
+// General Functions
+////////////////////
+
+// printb
+// Print out the given data in it's binary representation.
+// Assumes little endian.
+//
+void printb(void const * const ptr, size_t const size);
+
+
 // UART Functions
 /////////////////
 
