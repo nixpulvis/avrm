@@ -201,6 +201,22 @@ void nRF24L01p_init(void);
 // Configuration
 ////////////////
 
+// CONFIG
+
+// TODO: MASK_RX_DR
+// TODO: MASK_TX_DS
+// TODO: MASK_MAX_RT
+// TODO: EN_CRC
+// TODO: CRCO
+
+// nRF24L01p_config_power
+// Set the device into either Power Down or into Standby-I.
+//
+// value - Either nRF24L01p_VALUE_CONFIG_PWR_UP or
+//                nRF24L01p_VALUE_CONFIG_PWR_DOWN
+//
+int nRF24L01p_config_power(byte value);
+
 // nRF24L01p_config_transceiver_mode
 // Set the device to be either PRX or PTX. Both
 // modes can send and receive, however PTX is essentially
@@ -211,13 +227,15 @@ void nRF24L01p_init(void);
 //
 int nRF24L01p_config_transceiver_mode(byte value);
 
-// nRF24L01p_config_power
-// Set the device into either Power Down or into Standby-I.
-//
-// value - Either nRF24L01p_VALUE_CONFIG_PWR_UP or
-//                nRF24L01p_VALUE_CONFIG_PWR_DOWN
-//
-int nRF24L01p_config_power(byte value);
+// EN_AA
+
+// TODO: ENAA_P(0-5)
+
+// EN_RXADDR
+
+// TODO: ERX_P(0-5)
+
+// SETUP_AW
 
 // nRF24L01p_config_address_width
 // Set the width for the address that identifies packets
@@ -230,13 +248,7 @@ int nRF24L01p_config_power(byte value);
 //
 int nRF24L01p_config_address_width(byte value);
 
-// nRF24L01p_config_retransmit_count
-// Set the number of auto retries before giving up.
-//
-// value - One of nRF24L01p_VALUE_SETUP_RETR_ARC_0 through
-//                nRF24L01p_VALUE_SETUP_RETR_ARC_15
-//
-int nRF24L01p_config_retransmit_count(byte value);
+// SETUP_RETR
 
 // nRF24L01p_config_retransmit_delay
 // Set the delay from the end of last transmission to the
@@ -247,6 +259,16 @@ int nRF24L01p_config_retransmit_count(byte value);
 //
 int nRF24L01p_config_retransmit_delay(byte value);
 
+// nRF24L01p_config_retransmit_count
+// Set the number of auto retries before giving up.
+//
+// value - One of nRF24L01p_VALUE_SETUP_RETR_ARC_0 through
+//                nRF24L01p_VALUE_SETUP_RETR_ARC_15
+//
+int nRF24L01p_config_retransmit_count(byte value);
+
+// RF_CH
+
 // nRF24L01p_config_channel
 // Sets the frequency to 2400 + value(MHz), both RX and
 // TX must share the same channel.
@@ -255,27 +277,9 @@ int nRF24L01p_config_retransmit_delay(byte value);
 //
 int nRF24L01p_config_channel(byte value);
 
-// nRF24L01p_config_address
-// TODO: Write information here.
-//
-int nRF24L01p_config_address(byte address_register,
-                             long long unsigned int address);
+// RF_SETUP
 
-// nRF24L01p_config_payload_width
-// Set the payload width for use in RX mode. This value on a
-// pipe MUST match the width of the data sent from the
-// transmitter.
-//
-// address - One of nRF24L01p_REGISTER_RX_PW_P0 or
-//                  nRF24L01p_REGISTER_RX_PW_P1 or
-//                  nRF24L01p_REGISTER_RX_PW_P2 or
-//                  nRF24L01p_REGISTER_RX_PW_P3 or
-//                  nRF24L01p_REGISTER_RX_PW_P4 or
-//                  nRF24L01p_REGISTER_RX_PW_P5
-// width - The number of bytes in the payload for this pipe
-//         value can be between 0 and 32.
-//
-int nRF24L01p_config_payload_width(byte address, byte width);
+// TODO: PLL_LOCK
 
 // nRF24L01p_config_air_data_rate
 // Set the over air data rate to either 1Mbps or 2Mbps.
@@ -296,6 +300,53 @@ int nRF24L01p_config_air_data_rate(byte value);
 //                nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm
 //
 int nRF24L01p_config_output_power(byte value);
+
+// TODO: LNA_HCURR
+
+// STATUS - Not used for configuration, TODO: see status functions.
+// OBSERVE_TX - Not used for configuration, TODO: see observe functions.
+
+// CD
+
+// TODO: CD
+
+// RX_ADDR_P(0-5) and TX_ADDR
+
+// nRF24L01p_config_address
+// TODO: Write information here.
+//
+int nRF24L01p_config_address(byte address_register,
+                             long long unsigned int address);
+
+// RX_PW_P(0-5)
+
+// nRF24L01p_config_payload_width
+// Set the payload width for use in RX mode. This value on a
+// pipe MUST match the width of the data sent from the
+// transmitter.
+//
+// address - One of nRF24L01p_REGISTER_RX_PW_P0 or
+//                  nRF24L01p_REGISTER_RX_PW_P1 or
+//                  nRF24L01p_REGISTER_RX_PW_P2 or
+//                  nRF24L01p_REGISTER_RX_PW_P3 or
+//                  nRF24L01p_REGISTER_RX_PW_P4 or
+//                  nRF24L01p_REGISTER_RX_PW_P5
+// width - The number of bytes in the payload for this pipe
+//         value can be between 0 and 32.
+//
+int nRF24L01p_config_payload_width(byte address, byte width);
+
+// FIFO_STATUS - Not used for configuration, TODO: see fifo_status functions.
+
+// DYNPD
+
+// TODO: DPL_P(0-5)
+
+// FEATURE
+
+// TODO: EN_DPL
+// TODO: EN_ACK_PAY
+// TODO: EN_DYN_ACK
 
 // Control
 //////////

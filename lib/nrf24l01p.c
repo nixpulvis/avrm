@@ -49,22 +49,6 @@ void nRF24L01p_init(void)
 
 
 //
-// nRF24L01p_config_transceiver_mode implementation.
-//
-int nRF24L01p_config_transceiver_mode(byte value)
-{
-  if (!(value == nRF24L01p_VALUE_CONFIG_PRIM_TX ||
-        value == nRF24L01p_VALUE_CONFIG_PRIM_RX))
-    return -1;
-
-  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
-                              nRF24L01p_MASK_CONFIG_PRIM_RX,
-                              value);
-  return 0;
-}
-
-
-//
 // nRF24L01p_config_power implementation.
 //
 int nRF24L01p_config_power(byte value)
@@ -82,6 +66,21 @@ int nRF24L01p_config_power(byte value)
 
 
 //
+// nRF24L01p_config_transceiver_mode implementation.
+//
+int nRF24L01p_config_transceiver_mode(byte value)
+{
+  if (!(value == nRF24L01p_VALUE_CONFIG_PRIM_TX ||
+        value == nRF24L01p_VALUE_CONFIG_PRIM_RX))
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
+                              nRF24L01p_MASK_CONFIG_PRIM_RX,
+                              value);
+  return 0;
+}
+
+//
 // nRF24L01p_config_address_width implementation.
 //
 int nRF24L01p_config_address_width(byte value)
@@ -93,21 +92,6 @@ int nRF24L01p_config_address_width(byte value)
 
   nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_SETUP_AW,
                               nRF24L01p_MASK_SETUP_AW_AW,
-                              value);
-  return 0;
-}
-
-
-//
-// nRF24L01p_config_retransmit_count implementation.
-//
-int nRF24L01p_config_retransmit_count(byte value)
-{
-  if (value > 0x0F)
-    return -1;
-
-  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_SETUP_RETR,
-                              nRF24L01p_MASK_SETUP_RETR_ARC,
                               value);
   return 0;
 }
@@ -129,6 +113,21 @@ int nRF24L01p_config_retransmit_delay(byte value)
 
 
 //
+// nRF24L01p_config_retransmit_count implementation.
+//
+int nRF24L01p_config_retransmit_count(byte value)
+{
+  if (value > 0x0F)
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_SETUP_RETR,
+                              nRF24L01p_MASK_SETUP_RETR_ARC,
+                              value);
+  return 0;
+}
+
+
+//
 // nRF24L01p_config_channel implementation.
 //
 int nRF24L01p_config_channel(byte value)
@@ -138,6 +137,40 @@ int nRF24L01p_config_channel(byte value)
 
   nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_RF_CH,
                               nRF24L01p_MASK_RF_CH_RF_CH,
+                              value);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_air_data_rate implementation.
+//
+int nRF24L01p_config_air_data_rate(byte value)
+{
+  if (!(value == nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps ||
+        value == nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps))
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_RF_SETUP,
+                              nRF24L01p_MASK_RF_SETUP_RF_DR,
+                              value);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_output_power implementation.
+//
+int nRF24L01p_config_output_power(byte value)
+{
+  if (!(value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_18dBm ||
+        value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm ||
+        value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_6dBm ||
+        value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm))
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_RF_SETUP,
+                              nRF24L01p_MASK_RF_SETUP_RF_PWR,
                               value);
   return 0;
 }
@@ -174,40 +207,6 @@ int nRF24L01p_config_payload_width(byte address, byte width)
                                nRF24L01p_MASK_RX_PW,
                                width);
 
-  return 0;
-}
-
-
-//
-// nRF24L01p_config_air_data_rate implementation.
-//
-int nRF24L01p_config_air_data_rate(byte value)
-{
-  if (!(value == nRF24L01p_VALUE_RF_SETUP_RF_DR_1Mbps ||
-        value == nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps))
-    return -1;
-
-  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_RF_SETUP,
-                              nRF24L01p_MASK_RF_SETUP_RF_DR,
-                              value);
-  return 0;
-}
-
-
-//
-// nRF24L01p_config_output_power implementation.
-//
-int nRF24L01p_config_output_power(byte value)
-{
-  if (!(value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_18dBm ||
-        value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_12dBm ||
-        value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_NEG_6dBm ||
-        value == nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm))
-    return -1;
-
-  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_RF_SETUP,
-                              nRF24L01p_MASK_RF_SETUP_RF_PWR,
-                              value);
   return 0;
 }
 
