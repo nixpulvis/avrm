@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <avr/io.h>
+#include <avr/eeprom.h>
 #include <util/delay.h>
 #include "lib/avr.h"
 #include "lib/max7221.h"
@@ -8,6 +9,7 @@
 #define MATRIX_SIZE 8
 #define MAX_GENERATION MATRIX_SIZE * MATRIX_SIZE
 #define GENERATION_TIME 500
+#define GENETIC_SEED_ADDRESS ((byte *) 1337)
 
 // randomize
 // Set random bits in the matrix.
@@ -39,6 +41,13 @@ int main(void)
 {
   // Setup the MAX7221.
   MAX7221_init();
+
+  // Set the seed for the pseudo-random number generator
+  // based on a saved, random value. We update the random
+  // value every boot to keep it random, or more accurately,
+  // based on the number of boots.
+  srandom(eeprom_read_byte(GENETIC_SEED_ADDRESS));
+  eeprom_write_byte(GENETIC_SEED_ADDRESS, random());
 
   // The display matrix.
   bool matrix[MATRIX_SIZE][MATRIX_SIZE];
