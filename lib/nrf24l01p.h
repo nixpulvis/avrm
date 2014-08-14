@@ -403,10 +403,15 @@ byte nRF24L01p_get_register8(byte address);
 // Set the value of an 8 register. This operation should only
 // be done while in Power Down or Standby-I. TODO: verify.
 //
+// Note: Addresses (18-1B) are reserved, and cannot be set
+//       using these functions.
+//
 // address - The address of the register to write.
 // data - The value to set the register to.
 //
-void nRF24L01p_set_register8(byte address, byte data);
+// Returns 0 when successful, -1 otherwise.
+//
+int nRF24L01p_set_register8(byte address, byte data);
 
 // nRF24L01p_set_register8_bits
 // Set the bits of a masked region of a register. It's important
@@ -414,11 +419,16 @@ void nRF24L01p_set_register8(byte address, byte data);
 // with a mask of 00001100 the value would need to be 00001000 to
 // update the left most bit within the range of the mask.
 //
+// Note: Addresses (18-1B) are reserved, and cannot be set
+//       using these functions.
+//
 // address - The address of the register to write.
 // mask - A value with bits set to 1 where we are writing.
 // value - The value to write into the masked region.
 //
-void nRF24L01p_set_register8_bits(byte address, byte mask, byte value);
+// Returns 0 when successful, -1 otherwise.
+//
+int nRF24L01p_set_register8_bits(byte address, byte mask, byte value);
 
 // nRF24L01p_get_register40
 // Get the value of a 40 bit register. This operation should only
@@ -434,9 +444,14 @@ long long unsigned int nRF24L01p_get_register40(byte address);
 // Set the value of a 40 bit register. This operation should only
 // be done while in Power Down or Standby-I. TODO: verify.
 //
+// Note: Addresses (18-1B) are reserved, and cannot be set
+//       using these functions.
+//
 // address - The address of the register to write.
 // data - The value to set the register to.
 //
-void nRF24L01p_set_register40(byte address, long long unsigned int data);
+// Returns 0 when successful, -1 otherwise.
+//
+int nRF24L01p_set_register40(byte address, long long unsigned int data);
 
 #endif
