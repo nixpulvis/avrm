@@ -1,27 +1,25 @@
-/* Here in lies a concerted and complete effort to get my Nordic
- * nRF24L01+ working. I've had this thing collecting dust for
- * about a year, and it's time to buckle down and figure it out.
- */
-
-#define TEST 1
-#define AM_RX 0
+/* Tests for the nrf24l01p lib. */
 
 #include <avr/io.h>
 #include <util/delay.h>
 #include "lib/avr.h"
 #include "lib/nRF24L01p.h"
 
-void assert(const char *name, bool test)
-{
-  if (test)
-    printf("%s PASS\n", name);
-  else
-    printf("%s FAIL\n", name);
-}
+// Forward declarations.
+void assert(const char *name, bool test);
 
-#ifdef TEST
-void test(void)
+int main(void)
 {
+  // Setup the UART, necessary for stdio actions.
+  uart_init();
+
+  // Wait for the nRF24L01p to be ready.
+  _delay_us(nRF24L01p_TIMING_INITIAL_US);
+
+  // Initialize the nRF24L01p.
+  nRF24L01p_init();
+
+  // Common storage for register values.
   byte reg;
   long long unsigned int reg40;
 
@@ -95,56 +93,18 @@ void test(void)
   reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
   assert("power_down", (reg & nRF24L01p_MASK_CONFIG_PWR_UP)
                        == nRF24L01p_VALUE_CONFIG_PWR_DOWN);
-}
-#endif
-
-int main(void)
-{
-  // Setup the UART, necessary for stdio actions.
-  uart_init();
-
-  // Wait for the nRF24L01p to be ready.
-  _delay_us(nRF24L01p_TIMING_INITIAL_US);
-
-  // Initialize the nRF24L01p.
-  nRF24L01p_init();
-
-#ifdef TEST
-  test();
-#endif
-
-  if (AM_RX)
-  {
-    // Set RX mode.
-    nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
-
-    // Enable the nRF24L01p.
-    nRF24L01p_enable();
-
-    while (1)
-    {
-      char string[4];
-      int out = nRF24L01p_read(string, nRF24L01p_PAYLOAD_WIDTH, 0);
-      printf("Read %d bytes -> %s.\n", out, string);
-      _delay_ms(500);
-    }
-  }
-  else
-  {
-    // Set TX mode.
-    nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
-
-    // Enable the nRF24L01p.
-    nRF24L01p_enable();
-
-    while (1)
-    {
-      char string[4] = "foo";
-      int out = nRF24L01p_write(string, nRF24L01p_PAYLOAD_WIDTH);
-      printf("Wrote %d bytes.\n", out);
-      _delay_ms(500);
-    }
-  }
 
   return 0;
+}
+
+
+//
+// assert implementation.
+//
+void assert(const char *name, bool test)
+{
+  if (test)
+    printf("%s PASS\n", name);
+  else
+    printf("%s FAIL\n", name);
 }
