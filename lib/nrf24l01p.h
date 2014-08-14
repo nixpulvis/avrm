@@ -211,6 +211,14 @@ void nRF24L01p_init(void);
 //
 int nRF24L01p_config_transceiver_mode(byte value);
 
+// nRF24L01p_config_power
+// Set the device into either Power Down or into Standby-I.
+//
+// value - Either nRF24L01p_VALUE_CONFIG_PWR_UP or
+//                nRF24L01p_VALUE_CONFIG_PWR_DOWN
+//
+int nRF24L01p_config_power(byte value);
+
 // nRF24L01p_config_address_width
 // Set the width for the address that identifies packets
 // so the receiver can map them to the correct pipe, or
@@ -223,6 +231,7 @@ int nRF24L01p_config_transceiver_mode(byte value);
 int nRF24L01p_config_address_width(byte value);
 
 // nRF24L01p_config_address
+// TODO: Write information here.
 //
 int nRF24L01p_config_address(byte address_register,
                              long long unsigned int address);
@@ -265,18 +274,6 @@ int nRF24L01p_config_output_power(byte value);
 
 // Control
 //////////
-
-// nRF24L01p_power_up
-// Set the CONFIG_PWR_UP to 1, taking the device out of
-// Power Down, into Standby-I
-//
-void nRF24L01p_power_up(void);
-
-// nRF24L01p_power_down
-// Set the CONFIG_PWR_UP to 0, taking the device in to
-// Power Down.
-//
-void nRF24L01p_power_down(void);
 
 // nRF24L01p_enable
 // Set the CE pin high, putting the device into either

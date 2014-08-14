@@ -83,15 +83,15 @@ int main(void)
   assert("config_output_power_0dBm", (reg & nRF24L01p_MASK_RF_SETUP_RF_PWR)
                                      == nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm);
 
-  // Power up test.
-  nRF24L01p_power_up();
+  // Configure power test.
+  nRF24L01p_config_power(nRF24L01p_VALUE_CONFIG_PWR_UP);
   reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
-  assert("power_up", (reg & nRF24L01p_MASK_CONFIG_PWR_UP)
+  assert("config_power_up", (reg & nRF24L01p_MASK_CONFIG_PWR_UP)
                      == nRF24L01p_VALUE_CONFIG_PWR_UP);
 
-  nRF24L01p_power_down();
+  nRF24L01p_config_power(nRF24L01p_VALUE_CONFIG_PWR_DOWN);
   reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
-  assert("power_down", (reg & nRF24L01p_MASK_CONFIG_PWR_UP)
+  assert("config_power_down", (reg & nRF24L01p_MASK_CONFIG_PWR_UP)
                        == nRF24L01p_VALUE_CONFIG_PWR_DOWN);
 
   return 0;

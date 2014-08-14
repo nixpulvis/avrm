@@ -33,7 +33,7 @@ void nRF24L01p_init(void)
   nRF24L01p_config_output_power(nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm);
 
   // Power up.
-  nRF24L01p_power_up();
+  nRF24L01p_config_power(nRF24L01p_VALUE_CONFIG_PWR_UP);
 }
 
 
@@ -53,6 +53,23 @@ int nRF24L01p_config_transceiver_mode(byte value)
   nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
                               nRF24L01p_MASK_CONFIG_PRIM_RX,
                               value);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_power implementation.
+//
+int nRF24L01p_config_power(byte value)
+{
+  if (!(value == nRF24L01p_VALUE_CONFIG_PWR_UP ||
+        value == nRF24L01p_VALUE_CONFIG_PWR_DOWN))
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
+                              nRF24L01p_MASK_CONFIG_PWR_UP,
+                              value);
+
   return 0;
 }
 
@@ -145,28 +162,6 @@ int nRF24L01p_config_output_power(byte value)
 
 // Control
 //////////
-
-
-//
-// nRF24L01p_power_up implementation.
-//
-void nRF24L01p_power_up(void)
-{
-  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
-                              nRF24L01p_MASK_CONFIG_PWR_UP,
-                              nRF24L01p_VALUE_CONFIG_PWR_UP);
-}
-
-
-//
-// nRF24L01p_power_down implementation.
-//
-void nRF24L01p_power_down(void)
-{
-  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
-                              nRF24L01p_MASK_CONFIG_PWR_UP,
-                              nRF24L01p_VALUE_CONFIG_PWR_DOWN);
-}
 
 
 //
