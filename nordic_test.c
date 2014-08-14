@@ -116,6 +116,15 @@ int main(void)
   assert("config_retransmit_delay_15", (reg & nRF24L01p_MASK_SETUP_RETR_ARD)
                                       == nRF24L01p_VALUE_SETUP_RETR_ARD_4000);
 
+  // Configure channel test.
+  nRF24L01p_config_channel(0);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_RF_CH);
+  assert("config_channel_0", (reg & nRF24L01p_MASK_RF_CH_RF_CH) == 0);
+
+  nRF24L01p_config_channel(97);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_RF_CH);
+  assert("config_channel_97", (reg & nRF24L01p_MASK_RF_CH_RF_CH) == 97);
+
   return 0;
 }
 

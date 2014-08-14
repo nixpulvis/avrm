@@ -247,6 +247,14 @@ int nRF24L01p_config_retransmit_count(byte value);
 //
 int nRF24L01p_config_retransmit_delay(byte value);
 
+// nRF24L01p_config_channel
+// Sets the frequency to 2400 + value(MHz), both RX and
+// TX must share the same channel.
+//
+// value - Megahertz offset from 2.4GHz, (0-127)
+//
+int nRF24L01p_config_channel(byte value);
+
 // nRF24L01p_config_address
 // TODO: Write information here.
 //

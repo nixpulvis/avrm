@@ -36,6 +36,9 @@ void nRF24L01p_init(void)
   nRF24L01p_config_retransmit_count(nRF24L01p_VALUE_SETUP_RETR_ARC_3);
   nRF24L01p_config_retransmit_delay(nRF24L01p_VALUE_SETUP_RETR_ARD_250);
 
+  // Configure RF channel.
+  nRF24L01p_config_channel(2);
+
   // Power up.
   nRF24L01p_config_power(nRF24L01p_VALUE_CONFIG_PWR_UP);
 }
@@ -120,6 +123,21 @@ int nRF24L01p_config_retransmit_delay(byte value)
 
   nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_SETUP_RETR,
                               nRF24L01p_MASK_SETUP_RETR_ARD,
+                              value);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_channel implementation.
+//
+int nRF24L01p_config_channel(byte value)
+{
+  if (value > 127)
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_RF_CH,
+                              nRF24L01p_MASK_RF_CH_RF_CH,
                               value);
   return 0;
 }
