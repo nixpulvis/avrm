@@ -125,6 +125,43 @@ int main(void)
   reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_RF_CH);
   assert("config_channel_97", (reg & nRF24L01p_MASK_RF_CH_RF_CH) == 97);
 
+  // FIFO status tests.
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_FLUSH_TX);
+  spi_end();
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_FLUSH_RX);
+  spi_end();
+
+  bool empty, full;
+  full = nRF24L01p_tx_fifo_is_full();
+  assert("tx_fifo_is_not_full", !full);
+  empty = nRF24L01p_tx_fifo_is_empty();
+  assert("tx_fifo_is_empty", empty);
+
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_W_TX_PAYLOAD);
+  for (byte i = 0; i < nRF24L01p_FIFO_TX_SIZE; i++)
+    spi_transfer(0xB7);
+  spi_end();
+
+  full = nRF24L01p_tx_fifo_is_full();
+  assert("tx_fifo_is_still_not_full", !full);
+  empty = nRF24L01p_tx_fifo_is_empty();
+  assert("tx_fifo_is_not_empty", !empty);
+
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_W_TX_PAYLOAD);
+  for (byte i = 0; i < (nRF24L01p_FIFO_TX_COUNT - 1) *
+                       nRF24L01p_FIFO_TX_SIZE; i++)
+    spi_transfer(0xB7);
+  spi_end();
+
+  full = nRF24L01p_tx_fifo_is_full();
+  assert("tx_fifo_is_full", full);
+  empty = nRF24L01p_tx_fifo_is_empty();
+  assert("tx_fifo_is_still_not_empty", !empty);
+
   return 0;
 }
 

@@ -348,8 +348,50 @@ int nRF24L01p_config_payload_width(byte address, byte width);
 // TODO: EN_ACK_PAY
 // TODO: EN_DYN_ACK
 
-// Control
+// STATUS
+/////////
+
+// TODO: All of it.
+
+// FIFO STATUS
+//////////////
+
+// nRF24L01p_tx_fifo_is_reuse
+// Returns true when the device is configured to reuse
+// the last transmitted data packet. Sending continuously,
+// as long as CE is high.
+//
+bool nRF24L01p_tx_fifo_is_reuse(void);
+
+// nRF24L01p_tx_fifo_is_full
+// Return true when there is no room in the TX FIFO,
+// false when there is room.
+//
+bool nRF24L01p_tx_fifo_is_full(void);
+
+// nRF24L01p_tx_fifo_is_empty
+// Return true when there is nothing in the TX FIFO.
+//
+bool nRF24L01p_tx_fifo_is_empty(void);
+
+// nRF24L01p_rx_fifo_is_full
+// Return true when there is no room in the RX FIFO,
+// false when there is room.
+//
+bool nRF24L01p_rx_fifo_is_full(void);
+
+// nRF24L01p_rx_fifo_is_empty
+// Return true when there is nothing in the RX FIFO.
+//
+bool nRF24L01p_rx_fifo_is_empty(void);
+
+// OBSERVE
 //////////
+
+// TODO: All of it.
+
+// IO
+/////
 
 // nRF24L01p_enable
 // Set the CE pin high, putting the device into either
@@ -361,9 +403,6 @@ void nRF24L01p_enable(void);
 // Set the CE pin low, putting the device into Standby-I.
 //
 void nRF24L01p_disable(void);
-
-// IO
-/////
 
 // nRF24L01p_read
 // Read data over the air.

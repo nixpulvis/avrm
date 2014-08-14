@@ -211,8 +211,61 @@ int nRF24L01p_config_payload_width(byte address, byte width)
 }
 
 
-// Control
-//////////
+// FIFO STATUS
+//////////////
+
+//
+// nRF24L01p_tx_fifo_is_reuse
+//
+bool nRF24L01p_tx_fifo_is_reuse(void)
+{
+  return nRF24L01p_get_register8(nRF24L01p_REGISTER_FIFO_STATUS) &
+         nRF24L01p_MASK_FIFO_STATUS_TX_REUSE;
+}
+
+
+//
+// nRF24L01p_tx_fifo_is_full
+//
+bool nRF24L01p_tx_fifo_is_full(void)
+{
+  return nRF24L01p_get_register8(nRF24L01p_REGISTER_FIFO_STATUS) &
+         nRF24L01p_MASK_FIFO_STATUS_TX_FULL;
+}
+
+
+//
+// nRF24L01p_tx_fifo_is_empty
+//
+bool nRF24L01p_tx_fifo_is_empty(void)
+{
+  return nRF24L01p_get_register8(nRF24L01p_REGISTER_FIFO_STATUS) &
+         nRF24L01p_MASK_FIFO_STATUS_TX_EMPTY;
+}
+
+
+//
+// nRF24L01p_rx_fifo_is_full
+//
+bool nRF24L01p_rx_fifo_is_full(void)
+{
+  return nRF24L01p_get_register8(nRF24L01p_REGISTER_FIFO_STATUS) &
+         nRF24L01p_MASK_FIFO_STATUS_RX_FULL;
+}
+
+
+//
+// nRF24L01p_rx_fifo_is_empty
+//
+bool nRF24L01p_rx_fifo_is_empty(void)
+{
+  return nRF24L01p_get_register8(nRF24L01p_REGISTER_FIFO_STATUS) &
+         nRF24L01p_MASK_FIFO_STATUS_RX_EMPTY;
+}
+
+
+// IO
+/////
 
 
 //
@@ -233,10 +286,6 @@ void nRF24L01p_disable(void)
   // Pull CE high.
   PORTB &= ~_BV(PORTB0);
 }
-
-
-// IO
-/////
 
 
 //
