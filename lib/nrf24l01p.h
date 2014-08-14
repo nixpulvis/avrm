@@ -2,8 +2,7 @@
 #define __nRF24L01p_H__
 
 // FIFO
-// TX three level, 32 byte FIFO
-// RX three level, 32 byte FIFO
+
 #define nRF24L01p_FIFO_TX_COUNT 3
 #define nRF24L01p_FIFO_RX_COUNT 3
 #define nRF24L01p_FIFO_TX_SIZE  32
