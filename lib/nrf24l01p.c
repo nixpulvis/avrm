@@ -13,12 +13,7 @@ void nRF24L01p_init(void)
   // Set CE for output.
   DDRB |= _BV(DDB0);
 
-  // Set transceiver mode.
-  nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
-  nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
-
   // Configure address width.
-  nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_3);
   nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_5);
 
   // Configure default address for TX and pipe 0.
