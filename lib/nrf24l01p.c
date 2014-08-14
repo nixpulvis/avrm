@@ -32,6 +32,10 @@ void nRF24L01p_init(void)
   // Configure output power.
   nRF24L01p_config_output_power(nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm);
 
+  // Configure retransmit.
+  nRF24L01p_config_retransmit_count(nRF24L01p_VALUE_SETUP_RETR_ARC_3);
+  nRF24L01p_config_retransmit_delay(nRF24L01p_VALUE_SETUP_RETR_ARD_250);
+
   // Power up.
   nRF24L01p_config_power(nRF24L01p_VALUE_CONFIG_PWR_UP);
 }
@@ -86,6 +90,36 @@ int nRF24L01p_config_address_width(byte value)
 
   nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_SETUP_AW,
                               nRF24L01p_MASK_SETUP_AW_AW,
+                              value);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_retransmit_count implementation.
+//
+int nRF24L01p_config_retransmit_count(byte value)
+{
+  if (value > 0x0F)
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_SETUP_RETR,
+                              nRF24L01p_MASK_SETUP_RETR_ARC,
+                              value);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_retransmit_delay implementation.
+//
+int nRF24L01p_config_retransmit_delay(byte value)
+{
+  if (value <= 0x0F)
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_SETUP_RETR,
+                              nRF24L01p_MASK_SETUP_RETR_ARD,
                               value);
   return 0;
 }

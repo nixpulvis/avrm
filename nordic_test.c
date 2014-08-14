@@ -94,6 +94,28 @@ int main(void)
   assert("config_power_down", (reg & nRF24L01p_MASK_CONFIG_PWR_UP)
                        == nRF24L01p_VALUE_CONFIG_PWR_DOWN);
 
+  // Configure retransmit count test.
+  nRF24L01p_config_retransmit_count(nRF24L01p_VALUE_SETUP_RETR_ARC_0);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_SETUP_RETR);
+  assert("config_retransmit_count_0", (reg & nRF24L01p_MASK_SETUP_RETR_ARC)
+                                      == nRF24L01p_VALUE_SETUP_RETR_ARC_0);
+
+  nRF24L01p_config_retransmit_count(nRF24L01p_VALUE_SETUP_RETR_ARC_15);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_SETUP_RETR);
+  assert("config_retransmit_count_15", (reg & nRF24L01p_MASK_SETUP_RETR_ARC)
+                                      == nRF24L01p_VALUE_SETUP_RETR_ARC_15);
+
+  // Configure retransmit delay test.
+  nRF24L01p_config_retransmit_delay(nRF24L01p_VALUE_SETUP_RETR_ARD_750);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_SETUP_RETR);
+  assert("config_retransmit_delay_750", (reg & nRF24L01p_MASK_SETUP_RETR_ARD)
+                                      == nRF24L01p_VALUE_SETUP_RETR_ARD_750);
+
+  nRF24L01p_config_retransmit_delay(nRF24L01p_VALUE_SETUP_RETR_ARD_4000);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_SETUP_RETR);
+  assert("config_retransmit_delay_15", (reg & nRF24L01p_MASK_SETUP_RETR_ARD)
+                                      == nRF24L01p_VALUE_SETUP_RETR_ARD_4000);
+
   return 0;
 }
 
