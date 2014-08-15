@@ -5,9 +5,6 @@
 //
 void nRF24L01p_init(void)
 {
-  // Enable interrupts.
-  sei();
-
   // Start up the SPI bus.
   spi_init();
 
@@ -47,19 +44,47 @@ void nRF24L01p_init(void)
   // Configure RF channel.
   nRF24L01p_config_channel(2);
 
+  // Flush the FIFOs
+  nRF24L01p_tx_fifo_flush();
+  nRF24L01p_rx_fifo_flush();
+
   // Clear the interrupts.
   nRF24L01p_status_rx_ready_clear();
   nRF24L01p_status_tx_sent_clear();
   nRF24L01p_status_max_retries_clear();
 
-  // Flush the FIFOs
-  nRF24L01p_tx_fifo_flush();
-  nRF24L01p_rx_fifo_flush();
+  // Enable external interrupt 0.
+  EIMSK |= (1 << INT0);
+  EICRA |= (1 << ISC00); // TODO: Make falling edge.
+
+  // Enable interrupts.
+  sei();
 
   // Power up.
   nRF24L01p_config_power(nRF24L01p_VALUE_CONFIG_PWR_UP);
 }
 
+// IRQ SERVICE HANDLER
+//////////////////////
+
+ISR (INT0_vect)
+{
+  nRF24L01p_status_fetch();
+  if (nRF24L01p_status_rx_ready())
+    printf("RX READY\n");
+    nRF24L01p_status_rx_ready_clear();
+  if (nRF24L01p_status_tx_sent())
+    printf("TX SENT\n");
+    nRF24L01p_status_tx_sent_clear();
+  if (nRF24L01p_status_max_retries())
+    printf("MAX RETRIES\n");
+    nRF24L01p_status_max_retries_clear();
+
+  // if (nRF24L01p_status_pipe_ready())
+
+  if (nRF24L01p_status_tx_full())
+    printf("TX FIFO FULL\n");
+}
 
 // Configuration
 ////////////////

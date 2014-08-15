@@ -25,6 +25,8 @@ int main(void)
   // Enable the nRF24L01p.
   nRF24L01p_enable();
 
+  _delay_ms(3000);
+
   while (1)
   {
     byte payload[nRF24L01p_PAYLOAD_WIDTH] = "Hello World!";
