@@ -22,17 +22,21 @@ int main(void)
   // Set RX mode.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
 
-  // TODO: The code below doesn't work yet.
-
   // Enable the nRF24L01p.
   nRF24L01p_enable();
 
   while (1)
   {
-    char string[4];
-    int out = nRF24L01p_read(string, nRF24L01p_PAYLOAD_WIDTH, 0);
-    printf("Read %d bytes -> %s.\n", out, string);
-    _delay_ms(500);
+    nRF24L01p_status_fetch();
+    if (nRF24L01p_status_rx_ready())
+    {
+      byte payload[nRF24L01p_PAYLOAD_WIDTH];
+      nRF24L01p_rx_fifo_read(payload, nRF24L01p_PAYLOAD_WIDTH);
+      printf("READ: %s\n", payload);
+      nRF24L01p_disable();
+      nRF24L01p_status_rx_ready_clear();
+      nRF24L01p_enable();
+    }
   }
 
   return 0;

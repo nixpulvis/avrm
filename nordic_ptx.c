@@ -22,17 +22,14 @@ int main(void)
   // Set TX mode.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
 
-  // TODO: The code below doesn't work yet.
-
   // Enable the nRF24L01p.
   nRF24L01p_enable();
 
   while (1)
   {
-    char string[4] = "foo";
-    int out = nRF24L01p_write(string, nRF24L01p_PAYLOAD_WIDTH);
-    printf("Wrote %d bytes.\n", out);
-    _delay_ms(500);
+    byte payload[nRF24L01p_PAYLOAD_WIDTH] = "Hello World!";
+    nRF24L01p_tx_fifo_write(payload, nRF24L01p_PAYLOAD_WIDTH);
+    _delay_ms(1000);
   }
 
   return 0;

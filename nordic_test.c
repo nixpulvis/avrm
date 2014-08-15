@@ -184,31 +184,6 @@ int main(void)
   reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_RX_PW_P0);
   assert("config_payload_width", (reg & nRF24L01p_MASK_RX_PW) == 17);
 
-  // STATUS TESTS
-  ///////////////
-  nRF24L01p_init();
-  nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
-  nRF24L01p_enable();
-  _delay_ms(1000);
-  byte foo[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-  nRF24L01p_status_fetch();
-  if (nRF24L01p_status_max_retries())
-    printf("MAX RETRIES\n");
-  else
-    printf("NOT MAX RETRIES\n");
-  nRF24L01p_tx_fifo_write(foo, 10);
-  nRF24L01p_tx_fifo_write(foo, 10);
-  nRF24L01p_tx_fifo_write(foo, 10);
-  nRF24L01p_tx_fifo_write(foo, 10);
-  _delay_ms(2000);
-  nRF24L01p_status_fetch();
-  if (nRF24L01p_status_max_retries())
-    printf("MAX RETRIES\n");
-  else
-    printf("NOT MAX RETRIES\n");
-  _delay_ms(1000);
-  nRF24L01p_disable();
-
   // FIFO TESTS
   /////////////
 
