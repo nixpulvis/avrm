@@ -28,6 +28,28 @@ int main(void)
   // Configuration Tests
   //////////////////////
 
+  // Configure crc test.
+  nRF24L01p_config_crc(nRF24L01p_VALUE_CONFIG_CRC_DISABLE);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
+  assert("config_crc_off", (reg & nRF24L01p_MASK_CONFIG_EN_CRC)
+                               == nRF24L01p_VALUE_CONFIG_CRC_DISABLE);
+
+  nRF24L01p_config_crc(nRF24L01p_VALUE_CONFIG_CRC_ENABLE);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
+  assert("config_crc_on", (reg & nRF24L01p_MASK_CONFIG_EN_CRC)
+                               == nRF24L01p_VALUE_CONFIG_CRC_ENABLE);
+
+  // Configure crc_count test.
+  nRF24L01p_config_crc_count(nRF24L01p_VALUE_CONFIG_CRCO_2);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
+  assert("config_crc_count_2", (reg & nRF24L01p_MASK_CONFIG_CRCO)
+                               == nRF24L01p_VALUE_CONFIG_CRCO_2);
+
+  nRF24L01p_config_crc_count(nRF24L01p_VALUE_CONFIG_CRCO_1);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);
+  assert("config_crc_count_1", (reg & nRF24L01p_MASK_CONFIG_CRCO)
+                               == nRF24L01p_VALUE_CONFIG_CRCO_1);
+
   // Configure power test.
   nRF24L01p_config_power(nRF24L01p_VALUE_CONFIG_PWR_UP);
   reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_CONFIG);

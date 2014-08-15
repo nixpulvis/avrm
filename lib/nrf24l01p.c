@@ -13,6 +13,10 @@ void nRF24L01p_init(void)
   // Set CE for output.
   DDRB |= _BV(DDB0);
 
+  // Enable the CRC and set it to use 1 bit.
+  nRF24L01p_config_crc(nRF24L01p_VALUE_CONFIG_CRC_ENABLE);
+  nRF24L01p_config_crc_count(nRF24L01p_VALUE_CONFIG_CRCO_1);
+
   // Configure address width.
   nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_5);
 
@@ -46,6 +50,40 @@ void nRF24L01p_init(void)
 
 // Configuration
 ////////////////
+
+
+//
+// nRF24L01p_config_crc implementation.
+//
+int nRF24L01p_config_crc(byte value)
+{
+  if (!(value == nRF24L01p_VALUE_CONFIG_CRC_ENABLE ||
+        value == nRF24L01p_VALUE_CONFIG_CRC_DISABLE))
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
+                               nRF24L01p_MASK_CONFIG_EN_CRC,
+                               value);
+
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_crc_count implementation.
+//
+int nRF24L01p_config_crc_count(byte value)
+{
+  if (!(value == nRF24L01p_VALUE_CONFIG_CRCO_1 ||
+        value == nRF24L01p_VALUE_CONFIG_CRCO_2))
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
+                               nRF24L01p_MASK_CONFIG_CRCO,
+                               value);
+
+  return 0;
+}
 
 
 //

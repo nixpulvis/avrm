@@ -131,6 +131,12 @@
 #define nRF24L01p_VALUE_CONFIG_PWR_DOWN (0x0 << 1)
 #define nRF24L01p_VALUE_CONFIG_PWR_UP   (0x1 << 1)
 
+#define nRF24L01p_VALUE_CONFIG_CRCO_1 (0x0 << 2)
+#define nRF24L01p_VALUE_CONFIG_CRCO_2 (0x1 << 2)
+
+#define nRF24L01p_VALUE_CONFIG_CRC_DISABLE (0x0 << 3)
+#define nRF24L01p_VALUE_CONFIG_CRC_ENABLE  (0x1 << 3)
+
 #define nRF24L01p_VALUE_SETUP_AW_AW_3 (0x01 << 0)
 #define nRF24L01p_VALUE_SETUP_AW_AW_4 (0x02 << 0)
 #define nRF24L01p_VALUE_SETUP_AW_AW_5 (0x03 << 0)
@@ -206,8 +212,22 @@ void nRF24L01p_init(void);
 // TODO: MASK_RX_DR
 // TODO: MASK_TX_DS
 // TODO: MASK_MAX_RT
-// TODO: EN_CRC
-// TODO: CRCO
+
+// nRF24L01p_config_crc
+// Sets the device to use or not use the CRC.
+//
+// value - Either nRF24L01p_VALUE_CONFIG_CRC_ENABLE or
+//                nRF24L01p_VALUE_CONFIG_CRC_DISABLE
+//
+int nRF24L01p_config_crc(byte value);
+
+// nRF24L01p_config_crc_count
+// Set the number of bits for the CRC.
+//
+// value - Either nRF24L01p_VALUE_CONFIG_CRCO_1 or
+//                nRF24L01p_VALUE_CONFIG_CRCO_2
+//
+int nRF24L01p_config_crc_count(byte value);
 
 // nRF24L01p_config_power
 // Set the device into either Power Down or into Standby-I.
