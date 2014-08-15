@@ -146,6 +146,26 @@ int nRF24L01p_config_auto_ack(byte mask, bool value)
 
 
 //
+// nRF24L01p_config_rx implementation.
+//
+int nRF24L01p_config_rx(byte mask, bool value)
+{
+  if (!(mask == nRF24L01p_MASK_EN_RXADDR_ERX_P0 ||
+        mask == nRF24L01p_MASK_EN_RXADDR_ERX_P1 ||
+        mask == nRF24L01p_MASK_EN_RXADDR_ERX_P2 ||
+        mask == nRF24L01p_MASK_EN_RXADDR_ERX_P3 ||
+        mask == nRF24L01p_MASK_EN_RXADDR_ERX_P4 ||
+        mask == nRF24L01p_MASK_EN_RXADDR_ERX_P5 ||
+        mask == nRF24L01p_MASK_EN_RXADDR_ERX_ALL))
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_EN_RXADDR,
+                               mask, value ? 0xFF : 0x00);
+  return 0;
+}
+
+
+//
 // nRF24L01p_config_address_width implementation.
 //
 int nRF24L01p_config_address_width(byte value)

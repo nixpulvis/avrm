@@ -72,7 +72,7 @@ int main(void)
   assert("config_transceiver_mode_tx", (reg & nRF24L01p_MASK_CONFIG_PRIM_RX)
                                        == nRF24L01p_VALUE_CONFIG_PRIM_TX);
 
-  // Auto acknowledgment test.
+  // Configure auto acknowledgment test.
   nRF24L01p_config_auto_ack(nRF24L01p_MASK_EN_AA_ENAA_ALL, FALSE);
   reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_AA);
   assert("config_auto_ack_disable_all", (reg & nRF24L01p_MASK_EN_AA_ENAA_ALL)
@@ -83,9 +83,16 @@ int main(void)
   assert("config_auto_ack_enable_all", (reg & nRF24L01p_MASK_EN_AA_ENAA_ALL)
                                        == 0x3F);
 
-  // EN_RXADDR
+  // Configure rx test.
+  nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_ALL, FALSE);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_RXADDR);
+  assert("config_rx_disable_all", (reg & nRF24L01p_MASK_EN_RXADDR_ERX_ALL)
+                                  == 0);
 
-  // SETUP_AW
+  nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_ALL, TRUE);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_RXADDR);
+  assert("config_rx_enable_all", (reg & nRF24L01p_MASK_EN_RXADDR_ERX_ALL)
+                                 == 0x3F);
 
   // Configure address width test.
   nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_3);

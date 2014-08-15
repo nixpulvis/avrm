@@ -75,12 +75,13 @@
 #define nRF24L01p_MASK_EN_AA_ENAA_P5  (0x1 << 5)
 #define nRF24L01p_MASK_EN_AA_ENAA_ALL (0x3F << 0)
 
-#define nRF24L01p_MASK_EN_RXADDR_ERX_P0 (0x1 << 0)
-#define nRF24L01p_MASK_EN_RXADDR_ERX_P1 (0x1 << 1)
-#define nRF24L01p_MASK_EN_RXADDR_ERX_P2 (0x1 << 2)
-#define nRF24L01p_MASK_EN_RXADDR_ERX_P3 (0x1 << 3)
-#define nRF24L01p_MASK_EN_RXADDR_ERX_P4 (0x1 << 4)
-#define nRF24L01p_MASK_EN_RXADDR_ERX_P5 (0x1 << 5)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P0  (0x1 << 0)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P1  (0x1 << 1)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P2  (0x1 << 2)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P3  (0x1 << 3)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P4  (0x1 << 4)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_P5  (0x1 << 5)
+#define nRF24L01p_MASK_EN_RXADDR_ERX_ALL (0x3F << 0)
 
 #define nRF24L01p_MASK_SETUP_AW_AW 0x03
 
@@ -252,7 +253,7 @@ int nRF24L01p_config_transceiver_mode(byte value);
 // EN_AA
 
 // nRF24L01p_config_auto_ack
-// Enable auto acknowledgment of packets.
+// Enable or disable auto acknowledgment of packets.
 //
 // mask - One of nRF24L01p_MASK_EN_AA_ENAA_P(0-5) or
 //               nRF24L01p_MASK_EN_AA_ENAA_ALL.
@@ -262,7 +263,14 @@ int nRF24L01p_config_auto_ack(byte mask, bool value);
 
 // EN_RXADDR
 
-// TODO: ERX_P(0-5)
+// nRF24L01p_config_rx
+// Enable or disable RX pipes.
+//
+// mask - One of nRF24L01p_MASK_EN_RXADDR_ERX_P(0-5) or
+//               nRF24L01p_MASK_EN_RXADDR_ERX_ALL
+// value - Either TRUE or FALSE.
+//
+int nRF24L01p_config_rx(byte mask, bool value);
 
 // SETUP_AW
 
