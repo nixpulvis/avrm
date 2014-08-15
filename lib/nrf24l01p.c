@@ -291,6 +291,21 @@ bool nRF24L01p_rx_fifo_is_empty(void)
 
 
 //
+// nRF24L01p_rx_fifo_read implementation.
+//
+int nRF24L01p_rx_fifo_read(byte *payload, byte size)
+{
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_R_RX_PAYLOAD);
+  for (byte i = 0; i < size; i++)
+    *payload++ = spi_transfer(nRF24L01p_SPI_NOP);
+  spi_end();
+
+  return size; // TODO: catch FIFO full IRQ.
+}
+
+
+//
 // nRF24L01p_rx_fifo_flush implementation.
 //
 void nRF24L01p_rx_fifo_flush(void)

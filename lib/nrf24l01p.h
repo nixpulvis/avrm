@@ -402,7 +402,12 @@ bool nRF24L01p_rx_fifo_is_full(void);
 bool nRF24L01p_rx_fifo_is_empty(void);
 
 // nRF24L01p_rx_fifo_read
-// TODO:
+// Read the top payload from the RX FIFO.
+//
+// payload - Buffer to read data into.
+// size - number of bytes to read.
+//
+// Returns number of bytes read.
 //
 int nRF24L01p_rx_fifo_read(byte *payload, byte size);
 
@@ -455,8 +460,7 @@ int nRF24L01p_write(char *src, byte count);
 //////////
 
 // nRF24L01p_get_register8
-// Get the value of an 8 register. This operation should only
-// be done while in Power Down or Standby-I. TODO: verify.
+// Get the value of an 8 register.
 //
 // address - The address of the register to read.
 //
@@ -466,7 +470,7 @@ byte nRF24L01p_get_register8(byte address);
 
 // nRF24L01p_set_register8
 // Set the value of an 8 register. This operation should only
-// be done while in Power Down or Standby-I. TODO: verify.
+// be done while in Power Down or Standby-I.
 //
 // Note: Addresses (18-1B) are reserved, and cannot be set
 //       using these functions.
@@ -482,7 +486,8 @@ int nRF24L01p_set_register8(byte address, byte data);
 // Set the bits of a masked region of a register. It's important
 // to note that the value must be aligned properly. For example
 // with a mask of 00001100 the value would need to be 00001000 to
-// update the left most bit within the range of the mask.
+// update the left most bit within the range of the mask. This
+// operation should only be done while in Power Down or Standby-I.
 //
 // Note: Addresses (18-1B) are reserved, and cannot be set
 //       using these functions.
@@ -496,8 +501,7 @@ int nRF24L01p_set_register8(byte address, byte data);
 int nRF24L01p_set_register8_bits(byte address, byte mask, byte value);
 
 // nRF24L01p_get_register40
-// Get the value of a 40 bit register. This operation should only
-// be done while in Power Down or Standby-I. TODO: verify.
+// Get the value of a 40 bit register.
 //
 // address - The address of the register to read.
 //
