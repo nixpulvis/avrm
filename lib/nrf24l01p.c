@@ -102,6 +102,9 @@ int nRF24L01p_config_power(byte value)
                               nRF24L01p_MASK_CONFIG_PWR_UP,
                               value);
 
+  if (value == nRF24L01p_VALUE_CONFIG_PWR_UP)
+    _delay_us(nRF24L01p_TIMING_TPD2STBY_US);
+
   return 0;
 }
 
@@ -389,6 +392,7 @@ void nRF24L01p_enable(void)
 {
   // Pull CE high.
   PORTB |= _BV(PORTB0);
+  _delay_us(nRF24L01p_TIMING_TPECE2CSN_US);
 }
 
 

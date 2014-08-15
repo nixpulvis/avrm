@@ -200,6 +200,7 @@
 
 #define nRF24L01p_PAYLOAD_WIDTH 32
 
+#include <util/delay.h>
 #include "avr.h"
 
 // TODO: Determine the proper interface here.
