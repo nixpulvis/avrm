@@ -72,7 +72,16 @@ int main(void)
   assert("config_transceiver_mode_tx", (reg & nRF24L01p_MASK_CONFIG_PRIM_RX)
                                        == nRF24L01p_VALUE_CONFIG_PRIM_TX);
 
-  // EN_AA
+  // Auto acknowledgment test.
+  nRF24L01p_config_auto_ack(nRF24L01p_MASK_EN_AA_ENAA_ALL, FALSE);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_AA);
+  assert("config_auto_ack_disable_all", (reg & nRF24L01p_MASK_EN_AA_ENAA_ALL)
+                                        == 0);
+
+  nRF24L01p_config_auto_ack(nRF24L01p_MASK_EN_AA_ENAA_ALL, TRUE);
+  reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_AA);
+  assert("config_auto_ack_enable_all", (reg & nRF24L01p_MASK_EN_AA_ENAA_ALL)
+                                       == 0x3F);
 
   // EN_RXADDR
 

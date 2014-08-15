@@ -17,6 +17,9 @@ void nRF24L01p_init(void)
   nRF24L01p_config_crc(nRF24L01p_VALUE_CONFIG_CRC_ENABLE);
   nRF24L01p_config_crc_count(nRF24L01p_VALUE_CONFIG_CRCO_1);
 
+  // Disable auto acknowledgment. TODO: play with this.
+  nRF24L01p_config_auto_ack(nRF24L01p_MASK_EN_AA_ENAA_ALL, FALSE);
+
   // Configure address width.
   nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_5);
 
@@ -117,6 +120,27 @@ int nRF24L01p_config_transceiver_mode(byte value)
                               value);
   return 0;
 }
+
+
+//
+// nRF24L01p_config_auto_ack implementation.
+//
+int nRF24L01p_config_auto_ack(byte mask, bool value)
+{
+  if (!(mask == nRF24L01p_MASK_EN_AA_ENAA_P0 ||
+        mask == nRF24L01p_MASK_EN_AA_ENAA_P1 ||
+        mask == nRF24L01p_MASK_EN_AA_ENAA_P2 ||
+        mask == nRF24L01p_MASK_EN_AA_ENAA_P3 ||
+        mask == nRF24L01p_MASK_EN_AA_ENAA_P4 ||
+        mask == nRF24L01p_MASK_EN_AA_ENAA_P5 ||
+        mask == nRF24L01p_MASK_EN_AA_ENAA_ALL))
+    return -1;
+
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_EN_AA,
+                               mask, value ? 0xFF : 0x00);
+  return 0;
+}
+
 
 //
 // nRF24L01p_config_address_width implementation.
