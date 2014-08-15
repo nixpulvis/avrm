@@ -245,6 +245,32 @@ bool nRF24L01p_tx_fifo_is_empty(void)
 
 
 //
+// nRF24L01p_tx_fifo_write implementation.
+//
+int nRF24L01p_tx_fifo_write(byte *payload, byte size)
+{
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_W_TX_PAYLOAD);
+  for (byte i = 0; i < size; i++)
+    spi_transfer(*payload++);
+  spi_end();
+
+  return size; // TODO: catch FIFO full IRQ.
+}
+
+
+//
+// nRF24L01p_tx_fifo_flush implementation.
+//
+void nRF24L01p_tx_fifo_flush(void)
+{
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_FLUSH_TX);
+  spi_end();
+}
+
+
+//
 // nRF24L01p_rx_fifo_is_full
 //
 bool nRF24L01p_rx_fifo_is_full(void)
@@ -261,6 +287,17 @@ bool nRF24L01p_rx_fifo_is_empty(void)
 {
   return nRF24L01p_get_register8(nRF24L01p_REGISTER_FIFO_STATUS) &
          nRF24L01p_MASK_FIFO_STATUS_RX_EMPTY;
+}
+
+
+//
+// nRF24L01p_rx_fifo_flush implementation.
+//
+void nRF24L01p_rx_fifo_flush(void)
+{
+  spi_start();
+  spi_transfer(nRF24L01p_SPI_FLUSH_RX);
+  spi_end();
 }
 
 

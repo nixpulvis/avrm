@@ -146,41 +146,28 @@ int main(void)
   reg = nRF24L01p_get_register8(nRF24L01p_REGISTER_RX_PW_P0);
   assert("config_payload_width", (reg & nRF24L01p_MASK_RX_PW) == 17);
 
-  // FIFO STATUS TESTS
-  ////////////////////
-
-  // FIFO status tests.
-  spi_start();
-  spi_transfer(nRF24L01p_SPI_FLUSH_TX);
-  spi_end();
-  spi_start();
-  spi_transfer(nRF24L01p_SPI_FLUSH_RX);
-  spi_end();
+  // FIFO TESTS
+  /////////////
 
   bool empty, full;
+  byte payload[10] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+  nRF24L01p_tx_fifo_flush();
+  nRF24L01p_rx_fifo_flush();
+
   full = nRF24L01p_tx_fifo_is_full();
   assert("tx_fifo_is_not_full", !full);
   empty = nRF24L01p_tx_fifo_is_empty();
   assert("tx_fifo_is_empty", empty);
 
-  spi_start();
-  spi_transfer(nRF24L01p_SPI_W_TX_PAYLOAD);
-  for (byte i = 0; i < nRF24L01p_FIFO_TX_SIZE; i++)
-    spi_transfer(0xB7);
-  spi_end();
-
+  nRF24L01p_tx_fifo_write(payload, 10);
   full = nRF24L01p_tx_fifo_is_full();
   assert("tx_fifo_is_still_not_full", !full);
   empty = nRF24L01p_tx_fifo_is_empty();
   assert("tx_fifo_is_not_empty", !empty);
 
-  spi_start();
-  spi_transfer(nRF24L01p_SPI_W_TX_PAYLOAD);
-  for (byte i = 0; i < (nRF24L01p_FIFO_TX_COUNT - 1) *
-                       nRF24L01p_FIFO_TX_SIZE; i++)
-    spi_transfer(0xB7);
-  spi_end();
-
+  nRF24L01p_tx_fifo_write(payload, 10);
+  nRF24L01p_tx_fifo_write(payload, 10);
   full = nRF24L01p_tx_fifo_is_full();
   assert("tx_fifo_is_full", full);
   empty = nRF24L01p_tx_fifo_is_empty();

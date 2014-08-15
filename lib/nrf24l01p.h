@@ -353,8 +353,8 @@ int nRF24L01p_config_payload_width(byte address, byte width);
 
 // TODO: All of it.
 
-// FIFO STATUS
-//////////////
+// FIFO
+///////
 
 // nRF24L01p_tx_fifo_is_reuse
 // Returns true when the device is configured to reuse
@@ -374,6 +374,22 @@ bool nRF24L01p_tx_fifo_is_full(void);
 //
 bool nRF24L01p_tx_fifo_is_empty(void);
 
+// nRF24L01p_tx_fifo_write
+// Write a payload to the TX FIFO. This payload must be
+// equivalent to the value set to nRF24L01p_config_payload_width
+// unless dynamic payload width is enabled.
+//
+// payload - An array of bytes to write to the TX FIFO.
+// size - The number of bytes from payload to write.
+//
+// Returns the number of bytes written.
+//
+int nRF24L01p_tx_fifo_write(byte *payload, byte size);
+
+// nRF24L01p_tx_fifo_flush
+// Flush the TX FIFO, clearing it of all payloads.
+void nRF24L01p_tx_fifo_flush(void);
+
 // nRF24L01p_rx_fifo_is_full
 // Return true when there is no room in the RX FIFO,
 // false when there is room.
@@ -384,6 +400,16 @@ bool nRF24L01p_rx_fifo_is_full(void);
 // Return true when there is nothing in the RX FIFO.
 //
 bool nRF24L01p_rx_fifo_is_empty(void);
+
+// nRF24L01p_rx_fifo_read
+// TODO:
+//
+int nRF24L01p_rx_fifo_read(byte *payload, byte size);
+
+// nRF24L01p_rx_fifo_flush
+// Flush the RX FIFO, clearing it of all payloads.
+//
+void nRF24L01p_rx_fifo_flush(void);
 
 // OBSERVE
 //////////
