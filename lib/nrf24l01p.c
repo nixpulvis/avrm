@@ -296,8 +296,105 @@ int nRF24L01p_config_payload_width(byte address, byte width)
 }
 
 
-// FIFO STATUS
-//////////////
+// STATUS
+/////////
+
+nRF24L01p_status = 0x0E;
+
+//
+// nRF24L01p_status_fetch
+//
+void nRF24L01p_status_fetch(void)
+{
+  spi_start();
+  nRF24L01p_status = spi_transfer(nRF24L01p_SPI_NOP);
+  spi_end();
+}
+
+
+//
+// nRF24L01p_status_rx_ready implementation.
+//
+bool nRF24L01p_status_rx_ready(void)
+{
+  return nRF24L01p_status & nRF24L01p_MASK_STATUS_RX_DR;
+}
+
+
+//
+// nRF24L01p_status_rx_ready_clear implementation.
+//
+void nRF24L01p_status_rx_ready_clear(void)
+{
+  nRF24L01p_disable();
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_STATUS,
+                               nRF24L01p_MASK_STATUS_RX_DR, 0xFF);
+  nRF24L01p_enable();
+}
+
+
+//
+// nRF24L01p_status_tx_sent implementation.
+//
+bool nRF24L01p_status_tx_sent(void)
+{
+  return nRF24L01p_status & nRF24L01p_MASK_STATUS_TX_DS;
+}
+
+
+//
+// nRF24L01p_status_tx_sent_clear implementation.
+//
+void nRF24L01p_status_tx_sent_clear(void)
+{
+  nRF24L01p_disable();
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_STATUS,
+                               nRF24L01p_MASK_STATUS_TX_DS, 0xFF);
+  nRF24L01p_enable();
+}
+
+
+//
+// nRF24L01p_status_max_retries implementation.
+//
+bool nRF24L01p_status_max_retries(void)
+{
+  return nRF24L01p_status & nRF24L01p_MASK_STATUS_MAX_RT;
+}
+
+
+//
+// nRF24L01p_status_max_retries_clear implementation.
+//
+void nRF24L01p_status_max_retries_clear(void)
+{
+  nRF24L01p_disable();
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_STATUS,
+                               nRF24L01p_MASK_STATUS_MAX_RT, 0xFF);
+  nRF24L01p_enable();
+}
+
+
+//
+// nRF24L01p_status_pipe_ready implementation.
+//
+byte nRF24L01p_status_pipe_ready(void)
+{
+  return nRF24L01p_status & nRF24L01p_MASK_STATUS_RX_P_NO;
+}
+
+
+//
+// nRF24L01p_status_tx_full implementation.
+//
+bool nRF24L01p_status_tx_full(void)
+{
+  return nRF24L01p_status & nRF24L01p_MASK_STATUS_TX_FULL;
+}
+
+
+// FIFO
+///////
 
 //
 // nRF24L01p_tx_fifo_is_reuse

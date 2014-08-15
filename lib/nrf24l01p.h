@@ -388,7 +388,56 @@ int nRF24L01p_config_payload_width(byte address, byte width);
 // STATUS
 /////////
 
-// TODO: All of it.
+// Default value is 0x0E.
+static byte nRF24L01p_status;
+
+// nRF24L01p_fetch_status
+// Updates the values stored in nRF24L01p_status.
+//
+void nRF24L01p_status_fetch(void);
+
+// nRF24L01p_status_rx_ready
+// Returns TRUE when there is a payload in the RX FIFO.
+//
+bool nRF24L01p_status_rx_ready(void);
+
+// nRF24L01p_status_rx_ready_clear
+// Clear the RX data ready interrupt.
+//
+void nRF24L01p_status_rx_ready_clear(void);
+
+// nRF24L01p_status_tx_sent
+// Returns TRUE when a payload was sent, if AUTO_ACK is
+// set only asserted when acknowledgment is received.
+//
+bool nRF24L01p_status_tx_sent(void);
+
+// nRF24L01p_status_tx_sent_clear
+// Clear the TX data sent interrupt.
+//
+void nRF24L01p_status_tx_sent_clear(void);
+
+// nRF24L01p_status_max_retries
+// Returns TRUE when the device hits max number of retires.
+// When this happens the interrupt must be cleared before
+// more packets can be sent.
+//
+bool nRF24L01p_status_max_retries(void);
+
+// nRF24L01p_status_max_retries_clear
+// Clear the max retries interrupt.
+//
+void nRF24L01p_status_max_retries_clear(void);
+
+// nRF24L01p_status_pipe_ready
+// Returns the pipe number of the top payload in the RX FIFO.
+//
+byte nRF24L01p_status_pipe_ready(void);
+
+// nRF24L01p_status_tx_full
+// Returns TRUE when the TX FIFO is full.
+//
+bool nRF24L01p_status_tx_full(void);
 
 // FIFO
 ///////
