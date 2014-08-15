@@ -5,7 +5,8 @@
 //
 void nRF24L01p_init(void)
 {
-  // TODO
+  // Enable interrupts.
+  sei();
 
   // Start up the SPI bus.
   spi_init();
@@ -18,7 +19,7 @@ void nRF24L01p_init(void)
   nRF24L01p_config_crc_count(nRF24L01p_VALUE_CONFIG_CRCO_1);
 
   // Disable auto acknowledgment. TODO: play with this.
-  nRF24L01p_config_auto_ack(nRF24L01p_MASK_EN_AA_ENAA_ALL, FALSE);
+  nRF24L01p_config_auto_ack(nRF24L01p_MASK_EN_AA_ENAA_ALL, TRUE);
 
   // Configure address width.
   nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_5);
@@ -45,6 +46,15 @@ void nRF24L01p_init(void)
 
   // Configure RF channel.
   nRF24L01p_config_channel(2);
+
+  // Clear the interrupts.
+  nRF24L01p_status_rx_ready_clear();
+  nRF24L01p_status_tx_sent_clear();
+  nRF24L01p_status_max_retries_clear();
+
+  // Flush the FIFOs
+  nRF24L01p_tx_fifo_flush();
+  nRF24L01p_rx_fifo_flush();
 
   // Power up.
   nRF24L01p_config_power(nRF24L01p_VALUE_CONFIG_PWR_UP);
@@ -299,7 +309,7 @@ int nRF24L01p_config_payload_width(byte address, byte width)
 // STATUS
 /////////
 
-nRF24L01p_status = 0x0E;
+static byte nRF24L01p_status = 0x0E;
 
 //
 // nRF24L01p_status_fetch
@@ -326,10 +336,8 @@ bool nRF24L01p_status_rx_ready(void)
 //
 void nRF24L01p_status_rx_ready_clear(void)
 {
-  nRF24L01p_disable();
   nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_STATUS,
                                nRF24L01p_MASK_STATUS_RX_DR, 0xFF);
-  nRF24L01p_enable();
 }
 
 
@@ -347,10 +355,8 @@ bool nRF24L01p_status_tx_sent(void)
 //
 void nRF24L01p_status_tx_sent_clear(void)
 {
-  nRF24L01p_disable();
   nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_STATUS,
                                nRF24L01p_MASK_STATUS_TX_DS, 0xFF);
-  nRF24L01p_enable();
 }
 
 
@@ -368,10 +374,8 @@ bool nRF24L01p_status_max_retries(void)
 //
 void nRF24L01p_status_max_retries_clear(void)
 {
-  nRF24L01p_disable();
   nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_STATUS,
                                nRF24L01p_MASK_STATUS_MAX_RT, 0xFF);
-  nRF24L01p_enable();
 }
 
 

@@ -201,6 +201,7 @@
 
 #define nRF24L01p_PAYLOAD_WIDTH 32
 
+#include <avr/interrupt.h>
 #include <util/delay.h>
 #include "avr.h"
 
@@ -387,9 +388,6 @@ int nRF24L01p_config_payload_width(byte address, byte width);
 
 // STATUS
 /////////
-
-// Default value is 0x0E.
-static byte nRF24L01p_status;
 
 // nRF24L01p_fetch_status
 // Updates the values stored in nRF24L01p_status.
