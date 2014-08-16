@@ -80,6 +80,11 @@ ISR (INT0_vect)
 
     // TODO: Read into a buffer?
 
+    // HACK: This was commented out to allow read_sync to
+    // handle this interrupt in a while(1) loop. When we
+    // handle read for pipes we'll need to allow this to
+    // handle all rx_ready calls.
+    //
     // nRF24L01p_status_rx_ready_clear();
   }
   if (nRF24L01p_status_tx_sent())
