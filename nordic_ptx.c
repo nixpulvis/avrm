@@ -13,6 +13,11 @@ int main(void)
   // Setup the UART, necessary for stdio actions.
   uart_init();
 
+  // Setup a button.
+  DDRD |= _BV(DDD7);
+  DDRD &= ~_BV(DDD6);
+  PORTD |= _BV(PORTD6);
+
   // Wait for the nRF24L01p to be ready.
   _delay_us(nRF24L01p_TIMING_INITIAL_US);
 
@@ -28,11 +33,14 @@ int main(void)
   int i = 0;
   while (1)
   {
-    char data[54];
-    snprintf(data, 54, "OWB3upkEMtxkwtiOo1CwLJrx7WybPuJWngzl3Av8Q17sl__%d", i++);
-    nRF24L01p_write_sync((byte *) data, 54);
-    printf("Sent %s\n", data);
-    _delay_ms(500);
+    if (!(PIND & _BV(PORTD6)))
+    {
+      char data[54];
+      snprintf(data, 54, "OWB3upkEMtxkwtiOo1CwLJrx7WybPuJWngzl3Av8Q17sl__%d", i++);
+      nRF24L01p_write_sync((byte *) data, 54);
+      printf("Sent %s\n", data);
+      _delay_ms(500);
+    }
   }
 
   return 0;
