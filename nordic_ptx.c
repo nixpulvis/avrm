@@ -25,12 +25,10 @@ int main(void)
   // Enable the nRF24L01p.
   nRF24L01p_enable();
 
-  _delay_ms(3000);
-
   while (1)
   {
-    byte payload[nRF24L01p_PAYLOAD_WIDTH] = "Hello World!";
-    nRF24L01p_tx_fifo_write(payload, nRF24L01p_PAYLOAD_WIDTH);
+    byte data[54] = "__OWB3upkEMtxkwtiOo1CwLJrx7WybPuJWngzl3Av8Q17sl__test";
+    nRF24L01p_write_sync(data, 54);
     _delay_ms(1000);
   }
 

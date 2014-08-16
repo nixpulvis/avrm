@@ -74,19 +74,40 @@ ISR (INT0_vect)
 {
   nRF24L01p_status_fetch();
   if (nRF24L01p_status_rx_ready())
+  {
     printf("RX READY\n");
-    nRF24L01p_status_rx_ready_clear();
+
+    // TODO: Read into a buffer?
+
+    // nRF24L01p_status_rx_ready_clear();
+  }
   if (nRF24L01p_status_tx_sent())
+  {
     printf("TX SENT\n");
+
+    // TODO: Figure out if we need to do anything here.
+
     nRF24L01p_status_tx_sent_clear();
+  }
   if (nRF24L01p_status_max_retries())
+  {
     printf("MAX RETRIES\n");
+
+    // TODO: Handle link loss.
+    nRF24L01p_tx_fifo_flush();
+    _delay_ms(100);
+
     nRF24L01p_status_max_retries_clear();
+  }
 
   // if (nRF24L01p_status_pipe_ready())
 
   if (nRF24L01p_status_tx_full())
+  {
     printf("TX FIFO FULL\n");
+
+    // TODO: Think this case through.
+  }
 }
 
 // Configuration
@@ -556,9 +577,9 @@ void nRF24L01p_disable(void)
 
 
 //
-// nRF24L01p_read implementation.
+// nRF24L01p_read_sync implementation.
 //
-int nRF24L01p_read(char *dst, byte count, byte pipe)
+int nRF24L01p_read_sync(byte *dst, byte count, byte pipe)
 {
   // Ensure pipe is in [0,5].
   if (pipe < 0 || pipe > 5)
@@ -593,33 +614,34 @@ int nRF24L01p_read(char *dst, byte count, byte pipe)
 
 
 //
-// nRF24L01p_write implementation.
+// nRF24L01p_write_sync implementation.
 //
-int nRF24L01p_write(char *src, byte count)
+int nRF24L01p_write_sync(byte *src, byte count)
 {
-  // Return early if we were told to write nothing.
-  if (count == 0)
-    return 0;
+  // TODO: Add setting for tx packet width.
+  // TODO: Dynamic!
 
-  // Write in chunks of max size nRF24L01p_FIFO_TX_SIZE.
-  byte chunk = count > nRF24L01p_FIFO_TX_SIZE ? nRF24L01p_FIFO_TX_SIZE : count;
+  while (!nRF24L01p_tx_fifo_is_full() && count > 0)
+  {
+    byte *payload;
+    if (count < nRF24L01p_PAYLOAD_WIDTH)
+    {
+      payload = malloc(nRF24L01p_PAYLOAD_WIDTH);
+      memcpy(payload, src, count);
+      count = 0;
+    }
+    else
+    {
+      payload = src;
+      src = src + nRF24L01p_PAYLOAD_WIDTH;
+      count = count - nRF24L01p_PAYLOAD_WIDTH;
+    }
 
-  // The number of bytes left to read.
-  // byte remaining = count - chunk;
+    nRF24L01p_tx_fifo_write(payload, nRF24L01p_PAYLOAD_WIDTH);
+  }
 
-  // TODO: check (nRF24L01p_tx_available(pipe))
 
-  // TODO: Check for need to flush FIFO.
-
-  // TODO: Chuck by nRF24L01p_SPI_R_RX_PL_WID. ???
-
-  spi_start();
-  spi_transfer(nRF24L01p_SPI_W_TX_PAYLOAD);
-  for (byte i = 0; i < chunk; i++ )
-    spi_transfer(*src++);
-  spi_end();
-
-  return chunk; // TODO: This is very clearly wrong.
+  return count;
 }
 
 

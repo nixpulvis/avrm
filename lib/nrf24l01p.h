@@ -201,6 +201,8 @@
 
 #define nRF24L01p_PAYLOAD_WIDTH 32
 
+#include <stdlib.h>
+#include <string.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "avr.h"
@@ -519,8 +521,11 @@ void nRF24L01p_enable(void);
 //
 void nRF24L01p_disable(void);
 
-// nRF24L01p_read
-// Read data over the air.
+// nRF24L01p_read_sync
+// Read data over the air. Blocking until the data is all
+// read.
+//
+// TODO: Timeouts... etc.
 //
 // pipe - The data pipe to read from (0-5).
 // dst - Pointer to storage.
@@ -528,17 +533,20 @@ void nRF24L01p_disable(void);
 //
 // Returns the number of bytes actually read. -1 on error.
 //
-int nRF24L01p_read(char *dst, byte count, byte pipe);
+int nRF24L01p_read_sync(byte *dst, byte count, byte pipe);
 
-// nRF24L01p_write
-// Write data over the air.
+// nRF24L01p_write_sync
+// Write data over the air. Blocking until the data is all
+// sent.
+//
+// TODO: Timeouts... etc.
 //
 // src - Pointer to storage to write.
 // count - Number of bytes to write (1-32).
 //
 // Returns the number of bytes actually written. -1 on error.
 //
-int nRF24L01p_write(char *src, byte count);
+int nRF24L01p_write_sync(byte *src, byte count);
 
 // Utility
 //////////
