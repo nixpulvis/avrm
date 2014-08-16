@@ -79,7 +79,7 @@ ISR (INT0_vect)
 
     // TODO: Read into a buffer?
 
-    nRF24L01p_status_rx_ready_clear();
+    // nRF24L01p_status_rx_ready_clear();
   }
   if (nRF24L01p_status_tx_sent())
   {
@@ -630,6 +630,7 @@ int nRF24L01p_read_sync(byte *dst, byte count)
         byte *payload = malloc(nRF24L01p_PAYLOAD_WIDTH);
         nRF24L01p_rx_fifo_read(payload, nRF24L01p_PAYLOAD_WIDTH);
         memcpy(dst, payload, count);
+        free(payload);
         count = 0;
       }
       else
@@ -658,21 +659,20 @@ int nRF24L01p_write_sync(byte *src, byte count)
   {
     if (!nRF24L01p_tx_fifo_is_full())
     {
-      byte *payload;
       if (count < nRF24L01p_PAYLOAD_WIDTH)
       {
-        payload = malloc(nRF24L01p_PAYLOAD_WIDTH);
+        byte *payload = malloc(nRF24L01p_PAYLOAD_WIDTH);
         memcpy(payload, src, count);
+        nRF24L01p_tx_fifo_write(payload, nRF24L01p_PAYLOAD_WIDTH);
+        free(payload);
         count = 0;
       }
       else
       {
-        payload = src;
+        nRF24L01p_tx_fifo_write(src, nRF24L01p_PAYLOAD_WIDTH);
         src = src + nRF24L01p_PAYLOAD_WIDTH;
         count = count - nRF24L01p_PAYLOAD_WIDTH;
       }
-
-      nRF24L01p_tx_fifo_write(payload, nRF24L01p_PAYLOAD_WIDTH);
     }
   }
 

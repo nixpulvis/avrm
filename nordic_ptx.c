@@ -25,13 +25,14 @@ int main(void)
   // Enable the nRF24L01p.
   nRF24L01p_enable();
 
+  int i = 0;
   while (1)
   {
-    // byte data[54] = "__OWB3upkEMtxkwtiOo1CwLJrx7WybPuJWngzl3Av8Q17sl__test";
-    // nRF24L01p_write_sync(data, 54);
-    byte data[32] = "Hello World!";
-    nRF24L01p_write_sync(data, 32);
-    _delay_ms(1000);
+    char data[54];
+    snprintf(data, 54, "OWB3upkEMtxkwtiOo1CwLJrx7WybPuJWngzl3Av8Q17sl__%d", i++);
+    nRF24L01p_write_sync((byte *) data, 54);
+    printf("Sent %s\n", data);
+    _delay_ms(500);
   }
 
   return 0;

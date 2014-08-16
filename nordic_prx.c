@@ -27,11 +27,8 @@ int main(void)
 
   while (1)
   {
-    // printf("reading\n");
-    // byte data[54];
-    // nRF24L01p_read_sync(data, 54);
-    byte data[32];
-    nRF24L01p_read_sync(data, 32);
+    byte data[54];
+    nRF24L01p_read_sync(data, 54);
     printf("%s\n", data);
   }
 
