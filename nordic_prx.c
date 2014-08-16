@@ -27,16 +27,12 @@ int main(void)
 
   while (1)
   {
-    nRF24L01p_status_fetch();
-    if (nRF24L01p_status_rx_ready())
-    {
-      byte payload[nRF24L01p_PAYLOAD_WIDTH];
-      nRF24L01p_rx_fifo_read(payload, nRF24L01p_PAYLOAD_WIDTH);
-      printf("READ: %s\n", payload);
-      nRF24L01p_disable();
-      nRF24L01p_status_rx_ready_clear();
-      nRF24L01p_enable();
-    }
+    // printf("reading\n");
+    // byte data[54];
+    // nRF24L01p_read_sync(data, 54);
+    byte data[32];
+    nRF24L01p_read_sync(data, 32);
+    printf("%s\n", data);
   }
 
   return 0;

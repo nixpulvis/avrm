@@ -27,8 +27,11 @@ int main(void)
 
   while (1)
   {
-    byte data[54] = "__OWB3upkEMtxkwtiOo1CwLJrx7WybPuJWngzl3Av8Q17sl__test";
-    nRF24L01p_write_sync(data, 54);
+    // byte data[54] = "__OWB3upkEMtxkwtiOo1CwLJrx7WybPuJWngzl3Av8Q17sl__test";
+    // nRF24L01p_write_sync(data, 54);
+    byte data[32] = "Hello World!";
+    nRF24L01p_write_sync(data, 32);
+    printf("%s\n", data);
     _delay_ms(1000);
   }
 

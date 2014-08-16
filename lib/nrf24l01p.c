@@ -79,7 +79,7 @@ ISR (INT0_vect)
 
     // TODO: Read into a buffer?
 
-    // nRF24L01p_status_rx_ready_clear();
+    nRF24L01p_status_rx_ready_clear();
   }
   if (nRF24L01p_status_tx_sent())
   {
@@ -579,37 +579,35 @@ void nRF24L01p_disable(void)
 //
 // nRF24L01p_read_sync implementation.
 //
-int nRF24L01p_read_sync(byte *dst, byte count, byte pipe)
+int nRF24L01p_read_sync(byte *dst, byte count)
 {
-  // Ensure pipe is in [0,5].
-  if (pipe < 0 || pipe > 5)
+  // TODO: Use R_RX_PL_WID to decide width of read payload.
+
+  // TODO: Mask the RX_DR interrupt.
+
+  while (count > 0)
   {
-    return -1;
+    nRF24L01p_status_fetch();
+    if (nRF24L01p_status_rx_ready())
+    {
+      if (count < nRF24L01p_PAYLOAD_WIDTH)
+      {
+        byte *payload = malloc(nRF24L01p_PAYLOAD_WIDTH);
+        nRF24L01p_rx_fifo_read(payload, nRF24L01p_PAYLOAD_WIDTH);
+        memcpy(dst, payload, count);
+        count = 0;
+      }
+      else
+      {
+        nRF24L01p_rx_fifo_read(dst, nRF24L01p_PAYLOAD_WIDTH);
+        dst = dst + nRF24L01p_PAYLOAD_WIDTH;
+        count = count - nRF24L01p_PAYLOAD_WIDTH;
+      }
+      nRF24L01p_status_rx_ready_clear(); // HACK: remove when masked RX_DR.
+    }
   }
 
-  // Return early if we were told to read nothing.
-  if (count == 0)
-    return 0;
-
-  // Read in chunks of max size nRF24L01p_FIFO_RX_SIZE.
-  byte chunk = count > nRF24L01p_FIFO_RX_SIZE ? nRF24L01p_FIFO_RX_SIZE : count;
-
-  // The number of bytes left to read.
-  // byte remaining = count - chunk;
-
-  // TODO: check (nRF24L01p_rx_available(pipe))
-
-  // TODO: Check for need to flush FIFO.
-
-  // TODO: Chuck by nRF24L01p_SPI_R_RX_PL_WID.
-
-  spi_start();
-  spi_transfer(nRF24L01p_SPI_R_RX_PAYLOAD);
-  for (byte i = 0; i < chunk; i++)
-    *dst++ = spi_transfer(nRF24L01p_SPI_NOP);
-  spi_end();
-
-  return chunk; // TODO: This is very clearly wrong.
+  return count;
 }
 
 
@@ -621,23 +619,27 @@ int nRF24L01p_write_sync(byte *src, byte count)
   // TODO: Add setting for tx packet width.
   // TODO: Dynamic!
 
-  while (!nRF24L01p_tx_fifo_is_full() && count > 0)
+  while (count > 0)
   {
-    byte *payload;
-    if (count < nRF24L01p_PAYLOAD_WIDTH)
+    if (!nRF24L01p_tx_fifo_is_full())
     {
-      payload = malloc(nRF24L01p_PAYLOAD_WIDTH);
-      memcpy(payload, src, count);
-      count = 0;
-    }
-    else
-    {
-      payload = src;
-      src = src + nRF24L01p_PAYLOAD_WIDTH;
-      count = count - nRF24L01p_PAYLOAD_WIDTH;
-    }
+      printf("pushing %d to TX FIFO\n", count);
+      byte *payload;
+      if (count < nRF24L01p_PAYLOAD_WIDTH)
+      {
+        payload = malloc(nRF24L01p_PAYLOAD_WIDTH);
+        memcpy(payload, src, count);
+        count = 0;
+      }
+      else
+      {
+        payload = src;
+        src = src + nRF24L01p_PAYLOAD_WIDTH;
+        count = count - nRF24L01p_PAYLOAD_WIDTH;
+      }
 
-    nRF24L01p_tx_fifo_write(payload, nRF24L01p_PAYLOAD_WIDTH);
+      nRF24L01p_tx_fifo_write(payload, nRF24L01p_PAYLOAD_WIDTH);
+    }
   }
 
 

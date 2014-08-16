@@ -533,7 +533,7 @@ void nRF24L01p_disable(void);
 //
 // Returns the number of bytes actually read. -1 on error.
 //
-int nRF24L01p_read_sync(byte *dst, byte count, byte pipe);
+int nRF24L01p_read_sync(byte *dst, byte count);
 
 // nRF24L01p_write_sync
 // Write data over the air. Blocking until the data is all
