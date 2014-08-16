@@ -215,9 +215,20 @@ void nRF24L01p_init(void);
 
 // CONFIG
 
-// TODO: MASK_RX_DR
-// TODO: MASK_TX_DS
-// TODO: MASK_MAX_RT
+// nRF24L01p_config_rx_dr_interrupt
+// Enables or disables the RX data received interrupt.
+//
+int nRF24L01p_config_rx_dr_interrupt(bool value);
+
+// nRF24L01p_config_tx_ds_interrupt
+// Enables or disables the TX data sent interrupt.
+//
+int nRF24L01p_config_tx_ds_interrupt(bool value);
+
+// nRF24L01p_config_max_rt_interrupt
+// Enables or disables the max retries interrupt.
+//
+int nRF24L01p_config_max_rt_interrupt(bool value);
 
 // nRF24L01p_config_crc
 // Sets the device to use or not use the CRC.

@@ -31,7 +31,6 @@ int main(void)
     // nRF24L01p_write_sync(data, 54);
     byte data[32] = "Hello World!";
     nRF24L01p_write_sync(data, 32);
-    printf("%s\n", data);
     _delay_ms(1000);
   }
 

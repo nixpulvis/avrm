@@ -115,6 +115,42 @@ ISR (INT0_vect)
 
 
 //
+// nRF24L01p_config_rx_dr_interrupt implementation.
+//
+int nRF24L01p_config_rx_dr_interrupt(bool value)
+{
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
+                               nRF24L01p_MASK_CONFIG_MASK_RX_DR,
+                               value ? 0x00 : 0xFF);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_tx_ds_interrupt implementation.
+//
+int nRF24L01p_config_tx_ds_interrupt(bool value)
+{
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
+                               nRF24L01p_MASK_CONFIG_MASK_TX_DS,
+                               value ? 0x00 : 0xFF);
+  return 0;
+}
+
+
+//
+// nRF24L01p_config_max_rt_interrupt implementation.
+//
+int nRF24L01p_config_max_rt_interrupt(bool value)
+{
+  nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_CONFIG,
+                               nRF24L01p_MASK_CONFIG_MASK_MAX_RT,
+                               value ? 0x00 : 0xFF);
+  return 0;
+}
+
+
+//
 // nRF24L01p_config_crc implementation.
 //
 int nRF24L01p_config_crc(byte value)
@@ -562,7 +598,7 @@ void nRF24L01p_enable(void)
 {
   // Pull CE high.
   PORTB |= _BV(PORTB0);
-  _delay_us(nRF24L01p_TIMING_TPECE2CSN_US);
+  _delay_us(nRF24L01p_TIMING_TSTBY2A_US);
 }
 
 
@@ -582,8 +618,7 @@ void nRF24L01p_disable(void)
 int nRF24L01p_read_sync(byte *dst, byte count)
 {
   // TODO: Use R_RX_PL_WID to decide width of read payload.
-
-  // TODO: Mask the RX_DR interrupt.
+  // TODO: Pipes.
 
   while (count > 0)
   {
@@ -603,7 +638,7 @@ int nRF24L01p_read_sync(byte *dst, byte count)
         dst = dst + nRF24L01p_PAYLOAD_WIDTH;
         count = count - nRF24L01p_PAYLOAD_WIDTH;
       }
-      nRF24L01p_status_rx_ready_clear(); // HACK: remove when masked RX_DR.
+      nRF24L01p_status_rx_ready_clear(); // HACK: remove when we implement pipes.
     }
   }
 
@@ -623,7 +658,6 @@ int nRF24L01p_write_sync(byte *src, byte count)
   {
     if (!nRF24L01p_tx_fifo_is_full())
     {
-      printf("pushing %d to TX FIFO\n", count);
       byte *payload;
       if (count < nRF24L01p_PAYLOAD_WIDTH)
       {
