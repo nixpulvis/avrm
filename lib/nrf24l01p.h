@@ -477,7 +477,7 @@ bool nRF24L01p_tx_fifo_is_empty(void);
 //
 // Returns the number of bytes written.
 //
-int nRF24L01p_tx_fifo_write(byte *payload, byte size);
+int nRF24L01p_tx_fifo_write(const byte *payload, byte size);
 
 // nRF24L01p_tx_fifo_flush
 // Flush the TX FIFO, clearing it of all payloads.
@@ -535,12 +535,26 @@ void nRF24L01p_disable(void);
 // TODO: Timeouts... etc.
 //
 // pipe - The data pipe to read from (0-5).
-// dst - Pointer to storage.
-// count - Number of bytes to read (1-32).
+// dst - Pointer to data.
+// count - Number of bytes to read.
 //
 // Returns the number of bytes actually read. -1 on error.
 //
-int nRF24L01p_read_sync(byte *dst, byte count);
+// TODO: Add pipe argument.
+int nRF24L01p_read_sync(byte *restrict dst, size_t count);
+
+// nRF24L01p_write
+// Write data over the air. This function doesn't block while
+// the data is being sent, use nRF24L01p_write_poll() to
+// get the status of the write.
+//
+// Calls to nRF24L01p_write while there is a non finished
+// write in progress will fail and return -1.
+//
+// src - Pointer to the data to write.
+// count - Number of bytes to write.
+//
+int nRF24L01p_write(const byte *restrict src, size_t count);
 
 // nRF24L01p_write_sync
 // Write data over the air. Blocking until the data is all
@@ -548,12 +562,12 @@ int nRF24L01p_read_sync(byte *dst, byte count);
 //
 // TODO: Timeouts... etc.
 //
-// src - Pointer to storage to write.
-// count - Number of bytes to write (1-32).
+// src - Pointer to data to write.
+// count - Number of bytes to write.
 //
 // Returns the number of bytes actually written. -1 on error.
 //
-int nRF24L01p_write_sync(byte *src, byte count);
+int nRF24L01p_write_sync(const byte *restrict src, size_t count);
 
 // Utility
 //////////

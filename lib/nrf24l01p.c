@@ -527,7 +527,7 @@ bool nRF24L01p_tx_fifo_is_empty(void)
 //
 // nRF24L01p_tx_fifo_write implementation.
 //
-int nRF24L01p_tx_fifo_write(byte *payload, byte size)
+int nRF24L01p_tx_fifo_write(const byte *payload, byte size)
 {
   spi_start();
   spi_transfer(nRF24L01p_SPI_W_TX_PAYLOAD);
@@ -624,7 +624,7 @@ void nRF24L01p_disable(void)
 //
 // nRF24L01p_read_sync implementation.
 //
-int nRF24L01p_read_sync(byte *dst, byte count)
+int nRF24L01p_read_sync(byte *restrict dst, size_t count)
 {
   // TODO: Use R_RX_PL_WID to decide width of read payload.
   // TODO: Pipes.
@@ -659,7 +659,7 @@ int nRF24L01p_read_sync(byte *dst, byte count)
 //
 // nRF24L01p_write_sync implementation.
 //
-int nRF24L01p_write_sync(byte *src, byte count)
+int nRF24L01p_write_sync(const byte *restrict src, size_t count)
 {
   // TODO: Add setting for tx packet width.
   // TODO: Dynamic!
