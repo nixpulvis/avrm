@@ -13,6 +13,11 @@ int main(void)
   // Setup the UART, necessary for stdio actions.
   uart_init();
 
+  // Set an LED.
+  DDRD |= _BV(DDB6);
+  DDRD |= _BV(DDB7);
+  PORTD &= ~_BV(PORTB6);
+
   // Wait for the nRF24L01p to be ready.
   _delay_us(nRF24L01p_TIMING_INITIAL_US);
 
@@ -25,11 +30,15 @@ int main(void)
   // Enable the nRF24L01p.
   nRF24L01p_enable();
 
+  byte state = 0;
   while (1)
   {
-    byte data[54];
-    nRF24L01p_read_sync(data, 54);
-    printf("%s\n", data);
+    nRF24L01p_read_sync(&state, 1);
+    if (state)
+      PORTD |= _BV(PORTB7);
+    else
+      PORTD &= ~_BV(PORTB7);
+    printf("%d\n", state);
   }
 
   return 0;

@@ -30,17 +30,13 @@ int main(void)
   // Enable the nRF24L01p.
   nRF24L01p_enable();
 
-  int i = 0;
+  byte prev_state = !(PIND & _BV(PORTD6));
   while (1)
   {
-    if (!(PIND & _BV(PORTD6)))
-    {
-      char data[54];
-      snprintf(data, 54, "OWB3upkEMtxkwtiOo1CwLJrx7WybPuJWngzl3Av8Q17sl__%d", i++);
-      nRF24L01p_write_sync((byte *) data, 54);
-      printf("Sent %s\n", data);
-      _delay_ms(500);
-    }
+    byte curr_state = !(PIND & _BV(PORTD6));
+    if (curr_state != prev_state)
+      nRF24L01p_write_sync(&curr_state, 1);
+    prev_state = curr_state;
   }
 
   return 0;
