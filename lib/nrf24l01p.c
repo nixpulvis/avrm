@@ -57,8 +57,9 @@ void nRF24L01p_init(void)
   nRF24L01p_status_max_retries_clear();
 
   // Enable external interrupt 0.
+  // TODO: Make this configurable.
   EIMSK |= (1 << INT0);
-  EICRA |= (1 << ISC00); // TODO: Make falling edge.
+  EICRA &= ~(1 << ISC00);
 
   // Enable interrupts.
   sei();
