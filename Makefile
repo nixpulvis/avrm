@@ -34,6 +34,10 @@ OBJ_COPY_FLAGS = -O ihex -R .eeprom
 AVRDUDE = avrdude
 AVRDUDE_FLAGS = -F -V -c arduino -p ATMEGA328P
 
+# The `avr-size` executable.
+AVRSIZE = avr-size
+AVRSIZE_FLAGS = -C
+
 # The source file.
 ifneq ($(TARGET),)
 SOURCE = $(TARGET).$(LANGUAGE)
@@ -53,7 +57,7 @@ default: flash
 # Pseudo rules.
 
 # These rules are not file based.
-.PHONY: flash serial clean
+.PHONY: flash serial size clean
 
 # Mark the hex file as intermediate.
 .INTERMEDIATE: $(TARGET).hex
@@ -84,6 +88,12 @@ serial:
 # Ensure there is a valid target.
 check_target:
 	@$ [ -f ./$(SOURCE) ] || (echo "Invalid TARGET \"$(TARGET)\"" && false)
+
+# size
+#
+# Show information about target's size.
+size: $(TARGET).bin
+	$(AVRSIZE) $(AVRSIZE_FLAGS) --mcu=$(MMCU) $<
 
 # Remove non-source files.
 clean:
