@@ -62,7 +62,7 @@ void nRF24L01p_init(void)
   // Enable external interrupt 0.
   // TODO: Make this configurable.
   EIMSK |= (1 << INT0);
-  EICRA &= ~(1 << ISC00);
+  EICRA = (EICRA & ~(1 << ISC00 | 1 << ISC01)) | 0x02;
 
   // Enable interrupts.
   sei();
