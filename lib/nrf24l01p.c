@@ -1,3 +1,6 @@
+// TODO: Allow configuration.
+#define PAYLOAD_WIDTH 32
+
 #include "nrf24l01p.h"
 
 //
@@ -29,7 +32,7 @@ void nRF24L01p_init(void)
 
   // Configure payload width.
   nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P0,
-                                 nRF24L01p_PAYLOAD_WIDTH);
+                                 PAYLOAD_WIDTH);
 
   // Configure RF channel.
   nRF24L01p_config_channel(2);
@@ -631,19 +634,19 @@ int nRF24L01p_read_sync(byte *dst, byte count)
     nRF24L01p_status_fetch();
     if (nRF24L01p_status_rx_ready())
     {
-      if (count < nRF24L01p_PAYLOAD_WIDTH)
+      if (count < PAYLOAD_WIDTH)
       {
-        byte *payload = malloc(nRF24L01p_PAYLOAD_WIDTH);
-        nRF24L01p_rx_fifo_read(payload, nRF24L01p_PAYLOAD_WIDTH);
+        byte *payload = malloc(PAYLOAD_WIDTH);
+        nRF24L01p_rx_fifo_read(payload, PAYLOAD_WIDTH);
         memcpy(dst, payload, count);
         free(payload);
         count = 0;
       }
       else
       {
-        nRF24L01p_rx_fifo_read(dst, nRF24L01p_PAYLOAD_WIDTH);
-        dst = dst + nRF24L01p_PAYLOAD_WIDTH;
-        count = count - nRF24L01p_PAYLOAD_WIDTH;
+        nRF24L01p_rx_fifo_read(dst, PAYLOAD_WIDTH);
+        dst = dst + PAYLOAD_WIDTH;
+        count = count - PAYLOAD_WIDTH;
       }
       nRF24L01p_status_rx_ready_clear(); // HACK: remove when we implement pipes.
     }
@@ -665,19 +668,19 @@ int nRF24L01p_write_sync(byte *src, byte count)
   {
     if (!nRF24L01p_tx_fifo_is_full())
     {
-      if (count < nRF24L01p_PAYLOAD_WIDTH)
+      if (count < PAYLOAD_WIDTH)
       {
-        byte *payload = malloc(nRF24L01p_PAYLOAD_WIDTH);
+        byte *payload = malloc(PAYLOAD_WIDTH);
         memcpy(payload, src, count);
-        nRF24L01p_tx_fifo_write(payload, nRF24L01p_PAYLOAD_WIDTH);
+        nRF24L01p_tx_fifo_write(payload, PAYLOAD_WIDTH);
         free(payload);
         count = 0;
       }
       else
       {
-        nRF24L01p_tx_fifo_write(src, nRF24L01p_PAYLOAD_WIDTH);
-        src = src + nRF24L01p_PAYLOAD_WIDTH;
-        count = count - nRF24L01p_PAYLOAD_WIDTH;
+        nRF24L01p_tx_fifo_write(src, PAYLOAD_WIDTH);
+        src = src + PAYLOAD_WIDTH;
+        count = count - PAYLOAD_WIDTH;
       }
     }
   }

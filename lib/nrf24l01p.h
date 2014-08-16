@@ -197,10 +197,6 @@
 
 #define nRF24L01p_DEFAULT_ADDRESS 0xE7E7E7E7E7
 
-// Our Definitions
-
-#define nRF24L01p_PAYLOAD_WIDTH 32
-
 #include <stdlib.h>
 #include <string.h>
 #include <avr/interrupt.h>
