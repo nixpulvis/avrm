@@ -15,11 +15,11 @@ void nRF24L01p_init(void)
   nRF24L01p_config_crc(nRF24L01p_VALUE_CONFIG_CRC_ENABLE);
   nRF24L01p_config_crc_count(nRF24L01p_VALUE_CONFIG_CRCO_1);
 
-  // Disable auto acknowledgment. TODO: play with this.
-  nRF24L01p_config_auto_ack(nRF24L01p_MASK_EN_AA_ENAA_ALL, TRUE);
-
   // Configure address width.
   nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_5);
+
+  // Disable all pipes except P0.
+  // TODO:
 
   // Configure default address for TX and pipe 0.
   nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR,
@@ -31,18 +31,21 @@ void nRF24L01p_init(void)
   nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P0,
                                  nRF24L01p_PAYLOAD_WIDTH);
 
+  // Configure RF channel.
+  nRF24L01p_config_channel(2);
+
   // Configure air data rate.
   nRF24L01p_config_air_data_rate(nRF24L01p_VALUE_RF_SETUP_RF_DR_2Mbps);
 
   // Configure output power.
   nRF24L01p_config_output_power(nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm);
 
+  // Enable auto acknowledgment.
+  nRF24L01p_config_auto_ack(nRF24L01p_MASK_EN_AA_ENAA_ALL, TRUE);
+
   // Configure retransmit.
   nRF24L01p_config_retransmit_count(nRF24L01p_VALUE_SETUP_RETR_ARC_3);
   nRF24L01p_config_retransmit_delay(nRF24L01p_VALUE_SETUP_RETR_ARD_250);
-
-  // Configure RF channel.
-  nRF24L01p_config_channel(2);
 
   // Flush the FIFOs
   nRF24L01p_tx_fifo_flush();
