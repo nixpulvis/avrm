@@ -22,7 +22,8 @@ void nRF24L01p_init(void)
   nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_5);
 
   // Disable all pipes except P0.
-  // TODO:
+  nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_ALL, FALSE);
+  nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_P0, TRUE);
 
   // Configure default address for TX and pipe 0.
   nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR,
