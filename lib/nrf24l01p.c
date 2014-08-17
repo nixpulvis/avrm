@@ -369,12 +369,19 @@ int nRF24L01p_config_output_power(byte value)
 //
 // nRF24L01p_config_address implementation.
 //
-int nRF24L01p_config_address(byte address_register,
-                             long long unsigned int address)
+int nRF24L01p_config_address(byte reg, long long unsigned int address)
 {
-  // TODO error checking for bad addresses.
+  if (!(reg == nRF24L01p_REGISTER_RX_ADDR_P1 ||
+        reg == nRF24L01p_REGISTER_RX_ADDR_P2 ||
+        reg == nRF24L01p_REGISTER_RX_ADDR_P3 ||
+        reg == nRF24L01p_REGISTER_RX_ADDR_P4 ||
+        reg == nRF24L01p_REGISTER_RX_ADDR_P5 ||
+        reg == nRF24L01p_REGISTER_TX_ADDR))
+    return -1;
 
-  nRF24L01p_set_register40(address_register, address);
+  // TODO: error checking for bad addresses.
+
+  nRF24L01p_set_register40(reg, address);
 
   return 0;
 }
@@ -582,7 +589,7 @@ int nRF24L01p_rx_fifo_read(byte *payload, byte size)
     *payload++ = spi_transfer(nRF24L01p_SPI_NOP);
   spi_end();
 
-  return size; // TODO: catch FIFO full IRQ.
+  return size;
 }
 
 
@@ -650,6 +657,8 @@ int nRF24L01p_read_sync(byte *restrict dst, size_t count)
         count = count - PAYLOAD_WIDTH;
       }
       nRF24L01p_status_rx_ready_clear(); // HACK: remove when we implement pipes.
+                                         //       also unclear if we need to call
+                                         //       disable before using this.
     }
   }
 

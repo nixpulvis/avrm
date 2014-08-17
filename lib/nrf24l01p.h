@@ -360,10 +360,23 @@ int nRF24L01p_config_output_power(byte value);
 // RX_ADDR_P(0-5) and TX_ADDR
 
 // nRF24L01p_config_address
-// TODO: Write information here.
+// Set the address of a given RX pipe, or TX. The amount
+// of the given address that is used for the address is based
+// on the setting on the address width.
 //
-int nRF24L01p_config_address(byte address_register,
-                             long long unsigned int address);
+// Using addresses with long sequences of 0s or 1s is inadvisable,
+// as it can conflict with radio preambles.
+//
+// reg - nRF24L01p_REGISTER_RX_ADDR_P0 or
+//            nRF24L01p_REGISTER_RX_ADDR_P1 or
+//            nRF24L01p_REGISTER_RX_ADDR_P2 or
+//            nRF24L01p_REGISTER_RX_ADDR_P3 or
+//            nRF24L01p_REGISTER_RX_ADDR_P4 or
+//            nRF24L01p_REGISTER_RX_ADDR_P5 or
+//            nRF24L01p_REGISTER_TX_ADDR.
+// address - A value to set the address to.
+//
+int nRF24L01p_config_address(byte reg, long long unsigned int address);
 
 // RX_PW_P(0-5)
 
@@ -372,7 +385,7 @@ int nRF24L01p_config_address(byte address_register,
 // pipe MUST match the width of the data sent from the
 // transmitter.
 //
-// address - One of nRF24L01p_REGISTER_RX_PW_P0 or
+// reg - One of nRF24L01p_REGISTER_RX_PW_P0 or
 //                  nRF24L01p_REGISTER_RX_PW_P1 or
 //                  nRF24L01p_REGISTER_RX_PW_P2 or
 //                  nRF24L01p_REGISTER_RX_PW_P3 or
@@ -381,7 +394,7 @@ int nRF24L01p_config_address(byte address_register,
 // width - The number of bytes in the payload for this pipe
 //         value can be between 0 and 32.
 //
-int nRF24L01p_config_payload_width(byte address, byte width);
+int nRF24L01p_config_payload_width(byte reg, byte width);
 
 // FIFO_STATUS - Not used for configuration, TODO: see fifo_status functions.
 
@@ -474,6 +487,7 @@ bool nRF24L01p_tx_fifo_is_empty(void);
 //
 // payload - An array of bytes to write to the TX FIFO.
 // size - The number of bytes from payload to write.
+//        (0-nRF24L01p_FIFO_TX_SIZE)
 //
 // Returns the number of bytes written.
 //
@@ -498,7 +512,7 @@ bool nRF24L01p_rx_fifo_is_empty(void);
 // Read the top payload from the RX FIFO.
 //
 // payload - Buffer to read data into.
-// size - number of bytes to read.
+// size - number of bytes to read. (0-nRF24L01p_FIFO_RX_SIZE)
 //
 // Returns number of bytes read.
 //
@@ -624,7 +638,7 @@ long long unsigned int nRF24L01p_get_register40(byte address);
 
 // nRF24L01p_set_register40
 // Set the value of a 40 bit register. This operation should only
-// be done while in Power Down or Standby-I. TODO: verify.
+// be done while in Power Down or Standby-I.
 //
 // Note: Addresses (18-1B) are reserved, and cannot be set
 //       using these functions.
