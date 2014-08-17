@@ -60,7 +60,7 @@ default: flash
 .PHONY: flash serial size clean
 
 # Mark the hex file as intermediate.
-.INTERMEDIATE: $(TARGET).hex
+.INTERMEDIATE: $(TARGET).hex $(TARGET).bin
 
 ################################
 
