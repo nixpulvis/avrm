@@ -7,6 +7,15 @@
 #include <avr/io.h>
 #include <util/setbaud.h>
 
+// Macros
+/////////
+
+#define delay_ms(ms) \
+  do \
+  { \
+    for (double i = 0; i < (ms); i++) _delay_ms(1); \
+  } while (0)
+
 // Type Definitions
 ///////////////////
 
