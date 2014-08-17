@@ -22,7 +22,8 @@ int main(void)
   _delay_us(nRF24L01p_TIMING_INITIAL_US);
 
   // Initialize the nRF24L01p.
-  nRF24L01p_init();
+  // TODO: Actual info for arguments.
+  nRF24L01p_init(0, 0);
 
   // Set RX mode.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
@@ -33,7 +34,7 @@ int main(void)
   byte state = 0;
   while (1)
   {
-    nRF24L01p_read_sync(&state, 1);
+    nRF24L01p_read_sync(&state, 1, nRF24L01p_PIPE_0);
     if (state)
       PORTD |= _BV(PORTB7);
     else

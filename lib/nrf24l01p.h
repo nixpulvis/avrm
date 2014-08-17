@@ -193,6 +193,15 @@
 #define nRF24L01p_TIMING_THCE_US      10    // 10us
 #define nRF24L01p_TIMING_TPECE2CSN_US 4     // 4us
 
+// Pipes
+
+#define nRF24L01p_PIPE_0 (1 << 0)
+#define nRF24L01p_PIPE_1 (1 << 1)
+#define nRF24L01p_PIPE_2 (1 << 2)
+#define nRF24L01p_PIPE_3 (1 << 3)
+#define nRF24L01p_PIPE_4 (1 << 4)
+#define nRF24L01p_PIPE_5 (1 << 5)
+
 // Defaults
 
 #define nRF24L01p_DEFAULT_ADDRESS 0xE7E7E7E7E7
@@ -203,8 +212,18 @@
 #include <util/delay.h>
 #include "avr.h"
 
-// TODO: Determine the proper interface here.
-void nRF24L01p_init(void);
+// nRF24L01p_init
+// Setup the default configuration for the device.
+//
+// For the sake of brevity I'll let you read the source
+// code to see what the defaults are.
+//
+// ce - CE pin. TODO: figure out how to represent this.
+// irq - IRQ pin. TODO: figure out how to represent this.
+//
+// Returns 0 if successful, -1 otherwise.
+//
+int nRF24L01p_init(int ce, int irq);
 
 // Configuration
 ////////////////
@@ -350,8 +369,8 @@ int nRF24L01p_config_output_power(byte value);
 
 // TODO: LNA_HCURR
 
-// STATUS - Not used for configuration, TODO: see status functions.
-// OBSERVE_TX - Not used for configuration, TODO: see observe functions.
+// STATUS - Not used for configuration, see status functions.
+// OBSERVE_TX - Not used for configuration, see observe functions.
 
 // CD
 
@@ -368,12 +387,12 @@ int nRF24L01p_config_output_power(byte value);
 // as it can conflict with radio preambles.
 //
 // reg - nRF24L01p_REGISTER_RX_ADDR_P0 or
-//            nRF24L01p_REGISTER_RX_ADDR_P1 or
-//            nRF24L01p_REGISTER_RX_ADDR_P2 or
-//            nRF24L01p_REGISTER_RX_ADDR_P3 or
-//            nRF24L01p_REGISTER_RX_ADDR_P4 or
-//            nRF24L01p_REGISTER_RX_ADDR_P5 or
-//            nRF24L01p_REGISTER_TX_ADDR.
+//       nRF24L01p_REGISTER_RX_ADDR_P1 or
+//       nRF24L01p_REGISTER_RX_ADDR_P2 or
+//       nRF24L01p_REGISTER_RX_ADDR_P3 or
+//       nRF24L01p_REGISTER_RX_ADDR_P4 or
+//       nRF24L01p_REGISTER_RX_ADDR_P5 or
+//       nRF24L01p_REGISTER_TX_ADDR.
 // address - A value to set the address to.
 //
 int nRF24L01p_config_address(byte reg, long long unsigned int address);
@@ -386,17 +405,17 @@ int nRF24L01p_config_address(byte reg, long long unsigned int address);
 // transmitter.
 //
 // reg - One of nRF24L01p_REGISTER_RX_PW_P0 or
-//                  nRF24L01p_REGISTER_RX_PW_P1 or
-//                  nRF24L01p_REGISTER_RX_PW_P2 or
-//                  nRF24L01p_REGISTER_RX_PW_P3 or
-//                  nRF24L01p_REGISTER_RX_PW_P4 or
-//                  nRF24L01p_REGISTER_RX_PW_P5
+//              nRF24L01p_REGISTER_RX_PW_P1 or
+//              nRF24L01p_REGISTER_RX_PW_P2 or
+//              nRF24L01p_REGISTER_RX_PW_P3 or
+//              nRF24L01p_REGISTER_RX_PW_P4 or
+//              nRF24L01p_REGISTER_RX_PW_P5
 // width - The number of bytes in the payload for this pipe
 //         value can be between 0 and 32.
 //
 int nRF24L01p_config_payload_width(byte reg, byte width);
 
-// FIFO_STATUS - Not used for configuration, TODO: see fifo_status functions.
+// FIFO_STATUS - Not used for configuration, see fifo_status functions.
 
 // DYNPD
 
@@ -407,6 +426,67 @@ int nRF24L01p_config_payload_width(byte reg, byte width);
 // TODO: EN_DPL
 // TODO: EN_ACK_PAY
 // TODO: EN_DYN_ACK
+
+// PIPE HELPER FUNCTIONS
+////////////////////////
+
+// nRF24L01p_payload_width
+// Returns the number of bytes the given pipe's payloads are.
+//
+// pipe - One of nRF24L01p_PIPE_0 or
+//               nRF24L01p_PIPE_1 or
+//               nRF24L01p_PIPE_2 or
+//               nRF24L01p_PIPE_3 or
+//               nRF24L01p_PIPE_4 or
+//               nRF24L01p_PIPE_5.
+//
+byte nRF24L01p_payload_width(byte pipe);
+
+// nRF24L01p_address
+// Returns the address of the given pipe.
+//
+// pipe - One of nRF24L01p_PIPE_0 or
+//               nRF24L01p_PIPE_1 or
+//               nRF24L01p_PIPE_2 or
+//               nRF24L01p_PIPE_3 or
+//               nRF24L01p_PIPE_4 or
+//               nRF24L01p_PIPE_5.
+//
+long long unsigned int nRF24L01p_address(byte pipe);
+
+// nRF24L01p_enable_pipe
+// Enable a pipe to read from the given address.
+//
+// TODO:
+// It's worth mentioning that this function function allocates
+// a receiving buffer, so don't use more pipes than you need.
+//
+// pipe - One of nRF24L01p_PIPE_0 or
+//               nRF24L01p_PIPE_1 or
+//               nRF24L01p_PIPE_2 or
+//               nRF24L01p_PIPE_3 or
+//               nRF24L01p_PIPE_4 or
+//               nRF24L01p_PIPE_5.
+// address - The address to read from, matching the address set
+//           by the TX using nRF24L01p_config_address.
+// payload_width - A value between 1 and 32. TODO: Add dynamic option.
+//
+int nRF24L01p_enable_pipe(byte pipe,
+                          long long unsigned int address,
+                          byte payload_width);
+
+// nRF24L01p_disable_pipe
+// Disable a pipe, freeing allocated memory. This function does
+// not reset the address of the disabled pipe.
+//
+// pipe - One of nRF24L01p_PIPE_0 or
+//               nRF24L01p_PIPE_1 or
+//               nRF24L01p_PIPE_2 or
+//               nRF24L01p_PIPE_3 or
+//               nRF24L01p_PIPE_4 or
+//               nRF24L01p_PIPE_5.
+//
+int nRF24L01p_disable_pipe(byte pipe);
 
 // STATUS
 /////////
@@ -561,14 +641,19 @@ void nRF24L01p_disable(void);
 //
 // TODO: Timeouts... etc.
 //
-// pipe - The data pipe to read from (0-5).
 // dst - Pointer to data.
 // count - Number of bytes to read.
+// pipe - One of nRF24L01p_PIPE_0 or
+//               nRF24L01p_PIPE_1 or
+//               nRF24L01p_PIPE_2 or
+//               nRF24L01p_PIPE_3 or
+//               nRF24L01p_PIPE_4 or
+//               nRF24L01p_PIPE_5.
 //
 // Returns the number of bytes actually read. -1 on error.
 //
 // TODO: Add pipe argument.
-int nRF24L01p_read_sync(byte *restrict dst, size_t count);
+int nRF24L01p_read_sync(byte *restrict dst, size_t count, byte pipe);
 
 // nRF24L01p_write
 // Write data over the air. This function doesn't block while
@@ -580,8 +665,14 @@ int nRF24L01p_read_sync(byte *restrict dst, size_t count);
 //
 // src - Pointer to the data to write.
 // count - Number of bytes to write.
+// pipe - One of nRF24L01p_PIPE_0 or
+//               nRF24L01p_PIPE_1 or
+//               nRF24L01p_PIPE_2 or
+//               nRF24L01p_PIPE_3 or
+//               nRF24L01p_PIPE_4 or
+//               nRF24L01p_PIPE_5.
 //
-int nRF24L01p_write(const byte *restrict src, size_t count);
+int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe);
 
 // nRF24L01p_write_sync
 // Write data over the air. Blocking until the data is all
@@ -594,7 +685,7 @@ int nRF24L01p_write(const byte *restrict src, size_t count);
 //
 // Returns the number of bytes actually written. -1 on error.
 //
-int nRF24L01p_write_sync(const byte *restrict src, size_t count);
+int nRF24L01p_write_sync(const byte *restrict src, size_t count, byte pipe);
 
 // Utility
 //////////
