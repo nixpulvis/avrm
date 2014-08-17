@@ -78,11 +78,11 @@ void nRF24L01p_init(void)
 ISR (INT0_vect)
 {
   nRF24L01p_status_fetch();
+
+  // TODO: Read into a buffer?
   if (nRF24L01p_status_rx_ready())
   {
     printf("RX READY on pipe %d.\n", nRF24L01p_status_pipe_ready());
-
-    // TODO: Read into a buffer?
 
     // HACK: This was commented out to allow read_sync to
     // handle this interrupt in a while(1) loop. When we
@@ -91,32 +91,31 @@ ISR (INT0_vect)
     //
     // nRF24L01p_status_rx_ready_clear();
   }
+
+  // TODO: Figure out if we need to do anything here.
   if (nRF24L01p_status_tx_sent())
   {
     printf("TX SENT with %d retransmits.\n",
            nRF24L01p_packets_retransmitted());
 
-    // TODO: Figure out if we need to do anything here.
-
     nRF24L01p_status_tx_sent_clear();
   }
+
+  // TODO: Handle link loss.
+  // TODO: Figure out why FIFO full is being asserted in here.
   if (nRF24L01p_status_max_retries())
   {
     byte lost = nRF24L01p_packets_lost();
     printf("TX DROPPED with %d lost in total.\n", lost);
 
-    // TODO: Handle link loss.
-    // TODO: Figure out why FIFO full is being asserted in here.
-
     nRF24L01p_tx_fifo_flush();
     nRF24L01p_status_max_retries_clear();
   }
 
+  // TODO: Think this case through.
   if (nRF24L01p_status_tx_full())
   {
     printf("TX FIFO FULL\n");
-
-    // TODO: Think this case through.
   }
 }
 
