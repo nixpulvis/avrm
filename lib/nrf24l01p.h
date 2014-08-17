@@ -526,7 +526,20 @@ void nRF24L01p_rx_fifo_flush(void);
 // OBSERVE
 //////////
 
-// TODO: All of it.
+// nRF24L01p_packets_lost
+// Returns the number of packets lost since last setting of
+// the radio channel.
+//
+// This is a 4 bit field in the OBSERVE_TX register, so the
+// value maxes out at 15.
+//
+byte nRF24L01p_packets_lost(void);
+
+// nRF24L01p_packets_retransmitted
+// Returns the number of packets retransmitted. This value
+// is reset at the start of a new packet transmission.
+//
+byte nRF24L01p_packets_retransmitted(void);
 
 // IO
 /////

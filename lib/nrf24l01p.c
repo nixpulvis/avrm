@@ -93,7 +93,8 @@ ISR (INT0_vect)
   }
   if (nRF24L01p_status_tx_sent())
   {
-    printf("TX SENT\n");
+    printf("TX SENT with %d retransmits.\n",
+           nRF24L01p_packets_retransmitted());
 
     // TODO: Figure out if we need to do anything here.
 
@@ -101,12 +102,13 @@ ISR (INT0_vect)
   }
   if (nRF24L01p_status_max_retries())
   {
-    printf("MAX RETRIES\n");
+    byte lost = nRF24L01p_packets_lost();
+    printf("TX DROPPED with %d lost in total.\n", lost);
 
     // TODO: Handle link loss.
-    nRF24L01p_tx_fifo_flush();
-    _delay_ms(100);
+    // TODO: Figure out why FIFO full is being asserted in here.
 
+    nRF24L01p_tx_fifo_flush();
     nRF24L01p_status_max_retries_clear();
   }
 
@@ -601,6 +603,30 @@ void nRF24L01p_rx_fifo_flush(void)
   spi_start();
   spi_transfer(nRF24L01p_SPI_FLUSH_RX);
   spi_end();
+}
+
+
+// OBSERVE
+//////////
+
+
+//
+// nRF24L01p_packets_lost implementation.
+//
+byte nRF24L01p_packets_lost(void)
+{
+  return (nRF24L01p_get_register8(nRF24L01p_REGISTER_OBSERVE_TX) &
+         nRF24L01p_MASK_OBSERVE_TX_PLOS_CNT) >> 4;
+}
+
+
+//
+// nRF24L01p_packets_retransmitted implementation.
+//
+byte nRF24L01p_packets_retransmitted(void)
+{
+  return nRF24L01p_get_register8(nRF24L01p_REGISTER_OBSERVE_TX) &
+         nRF24L01p_MASK_OBSERVE_TX_ARC_CNT;
 }
 
 
