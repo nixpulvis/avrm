@@ -22,9 +22,6 @@ int nRF24L01p_init(int ce, int irq)
   // with nRF24L01p_enable_pipe.
   nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_ALL, FALSE);
 
-  // Enable pipe 0, TODO: Don't do this in init.
-  nRF24L01p_enable_pipe(nRF24L01p_PIPE_0, nRF24L01p_DEFAULT_ADDRESS, 32);
-
   // Configure RF channel.
   nRF24L01p_config_channel(2);
 

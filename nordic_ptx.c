@@ -25,6 +25,9 @@ int main(void)
   // TODO: Actual info for arguments.
   nRF24L01p_init(0, 0);
 
+  // Enable pipe 0.
+  nRF24L01p_enable_pipe(nRF24L01p_PIPE_0, 0xE7E7E7E7E7, 32);
+
   // Set TX mode.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
 
