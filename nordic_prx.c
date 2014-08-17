@@ -31,9 +31,6 @@ int main(void)
   // Set RX mode.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
 
-  // Enable the nRF24L01p.
-  nRF24L01p_enable();
-
   byte state = 0;
   while (1)
   {

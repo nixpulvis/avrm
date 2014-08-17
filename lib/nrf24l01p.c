@@ -788,6 +788,7 @@ int nRF24L01p_read_sync(byte *restrict dst, size_t count, byte pipe)
   // TODO: Use R_RX_PL_WID to decide width of read payload.
   byte payload_width = nRF24L01p_payload_width(pipe);
 
+  nRF24L01p_enable();
   while (count > 0)
   {
     nRF24L01p_status_fetch();
@@ -812,6 +813,7 @@ int nRF24L01p_read_sync(byte *restrict dst, size_t count, byte pipe)
                                          //       disable before using this.
     }
   }
+  nRF24L01p_disable();
 
   return count;
 }
@@ -823,13 +825,11 @@ int nRF24L01p_read_sync(byte *restrict dst, size_t count, byte pipe)
 int nRF24L01p_write_sync(const byte *restrict src, size_t count, byte pipe)
 {
   // TODO: Dynamic width.
-
-  nRF24L01p_disable();
   nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR, nRF24L01p_address(pipe));
-  nRF24L01p_enable();
 
   byte payload_width = nRF24L01p_payload_width(pipe);
 
+  nRF24L01p_enable();
   while (count > 0)
   {
     if (!nRF24L01p_tx_fifo_is_full())
@@ -850,7 +850,7 @@ int nRF24L01p_write_sync(const byte *restrict src, size_t count, byte pipe)
       }
     }
   }
-
+  nRF24L01p_disable();
 
   return count;
 }

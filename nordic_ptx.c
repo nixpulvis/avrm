@@ -31,9 +31,6 @@ int main(void)
   // Set TX mode.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
 
-  // Enable the nRF24L01p.
-  nRF24L01p_enable();
-
   byte prev_state = !(PIND & _BV(PORTD6));
   while (1)
   {
