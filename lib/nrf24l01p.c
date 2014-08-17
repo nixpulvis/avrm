@@ -80,7 +80,7 @@ ISR (INT0_vect)
   nRF24L01p_status_fetch();
   if (nRF24L01p_status_rx_ready())
   {
-    printf("RX READY\n");
+    printf("RX READY on pipe %d.\n", nRF24L01p_status_pipe_ready());
 
     // TODO: Read into a buffer?
 
@@ -111,8 +111,6 @@ ISR (INT0_vect)
     nRF24L01p_tx_fifo_flush();
     nRF24L01p_status_max_retries_clear();
   }
-
-  // if (nRF24L01p_status_pipe_ready())
 
   if (nRF24L01p_status_tx_full())
   {
