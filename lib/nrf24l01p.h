@@ -635,11 +635,10 @@ void nRF24L01p_enable(void);
 //
 void nRF24L01p_disable(void);
 
-// nRF24L01p_read_sync
-// Read data over the air. Blocking until the data is all
-// read.
-//
-// TODO: Timeouts... etc.
+// nRF24L01p_read
+// Read data over the air. This function does not block while
+// the data is being read, use nRF24L01p_read_poll() to get
+// the status of the read.
 //
 // dst - Pointer to data.
 // count - Number of bytes to read.
@@ -650,18 +649,29 @@ void nRF24L01p_disable(void);
 //               nRF24L01p_PIPE_4 or
 //               nRF24L01p_PIPE_5.
 //
-// Returns the number of bytes actually read. -1 on error.
+// Calls to read on a pipe which is not enabled will fail and
+// return -1.
 //
-// TODO: Add pipe argument.
+// Calls to read on a pipe with an unfinished read will fail and
+// return -2.
+//
+// Returns the number of bytes actually read.
+//
+int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe);
+
+// nRF24L01p_read_poll
+// TODO: Write this.
+int nRF24L01p_read_poll(byte pipe);
+
+// nRF24L01p_read_sync
+// TODO: Write this.
+//
 int nRF24L01p_read_sync(byte *restrict dst, size_t count, byte pipe);
 
 // nRF24L01p_write
 // Write data over the air. This function doesn't block while
 // the data is being sent, use nRF24L01p_write_poll() to
 // get the status of the write.
-//
-// Calls to nRF24L01p_write while there is a non finished
-// write in progress will fail and return -1.
 //
 // src - Pointer to the data to write.
 // count - Number of bytes to write.
@@ -672,18 +682,18 @@ int nRF24L01p_read_sync(byte *restrict dst, size_t count, byte pipe);
 //               nRF24L01p_PIPE_4 or
 //               nRF24L01p_PIPE_5.
 //
+// Calls to write on a pipe which is not enabled will fail and
+// return -1.
+//
+// Calls to write on a pipe with an unfinished write will fail and
+// return -2.
+//
+// Returns the number of bytes actually written.
+//
 int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe);
 
 // nRF24L01p_write_sync
-// Write data over the air. Blocking until the data is all
-// sent.
-//
-// TODO: Timeouts... etc.
-//
-// src - Pointer to data to write.
-// count - Number of bytes to write.
-//
-// Returns the number of bytes actually written. -1 on error.
+// TODO: Write this.
 //
 int nRF24L01p_write_sync(const byte *restrict src, size_t count, byte pipe);
 

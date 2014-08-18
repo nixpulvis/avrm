@@ -62,6 +62,100 @@ int nRF24L01p_init(int ce, int irq)
   return 0;
 }
 
+// PIPE BUFFERS
+///////////////
+
+// RX pipe.
+struct nRF24L01p_RX_PIPE
+{
+  byte *data;
+  size_t remaining;
+};
+
+// TX pipe.
+struct nRF24L01p_TX_PIPE
+{
+  const byte *data;
+  size_t remaining;
+  byte pipe;
+};
+
+// Global pipes.
+static struct nRF24L01p_RX_PIPE nRF24L01p_rx_pipes[6];
+static struct nRF24L01p_TX_PIPE nRF24L01p_tx_pipe;
+
+
+//
+// private nRF24L01p_fill_pipe implementation.
+//
+void nRF24L01p_fill_pipe()
+{
+  if (nRF24L01p_tx_pipe.remaining == 0)
+  {
+    nRF24L01p_disable();
+  }
+  else
+  {
+    nRF24L01p_enable();
+
+    byte payload_width = nRF24L01p_payload_width(nRF24L01p_tx_pipe.pipe);
+    // TODO: Write up to 3 payloads.
+    if (!nRF24L01p_tx_fifo_is_full())
+    {
+      if (nRF24L01p_tx_pipe.remaining < payload_width)
+      {
+        byte *payload = malloc(payload_width);
+        memcpy(payload, nRF24L01p_tx_pipe.data, nRF24L01p_tx_pipe.remaining);
+        nRF24L01p_tx_fifo_write(payload, payload_width);
+        free(payload);
+        nRF24L01p_tx_pipe.remaining = 0;
+      }
+      else
+      {
+        nRF24L01p_tx_fifo_write(nRF24L01p_tx_pipe.data, payload_width);
+        nRF24L01p_tx_pipe.data = nRF24L01p_tx_pipe.data + payload_width;
+        nRF24L01p_tx_pipe.remaining = nRF24L01p_tx_pipe.remaining - payload_width;
+      }
+    }
+  }
+}
+
+
+//
+// private nRF24L01p_process_rx_payload implementation.
+//
+void nRF24L01p_process_rx_payload(byte pipe_number)
+{
+  byte payload_width = nRF24L01p_payload_width(1 << pipe_number);
+
+  if (nRF24L01p_rx_pipes[pipe_number].remaining == 0)
+  {
+    spi_start();
+    spi_transfer(nRF24L01p_SPI_R_RX_PAYLOAD);
+    for (byte i = 0; i < payload_width; i++)
+      spi_transfer(nRF24L01p_SPI_NOP);
+    spi_end();
+  }
+  else
+  {
+    if (nRF24L01p_rx_pipes[pipe_number].remaining < payload_width)
+    {
+      byte *payload = malloc(payload_width);
+      nRF24L01p_rx_fifo_read(payload, payload_width);
+      memcpy(nRF24L01p_rx_pipes[pipe_number].data, payload, nRF24L01p_rx_pipes[pipe_number].remaining);
+      free(payload);
+      nRF24L01p_rx_pipes[pipe_number].remaining = 0;
+    }
+    else
+    {
+      nRF24L01p_rx_fifo_read(nRF24L01p_rx_pipes[pipe_number].data, payload_width);
+      nRF24L01p_rx_pipes[pipe_number].data = nRF24L01p_rx_pipes[pipe_number].data + payload_width;
+      nRF24L01p_rx_pipes[pipe_number].remaining = nRF24L01p_rx_pipes[pipe_number].remaining - payload_width;
+    }
+  }
+}
+
+
 // IRQ SERVICE HANDLER
 //////////////////////
 
@@ -72,14 +166,12 @@ ISR (INT0_vect)
   // TODO: Read into a buffer?
   if (nRF24L01p_status_rx_ready())
   {
-    printf("RX READY on pipe %d.\n", nRF24L01p_status_pipe_ready());
-
-    // HACK: This was commented out to allow read_sync to
-    // handle this interrupt in a while(1) loop. When we
-    // handle read for pipes we'll need to allow this to
-    // handle all rx_ready calls.
-    //
-    // nRF24L01p_status_rx_ready_clear();
+    while (!nRF24L01p_rx_fifo_is_empty())
+    {
+      byte pipe_number = nRF24L01p_status_pipe_ready();
+      if (pipe_number <= 5) nRF24L01p_process_rx_payload(pipe_number);
+      nRF24L01p_status_rx_ready_clear();
+    }
   }
 
   // TODO: Figure out if we need to do anything here.
@@ -87,6 +179,8 @@ ISR (INT0_vect)
   {
     printf("TX SENT with %d retransmits.\n",
            nRF24L01p_packets_retransmitted());
+
+    nRF24L01p_fill_pipe();
 
     nRF24L01p_status_tx_sent_clear();
   }
@@ -781,78 +875,94 @@ void nRF24L01p_disable(void)
 
 
 //
-// nRF24L01p_read_sync implementation.
+// nRF24L01p_read implementation.
 //
-int nRF24L01p_read_sync(byte *restrict dst, size_t count, byte pipe)
+int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe)
 {
-  // TODO: Use R_RX_PL_WID to decide width of read payload.
-  byte payload_width = nRF24L01p_payload_width(pipe);
+  // TODO: Check enabled.
 
-  nRF24L01p_enable();
-  while (count > 0)
+  if (!nRF24L01p_read_poll(pipe))
+    return -2;
+
+  switch (pipe)
   {
-    nRF24L01p_status_fetch();
-    if (nRF24L01p_status_rx_ready())
-    {
-      if (count < payload_width)
-      {
-        byte *payload = malloc(payload_width);
-        nRF24L01p_rx_fifo_read(payload, payload_width);
-        memcpy(dst, payload, count);
-        free(payload);
-        count = 0;
-      }
-      else
-      {
-        nRF24L01p_rx_fifo_read(dst, payload_width);
-        dst = dst + payload_width;
-        count = count - payload_width;
-      }
-      nRF24L01p_status_rx_ready_clear(); // HACK: remove when we implement pipes.
-                                         //       also unclear if we need to call
-                                         //       disable before using this.
-    }
+    case nRF24L01p_PIPE_0:
+      nRF24L01p_rx_pipes[0].data = dst;
+      nRF24L01p_rx_pipes[0].remaining = count;
+      break;
+    case nRF24L01p_PIPE_1:
+      nRF24L01p_rx_pipes[1].data = dst;
+      nRF24L01p_rx_pipes[1].remaining = count;
+      break;
+    case nRF24L01p_PIPE_2:
+      nRF24L01p_rx_pipes[2].data = dst;
+      nRF24L01p_rx_pipes[2].remaining = count;
+      break;
+    case nRF24L01p_PIPE_3:
+      nRF24L01p_rx_pipes[3].data = dst;
+      nRF24L01p_rx_pipes[3].remaining = count;
+      break;
+    case nRF24L01p_PIPE_4:
+      nRF24L01p_rx_pipes[4].data = dst;
+      nRF24L01p_rx_pipes[4].remaining = count;
+      break;
+    case nRF24L01p_PIPE_5:
+      nRF24L01p_rx_pipes[5].data = dst;
+      nRF24L01p_rx_pipes[5].remaining = count;
+      break;
   }
-  nRF24L01p_disable();
 
-  return count;
+  nRF24L01p_rx_fifo_flush();
+  nRF24L01p_status_rx_ready_clear();
+  nRF24L01p_enable();
+
+  return 0;
 }
 
 
 //
-// nRF24L01p_write_sync implementation.
+// nRF24L01p_read_poll implementation.
 //
-int nRF24L01p_write_sync(const byte *restrict src, size_t count, byte pipe)
+int nRF24L01p_read_poll(byte pipe)
+{
+  switch (pipe)
+  {
+    case nRF24L01p_PIPE_0:
+      return nRF24L01p_rx_pipes[0].remaining == 0;
+    case nRF24L01p_PIPE_1:
+      return nRF24L01p_rx_pipes[1].remaining == 0;
+    case nRF24L01p_PIPE_2:
+      return nRF24L01p_rx_pipes[2].remaining == 0;
+    case nRF24L01p_PIPE_3:
+      return nRF24L01p_rx_pipes[3].remaining == 0;
+    case nRF24L01p_PIPE_4:
+      return nRF24L01p_rx_pipes[4].remaining == 0;
+    case nRF24L01p_PIPE_5:
+      return nRF24L01p_rx_pipes[5].remaining == 0;
+  }
+
+  return -1;
+}
+
+
+//
+// nRF24L01p_write implementation.
+//
+int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe)
 {
   // TODO: Dynamic width.
   nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR, nRF24L01p_address(pipe));
 
-  byte payload_width = nRF24L01p_payload_width(pipe);
+  // TODO: Check enabled.
+  // TODO: Check finished.
 
-  nRF24L01p_enable();
-  while (count > 0)
-  {
-    if (!nRF24L01p_tx_fifo_is_full())
-    {
-      if (count < payload_width)
-      {
-        byte *payload = malloc(payload_width);
-        memcpy(payload, src, count);
-        nRF24L01p_tx_fifo_write(payload, payload_width);
-        free(payload);
-        count = 0;
-      }
-      else
-      {
-        nRF24L01p_tx_fifo_write(src, payload_width);
-        src = src + payload_width;
-        count = count - payload_width;
-      }
-    }
-  }
-  nRF24L01p_disable();
+  nRF24L01p_tx_pipe.data = src;
+  nRF24L01p_tx_pipe.remaining = count;
+  nRF24L01p_tx_pipe.pipe = pipe;
 
-  return count;
+  nRF24L01p_fill_pipe();
+
+  return 0; // TODO: plz.
 }
 
 
