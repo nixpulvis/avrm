@@ -26,12 +26,15 @@ int main(void)
   // Set TX mode.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
 
-  while (1)
-  {
-    printf("SENDING\n");
-    nRF24L01p_write((byte *) "foo", 4, nRF24L01p_PIPE_0);
-    delay_ms(1000);
-  }
+  nRF24L01p_write((byte *) "This is the hook.", 50, nRF24L01p_PIPE_0);
+  // int count = 0;
+  // while (1)
+  // {
+  //   char str[50];
+  //   snprintf(str, 50, "This is transmission %d.", count++);
+  //   nRF24L01p_write((byte *) str, 50, nRF24L01p_PIPE_0);
+  //   delay_ms(1000);
+  // }
 
   return 0;
 }

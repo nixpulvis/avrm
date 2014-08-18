@@ -86,10 +86,12 @@ static struct nRF24L01p_TX_PIPE nRF24L01p_tx_pipe;
 
 
 //
-// private nRF24L01p_fill_pipe implementation.
+// private nRF24L01p_process_tx_payload implementation.
 //
-void nRF24L01p_fill_pipe()
+void nRF24L01p_process_tx_payload()
 {
+  // TODO: This is sketchy. Needs thought, I should really draw
+  //       a state diagram.
   if (nRF24L01p_tx_pipe.remaining == 0)
   {
     nRF24L01p_disable();
@@ -99,9 +101,12 @@ void nRF24L01p_fill_pipe()
     nRF24L01p_enable();
 
     byte payload_width = nRF24L01p_payload_width(nRF24L01p_tx_pipe.pipe);
-    // TODO: Write up to 3 payloads.
-    if (!nRF24L01p_tx_fifo_is_full())
+
+    while (!nRF24L01p_tx_fifo_is_full() && nRF24L01p_tx_pipe.remaining != 0)
     {
+      // TODO: Move this logic into nRF24L01p_rx_fifo_write.
+      //       nRF24L01p_rx_fifo_write could guarantee count size
+      //       data.
       if (nRF24L01p_tx_pipe.remaining < payload_width)
       {
         byte *payload = malloc(payload_width);
@@ -118,6 +123,8 @@ void nRF24L01p_fill_pipe()
       }
     }
   }
+
+  nRF24L01p_status_tx_sent_clear();
 }
 
 
@@ -130,6 +137,9 @@ void nRF24L01p_process_rx_payload(byte pipe_number)
 
   if (nRF24L01p_rx_pipes[pipe_number].remaining == 0)
   {
+    // TODO: If this is really what I want to do, this
+    //       should be nRF24L01p_rx_fifo_drop. But I
+    //       would love to figure out a way to not do this.
     spi_start();
     spi_transfer(nRF24L01p_SPI_R_RX_PAYLOAD);
     for (byte i = 0; i < payload_width; i++)
@@ -138,6 +148,9 @@ void nRF24L01p_process_rx_payload(byte pipe_number)
   }
   else
   {
+    // TODO: Move this logic into nRF24L01p_rx_fifo_read.
+    //       nRF24L01p_rx_fifo_read could guarantee count size
+    //       data.
     if (nRF24L01p_rx_pipes[pipe_number].remaining < payload_width)
     {
       byte *payload = malloc(payload_width);
@@ -163,9 +176,22 @@ ISR (INT0_vect)
 {
   nRF24L01p_status_fetch();
 
-  // TODO: Read into a buffer?
+  if (nRF24L01p_status_tx_sent())
+  {
+    printf("TX SENT\n");
+
+    nRF24L01p_process_tx_payload();
+  }
+
   if (nRF24L01p_status_rx_ready())
   {
+    printf("RX RECEIVED\n");
+
+    // TODO: This whole thing should just be
+    //       nRF24L01p_process_rx_payload(pipe_number)
+    //       since I'm 99% sure we can't trust updated
+    //       pipe numbers in the same interrupt anyway.
+
     while (!nRF24L01p_rx_fifo_is_empty())
     {
       byte pipe_number = nRF24L01p_status_pipe_ready();
@@ -174,25 +200,12 @@ ISR (INT0_vect)
     }
   }
 
-  // TODO: Figure out if we need to do anything here.
-  if (nRF24L01p_status_tx_sent())
-  {
-    printf("TX SENT with %d retransmits.\n",
-           nRF24L01p_packets_retransmitted());
-
-    nRF24L01p_fill_pipe();
-
-    nRF24L01p_status_tx_sent_clear();
-  }
-
   // TODO: Implement advice from Appendix E for automatic
   //       channel switching using carrier detect.
   if (nRF24L01p_status_max_retries())
   {
     byte lost = nRF24L01p_packets_lost();
     printf("TX DROPPED with %d lost in total.\n", lost);
-
-    // TODO: Figure out why FIFO full is being asserted in here.
 
     nRF24L01p_tx_fifo_flush();
     nRF24L01p_status_max_retries_clear();
@@ -912,8 +925,7 @@ int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe)
       break;
   }
 
-  nRF24L01p_rx_fifo_flush();
-  nRF24L01p_status_rx_ready_clear();
+  // Start receiving if we weren't already.
   nRF24L01p_enable();
 
   return 0;
@@ -960,9 +972,9 @@ int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe)
   nRF24L01p_tx_pipe.remaining = count;
   nRF24L01p_tx_pipe.pipe = pipe;
 
-  nRF24L01p_fill_pipe();
+  // TODO: Fill TX FIFO, then start transmitting.
 
-  return 0; // TODO: plz.
+  return 0;
 }
 
 
