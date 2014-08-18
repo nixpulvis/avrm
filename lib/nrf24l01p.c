@@ -867,34 +867,13 @@ byte nRF24L01p_packets_retransmitted(void)
 
 
 //
-// nRF24L01p_enable implementation.
-//
-void nRF24L01p_enable(void)
-{
-  // Pull CE high.
-  PORTB |= _BV(PORTB0);
-  _delay_us(nRF24L01p_TIMING_TSTBY2A_US);
-}
-
-
-//
-// nRF24L01p_disable implementation.
-//
-void nRF24L01p_disable(void)
-{
-  // Pull CE high.
-  PORTB &= ~_BV(PORTB0);
-}
-
-
-//
 // nRF24L01p_read implementation.
 //
 int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe)
 {
   // TODO: Check enabled.
 
-  if (!nRF24L01p_read_poll(pipe))
+  if (!nRF24L01p_select(pipe))
     return -2;
 
   switch (pipe)
@@ -933,31 +912,6 @@ int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe)
 
 
 //
-// nRF24L01p_read_poll implementation.
-//
-int nRF24L01p_read_poll(byte pipe)
-{
-  switch (pipe)
-  {
-    case nRF24L01p_PIPE_0:
-      return nRF24L01p_rx_pipes[0].remaining == 0;
-    case nRF24L01p_PIPE_1:
-      return nRF24L01p_rx_pipes[1].remaining == 0;
-    case nRF24L01p_PIPE_2:
-      return nRF24L01p_rx_pipes[2].remaining == 0;
-    case nRF24L01p_PIPE_3:
-      return nRF24L01p_rx_pipes[3].remaining == 0;
-    case nRF24L01p_PIPE_4:
-      return nRF24L01p_rx_pipes[4].remaining == 0;
-    case nRF24L01p_PIPE_5:
-      return nRF24L01p_rx_pipes[5].remaining == 0;
-  }
-
-  return -1;
-}
-
-
-//
 // nRF24L01p_write implementation.
 //
 int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe)
@@ -978,8 +932,55 @@ int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe)
 }
 
 
+//
+// nRF24L01p_select implementation.
+//
+int nRF24L01p_select(byte pipe)
+{
+  // TODO: This needs to handle writes too.
+  switch (pipe)
+  {
+    case nRF24L01p_PIPE_0:
+      return nRF24L01p_rx_pipes[0].remaining == 0;
+    case nRF24L01p_PIPE_1:
+      return nRF24L01p_rx_pipes[1].remaining == 0;
+    case nRF24L01p_PIPE_2:
+      return nRF24L01p_rx_pipes[2].remaining == 0;
+    case nRF24L01p_PIPE_3:
+      return nRF24L01p_rx_pipes[3].remaining == 0;
+    case nRF24L01p_PIPE_4:
+      return nRF24L01p_rx_pipes[4].remaining == 0;
+    case nRF24L01p_PIPE_5:
+      return nRF24L01p_rx_pipes[5].remaining == 0;
+  }
+
+  return -1;
+}
+
+
 // Utility
 //////////
+
+
+//
+// nRF24L01p_enable implementation.
+//
+void nRF24L01p_enable(void)
+{
+  // Pull CE high.
+  PORTB |= _BV(PORTB0);
+  _delay_us(nRF24L01p_TIMING_TSTBY2A_US);
+}
+
+
+//
+// nRF24L01p_disable implementation.
+//
+void nRF24L01p_disable(void)
+{
+  // Pull CE high.
+  PORTB &= ~_BV(PORTB0);
+}
 
 
 //

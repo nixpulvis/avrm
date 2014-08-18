@@ -624,20 +624,9 @@ byte nRF24L01p_packets_retransmitted(void);
 // IO
 /////
 
-// nRF24L01p_enable
-// Set the CE pin high, putting the device into either
-// RX Mode or TX Mode depending on the value of CONFIG_PRIM_RX.
-//
-void nRF24L01p_enable(void);
-
-// nRF24L01p_disable
-// Set the CE pin low, putting the device into Standby-I.
-//
-void nRF24L01p_disable(void);
-
 // nRF24L01p_read
 // Read data over the air. This function does not block while
-// the data is being read, use nRF24L01p_read_poll() to get
+// the data is being read, use nRF24L01p_read_select() to get
 // the status of the read.
 //
 // dst - Pointer to data.
@@ -655,13 +644,7 @@ void nRF24L01p_disable(void);
 // Calls to read on a pipe with an unfinished read will fail and
 // return -2.
 //
-// Returns the number of bytes actually read.
-//
 int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe);
-
-// nRF24L01p_read_poll
-// TODO: Write this.
-int nRF24L01p_read_poll(byte pipe);
 
 // nRF24L01p_read_sync
 // TODO: Write this.
@@ -670,7 +653,7 @@ int nRF24L01p_read_sync(byte *restrict dst, size_t count, byte pipe);
 
 // nRF24L01p_write
 // Write data over the air. This function doesn't block while
-// the data is being sent, use nRF24L01p_write_poll() to
+// the data is being sent, use nRF24L01p_write_select() to
 // get the status of the write.
 //
 // src - Pointer to the data to write.
@@ -688,8 +671,6 @@ int nRF24L01p_read_sync(byte *restrict dst, size_t count, byte pipe);
 // Calls to write on a pipe with an unfinished write will fail and
 // return -2.
 //
-// Returns the number of bytes actually written.
-//
 int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe);
 
 // nRF24L01p_write_sync
@@ -697,8 +678,23 @@ int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe);
 //
 int nRF24L01p_write_sync(const byte *restrict src, size_t count, byte pipe);
 
+// nRF24L01p_select
+// TODO: Write this.
+int nRF24L01p_select(byte pipe);
+
 // Utility
 //////////
+
+// nRF24L01p_enable
+// Set the CE pin high, putting the device into either
+// RX Mode or TX Mode depending on the value of CONFIG_PRIM_RX.
+//
+void nRF24L01p_enable(void);
+
+// nRF24L01p_disable
+// Set the CE pin low, putting the device into Standby-I.
+//
+void nRF24L01p_disable(void);
 
 // nRF24L01p_get_register8
 // Get the value of an 8 register.
