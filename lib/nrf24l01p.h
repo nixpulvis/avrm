@@ -655,6 +655,10 @@ byte nRF24L01p_packets_retransmitted(void);
 //
 int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe);
 
+// nRF24L01p_read_status
+// TODO: Write this.
+int nRF24L01p_read_status(byte pipe);
+
 // nRF24L01p_read_sync
 // TODO: Write this.
 //
@@ -682,14 +686,14 @@ int nRF24L01p_read_sync(byte *restrict dst, size_t count, byte pipe);
 //
 int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe);
 
+// nRF24L01p_write_status
+// TODO: Write this.
+int nRF24L01p_write_status(void);
+
 // nRF24L01p_write_sync
 // TODO: Write this.
 //
 int nRF24L01p_write_sync(const byte *restrict src, size_t count, byte pipe);
-
-// nRF24L01p_select
-// TODO: Write this.
-int nRF24L01p_select(byte pipe);
 
 // Utility
 //////////

@@ -89,16 +89,13 @@ static struct nRF24L01p_TX_PIPE nRF24L01p_tx_pipe;
 //
 void nRF24L01p_process_tx_payload()
 {
-  // TODO: This is sketchy. Needs thought, I should really draw
-  //       a state diagram.
   if (nRF24L01p_tx_pipe.remaining == 0)
   {
+    // When we are finished sending we disable the device.
     nRF24L01p_disable();
   }
   else
   {
-    nRF24L01p_enable();
-
     byte payload_width = nRF24L01p_payload_width(nRF24L01p_tx_pipe.pipe);
 
     while (!nRF24L01p_tx_fifo_is_full() && nRF24L01p_tx_pipe.remaining != 0)
@@ -121,6 +118,13 @@ void nRF24L01p_process_tx_payload()
         nRF24L01p_tx_pipe.remaining = nRF24L01p_tx_pipe.remaining - payload_width;
       }
     }
+
+    // Enable the device. It's important to do this after filling the
+    // FIFO so we don't get a TX sent interrupt in the middle of this
+    // function when we call it from outside of an interrupt service
+    // routine. All calls to nRF24L01p_process_tx_payload outside an
+    // ISR MUST have the device disabled.
+    nRF24L01p_enable();
   }
 
   nRF24L01p_status_tx_sent_clear();
@@ -144,6 +148,7 @@ void nRF24L01p_process_rx_payload(byte pipe_number)
     for (byte i = 0; i < payload_width; i++)
       spi_transfer(nRF24L01p_SPI_NOP);
     spi_end();
+    printf("dropped from pipe %d\n", pipe_number);
   }
   else
   {
@@ -164,6 +169,7 @@ void nRF24L01p_process_rx_payload(byte pipe_number)
       nRF24L01p_rx_pipes[pipe_number].data = nRF24L01p_rx_pipes[pipe_number].data + payload_width;
       nRF24L01p_rx_pipes[pipe_number].remaining = nRF24L01p_rx_pipes[pipe_number].remaining - payload_width;
     }
+    printf("read from pipe %d\n", pipe_number);
   }
 }
 
@@ -193,7 +199,9 @@ ISR (INT0_vect)
 
     while (!nRF24L01p_rx_fifo_is_empty())
     {
+      nRF24L01p_status_fetch();
       byte pipe_number = nRF24L01p_status_pipe_ready();
+      printf("pipe %d\n", pipe_number);
       if (pipe_number <= 5) nRF24L01p_process_rx_payload(pipe_number);
       nRF24L01p_status_rx_ready_clear();
     }
@@ -754,7 +762,7 @@ void nRF24L01p_status_max_retries_clear(void)
 //
 byte nRF24L01p_status_pipe_ready(void)
 {
-  return nRF24L01p_status & nRF24L01p_MASK_STATUS_RX_P_NO;
+  return (nRF24L01p_status & nRF24L01p_MASK_STATUS_RX_P_NO) >> 1;
 }
 
 
@@ -908,7 +916,7 @@ int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe)
   if (!nRF24L01p_is_pipe_enabled(pipe))
     return -1;
 
-  if (!nRF24L01p_select(pipe))
+  if (!nRF24L01p_read_status(pipe))
     return -2;
 
   switch (pipe)
@@ -947,34 +955,10 @@ int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe)
 
 
 //
-// nRF24L01p_write implementation.
+// nRF24L01p_read_status implementation.
 //
-int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe)
+int nRF24L01p_read_status(byte pipe)
 {
-  // TODO: Dynamic width.
-  nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR, nRF24L01p_address(pipe));
-
-  if (!nRF24L01p_is_pipe_enabled(pipe))
-    return -1;
-
-  // TODO: Check finished.
-
-  nRF24L01p_tx_pipe.data = src;
-  nRF24L01p_tx_pipe.remaining = count;
-  nRF24L01p_tx_pipe.pipe = pipe;
-
-  // TODO: Fill TX FIFO, then start transmitting.
-
-  return 0;
-}
-
-
-//
-// nRF24L01p_select implementation.
-//
-int nRF24L01p_select(byte pipe)
-{
-  // TODO: This needs to handle writes too.
   switch (pipe)
   {
     case nRF24L01p_PIPE_0:
@@ -992,6 +976,40 @@ int nRF24L01p_select(byte pipe)
   }
 
   return -1;
+}
+
+
+//
+// nRF24L01p_write implementation.
+//
+int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe)
+{
+  // TODO: Dynamic width.
+  nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR, nRF24L01p_address(pipe));
+
+  if (!nRF24L01p_is_pipe_enabled(pipe))
+    return -1;
+
+  if (!nRF24L01p_write_status())
+    return -2;
+
+  nRF24L01p_tx_pipe.data = src;
+  nRF24L01p_tx_pipe.remaining = count;
+  nRF24L01p_tx_pipe.pipe = pipe;
+
+  // TODO: Fill TX FIFO, then start transmitting.
+  nRF24L01p_process_tx_payload();
+
+  return 0;
+}
+
+
+//
+// nRF24L01p_write_status implementation.
+//
+int nRF24L01p_write_status(void)
+{
+  return nRF24L01p_tx_pipe.remaining == 0;
 }
 
 
