@@ -97,7 +97,7 @@ size: $(TARGET).bin
 
 # Remove non-source files.
 clean:
-	rm -rf *.o *.bin *.hex
+	rm -rf **/*.o *.o *.bin *.hex
 
 ################################
 
