@@ -202,10 +202,6 @@
 #define nRF24L01p_PIPE_4 (1 << 4)
 #define nRF24L01p_PIPE_5 (1 << 5)
 
-// Defaults
-
-#define nRF24L01p_DEFAULT_ADDRESS 0xE7E7E7E7E7
-
 #include <stdlib.h>
 #include <string.h>
 #include <avr/interrupt.h>
