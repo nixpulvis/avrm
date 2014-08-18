@@ -905,7 +905,8 @@ byte nRF24L01p_packets_retransmitted(void)
 //
 int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe)
 {
-  // TODO: Check enabled.
+  if (!nRF24L01p_is_pipe_enabled(pipe))
+    return -1;
 
   if (!nRF24L01p_select(pipe))
     return -2;
@@ -953,7 +954,9 @@ int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe)
   // TODO: Dynamic width.
   nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR, nRF24L01p_address(pipe));
 
-  // TODO: Check enabled.
+  if (!nRF24L01p_is_pipe_enabled(pipe))
+    return -1;
+
   // TODO: Check finished.
 
   nRF24L01p_tx_pipe.data = src;
