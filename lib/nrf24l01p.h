@@ -426,6 +426,19 @@ int nRF24L01p_config_payload_width(byte reg, byte width);
 // PIPE HELPER FUNCTIONS
 ////////////////////////
 
+// nRF24L01p_is_pipe_enabled
+// Checks the status of the a pipe, returning TRUE
+// when the pipe has been enabled, and FALSE otherwise.
+//
+// pipe - One of nRF24L01p_PIPE_0 or
+//               nRF24L01p_PIPE_1 or
+//               nRF24L01p_PIPE_2 or
+//               nRF24L01p_PIPE_3 or
+//               nRF24L01p_PIPE_4 or
+//               nRF24L01p_PIPE_5.
+//
+bool nRF24L01p_is_pipe_enabled(byte pipe);
+
 // nRF24L01p_payload_width
 // Returns the number of bytes the given pipe's payloads are.
 //

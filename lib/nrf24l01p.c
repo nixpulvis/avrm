@@ -18,8 +18,7 @@ int nRF24L01p_init(int ce, int irq)
   // Configure address width.
   nRF24L01p_config_address_width(nRF24L01p_VALUE_SETUP_AW_AW_5);
 
-  // Set all pipes in EN_RXADDR to disabled. We'll enable them
-  // with nRF24L01p_enable_pipe.
+  // Set all pipes in EN_RXADDR to disabled.
   nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_ALL, FALSE);
 
   // Configure RF channel.
@@ -513,6 +512,37 @@ int nRF24L01p_config_payload_width(byte address, byte width)
 
 
 //
+// nRF24L01p_is_pipe_enabled implementation.
+//
+bool nRF24L01p_is_pipe_enabled(byte pipe)
+{
+  switch (pipe)
+  {
+    case nRF24L01p_PIPE_0:
+      return nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_RXADDR) &
+             nRF24L01p_MASK_EN_RXADDR_ERX_P0;
+    case nRF24L01p_PIPE_1:
+      return nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_RXADDR) &
+             nRF24L01p_MASK_EN_RXADDR_ERX_P1;
+    case nRF24L01p_PIPE_2:
+      return nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_RXADDR) &
+             nRF24L01p_MASK_EN_RXADDR_ERX_P2;
+    case nRF24L01p_PIPE_3:
+      return nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_RXADDR) &
+             nRF24L01p_MASK_EN_RXADDR_ERX_P3;
+    case nRF24L01p_PIPE_4:
+      return nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_RXADDR) &
+             nRF24L01p_MASK_EN_RXADDR_ERX_P4;
+    case nRF24L01p_PIPE_5:
+      return nRF24L01p_get_register8(nRF24L01p_REGISTER_EN_RXADDR) &
+             nRF24L01p_MASK_EN_RXADDR_ERX_P5;
+    default:
+      return FALSE;
+  }
+}
+
+
+//
 // nRF24L01p_payload_width implementation.
 //
 byte nRF24L01p_payload_width(byte pipe)
@@ -529,8 +559,10 @@ byte nRF24L01p_payload_width(byte pipe)
       return nRF24L01p_get_register8(nRF24L01p_REGISTER_RX_PW_P3);
     case nRF24L01p_PIPE_4:
       return nRF24L01p_get_register8(nRF24L01p_REGISTER_RX_PW_P4);
-    default:
+    case nRF24L01p_PIPE_5:
       return nRF24L01p_get_register8(nRF24L01p_REGISTER_RX_PW_P5);
+    default:
+      return 0;
   }
 }
 
@@ -554,8 +586,10 @@ long long unsigned int nRF24L01p_address(byte pipe)
       return nRF24L01p_get_register40(nRF24L01p_REGISTER_RX_ADDR_P3);
     case nRF24L01p_PIPE_4:
       return nRF24L01p_get_register40(nRF24L01p_REGISTER_RX_ADDR_P4);
-    default:
+    case nRF24L01p_PIPE_5:
       return nRF24L01p_get_register40(nRF24L01p_REGISTER_RX_ADDR_P5);
+    default:
+      return 0;
   }
 }
 
