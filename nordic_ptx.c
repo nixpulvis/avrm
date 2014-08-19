@@ -21,8 +21,8 @@ int main(void)
   nRF24L01p_init(0, 0);
 
   // Enable pipe 0.
-  nRF24L01p_config_pipe(nRF24L01p_PIPE_0, 0xE7E7E7E7E7, 32);
-  nRF24L01p_config_pipe(nRF24L01p_PIPE_1, 0xD7D7D7D7D7, 32);
+  nRF24L01p_config_pipe(nRF24L01p_PIPE_0, 0xA7A7A7A7A7, 32);
+  nRF24L01p_config_pipe(nRF24L01p_PIPE_1, 0xD5D5D5D5D5, 32);
 
   // Set TX mode.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_TX);
@@ -32,7 +32,7 @@ int main(void)
   {
     char str[50];
     snprintf(str, 50, "%d - is transmission %d.", count, count);
-    nRF24L01p_write((byte *) str, 50, nRF24L01p_PIPE_0);
+    nRF24L01p_write((byte *) str, 50, nRF24L01p_PIPE_1);
     count++;
     delay_ms(1000);
   }
