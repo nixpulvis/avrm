@@ -67,29 +67,43 @@ int nRF24L01p_init(int ce, int irq)
 // RX pipe.
 struct nRF24L01p_RX_PIPE
 {
+  bool configured;
+  long long unsigned int address;
+  byte payload_width;
   byte *data;
   size_t remaining;
-  bool configured;
 };
 
 // TX pipe.
 struct nRF24L01p_TX_PIPE
 {
+  long long unsigned int address;
+  byte payload_width;
   const byte *data;
   size_t remaining;
-  byte pipe;
 };
 
+// TODO: These are getting big, need to make dynamic.
+
 // Global pipes.
-static struct nRF24L01p_TX_PIPE nRF24L01p_tx_pipe;
+static struct nRF24L01p_TX_PIPE nRF24L01p_tx_pipe =
+{ .address = 0, .payload_width = 0,
+  .data = NULL, .remaining = 0 };
+
 static struct nRF24L01p_RX_PIPE nRF24L01p_rx_pipes[6] =
 {
-  { .data = NULL, .remaining = 0, .configured = FALSE },
-  { .data = NULL, .remaining = 0, .configured = FALSE },
-  { .data = NULL, .remaining = 0, .configured = FALSE },
-  { .data = NULL, .remaining = 0, .configured = FALSE },
-  { .data = NULL, .remaining = 0, .configured = FALSE },
-  { .data = NULL, .remaining = 0, .configured = FALSE },
+  { .configured = FALSE, .address = 0, .payload_width = 0,
+    .data = NULL, .remaining = 0 },
+  { .configured = FALSE, .address = 0, .payload_width = 0,
+    .data = NULL, .remaining = 0 },
+  { .configured = FALSE, .address = 0, .payload_width = 0,
+    .data = NULL, .remaining = 0 },
+  { .configured = FALSE, .address = 0, .payload_width = 0,
+    .data = NULL, .remaining = 0 },
+  { .configured = FALSE, .address = 0, .payload_width = 0,
+    .data = NULL, .remaining = 0 },
+  { .configured = FALSE, .address = 0, .payload_width = 0,
+    .data = NULL, .remaining = 0 },
 };
 
 
@@ -104,31 +118,28 @@ void nRF24L01p_process_tx_payload()
     nRF24L01p_disable();
 
     // Turn off the pipe.
-    nRF24L01p_config_rx(0x01 << nRF24L01p_tx_pipe.pipe, FALSE);
+    nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_P0, FALSE);
   }
   else
   {
-    // TODO: This is kinda hacky.
-    byte payload_width = nRF24L01p_get_payload_width(nRF24L01p_REGISTER_RX_PW_P0 + nRF24L01p_tx_pipe.pipe);
-
     while (!nRF24L01p_tx_fifo_is_full() && nRF24L01p_tx_pipe.remaining != 0)
     {
       // TODO: Move this logic into nRF24L01p_rx_fifo_write.
       //       nRF24L01p_rx_fifo_write could guarantee count size
       //       data.
-      if (nRF24L01p_tx_pipe.remaining < payload_width)
+      if (nRF24L01p_tx_pipe.remaining < nRF24L01p_tx_pipe.payload_width)
       {
-        byte *payload = malloc(payload_width);
+        byte *payload = malloc(nRF24L01p_tx_pipe.payload_width);
         memcpy(payload, nRF24L01p_tx_pipe.data, nRF24L01p_tx_pipe.remaining);
-        nRF24L01p_tx_fifo_write(payload, payload_width);
+        nRF24L01p_tx_fifo_write(payload, nRF24L01p_tx_pipe.payload_width);
         free(payload);
         nRF24L01p_tx_pipe.remaining = 0;
       }
       else
       {
-        nRF24L01p_tx_fifo_write(nRF24L01p_tx_pipe.data, payload_width);
-        nRF24L01p_tx_pipe.data = nRF24L01p_tx_pipe.data + payload_width;
-        nRF24L01p_tx_pipe.remaining = nRF24L01p_tx_pipe.remaining - payload_width;
+        nRF24L01p_tx_fifo_write(nRF24L01p_tx_pipe.data, nRF24L01p_tx_pipe.payload_width);
+        nRF24L01p_tx_pipe.data = nRF24L01p_tx_pipe.data + nRF24L01p_tx_pipe.payload_width;
+        nRF24L01p_tx_pipe.remaining = nRF24L01p_tx_pipe.remaining - nRF24L01p_tx_pipe.payload_width;
       }
     }
 
@@ -213,25 +224,13 @@ ISR (INT0_vect)
     //       since I'm 99% sure we can't trust updated
     //       pipe numbers in the same interrupt anyway.
 
-    // INVESTIGATION:
-    // For some reason the packet is coming in fine, but it's ACK is
-    // either not getting sent properly, or is not being received
-    // properly.
-    //
-    byte payload_width = 32;
-    nRF24L01p_rx_fifo_read(nRF24L01p_rx_pipes[0].data, payload_width);
-    nRF24L01p_rx_pipes[0].data = nRF24L01p_rx_pipes[0].data + payload_width;
-    nRF24L01p_rx_pipes[0].remaining = nRF24L01p_rx_pipes[0].remaining - payload_width;
-    nRF24L01p_status_rx_ready_clear();
-    // TODO: DELETE ABOVE.
-
-    // while (!nRF24L01p_rx_fifo_is_empty())
-    // {
-    //   nRF24L01p_status_fetch();
-    //   byte pipe = nRF24L01p_status_pipe_ready();
-    //   if (pipe <= 5) nRF24L01p_process_rx_payload(pipe);
-    //   nRF24L01p_status_rx_ready_clear();
-    // }
+    while (!nRF24L01p_rx_fifo_is_empty())
+    {
+      nRF24L01p_status_fetch();
+      byte pipe = nRF24L01p_status_pipe_ready();
+      if (pipe <= 5) nRF24L01p_process_rx_payload(pipe);
+      nRF24L01p_status_rx_ready_clear();
+    }
   }
 
   // TODO: Implement advice from Appendix E for automatic
@@ -398,6 +397,7 @@ int nRF24L01p_config_rx(byte mask, bool value)
 
   nRF24L01p_set_register8_bits(nRF24L01p_REGISTER_EN_RXADDR,
                                mask, value ? 0xFF : 0x00);
+
   return 0;
 }
 
@@ -818,10 +818,48 @@ int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe)
   // TODO: Think through calling read, while already reading.
   nRF24L01p_disable();
 
+  int ret = 0;
+  switch (pipe)
+  {
+    case 0:
+      ret |= nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_P0, TRUE);
+      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P0, nRF24L01p_rx_pipes[pipe].address);
+      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P0, nRF24L01p_rx_pipes[pipe].payload_width);
+      break;
+    case 1:
+      ret |= nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_P1, TRUE);
+      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P1, nRF24L01p_rx_pipes[pipe].address);
+      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P1, nRF24L01p_rx_pipes[pipe].payload_width);
+      break;
+    case 2:
+      ret |= nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_P2, TRUE);
+      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P2, nRF24L01p_rx_pipes[pipe].address);
+      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P2, nRF24L01p_rx_pipes[pipe].payload_width);
+      break;
+    case 3:
+      ret |= nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_P3, TRUE);
+      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P3, nRF24L01p_rx_pipes[pipe].address);
+      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P3, nRF24L01p_rx_pipes[pipe].payload_width);
+      break;
+    case 4:
+      ret |= nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_P4, TRUE);
+      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P4, nRF24L01p_rx_pipes[pipe].address);
+      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P4, nRF24L01p_rx_pipes[pipe].payload_width);
+      break;
+    case 5:
+      ret |= nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_P5, TRUE);
+      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P5, nRF24L01p_rx_pipes[pipe].address);
+      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P5, nRF24L01p_rx_pipes[pipe].payload_width);
+      break;
+    default:
+      ret = -1;
+  }
+
+  if (ret != 0)
+    return -3;
+
   nRF24L01p_rx_pipes[pipe].data = dst;
   nRF24L01p_rx_pipes[pipe].remaining = count;
-
-  nRF24L01p_config_rx(0x01 << pipe, TRUE);
 
   // Start receiving if we weren't already.
   nRF24L01p_enable();
@@ -851,47 +889,24 @@ int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe)
     return -2;
 
   // TODO: Dynamic width.
-  switch (pipe)
-  {
-    case 0:
-      nRF24L01p_config_address(
-        nRF24L01p_REGISTER_TX_ADDR,
-        nRF24L01p_get_address(nRF24L01p_REGISTER_RX_ADDR_P0));
-      break;
-    case 1:
-      nRF24L01p_config_address(
-        nRF24L01p_REGISTER_TX_ADDR,
-        nRF24L01p_get_address(nRF24L01p_REGISTER_RX_ADDR_P1));
-      break;
-    case 2:
-      nRF24L01p_config_address(
-        nRF24L01p_REGISTER_TX_ADDR,
-        nRF24L01p_get_address(nRF24L01p_REGISTER_RX_ADDR_P2));
-      break;
-    case 3:
-      nRF24L01p_config_address(
-        nRF24L01p_REGISTER_TX_ADDR,
-        nRF24L01p_get_address(nRF24L01p_REGISTER_RX_ADDR_P3));
-      break;
-    case 4:
-      nRF24L01p_config_address(
-        nRF24L01p_REGISTER_TX_ADDR,
-        nRF24L01p_get_address(nRF24L01p_REGISTER_RX_ADDR_P4));
-      break;
-    case 5:
-      nRF24L01p_config_address(
-        nRF24L01p_REGISTER_TX_ADDR,
-        nRF24L01p_get_address(nRF24L01p_REGISTER_RX_ADDR_P5));
-      break;
-  }
 
-  nRF24L01p_config_rx(0x01 << pipe, TRUE);
+  nRF24L01p_tx_pipe.address = nRF24L01p_rx_pipes[pipe].address;
+  nRF24L01p_tx_pipe.payload_width = nRF24L01p_rx_pipes[pipe].payload_width;
+
+  // Datasheet says to always use RX_ADDR_P0
+  nRF24L01p_config_rx(nRF24L01p_MASK_EN_RXADDR_ERX_P0, TRUE);
+  nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P0,
+                           nRF24L01p_tx_pipe.address);
+  nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_ADDR_P0,
+                                 nRF24L01p_tx_pipe.payload_width);
+
+  nRF24L01p_config_address(nRF24L01p_REGISTER_TX_ADDR,
+                           nRF24L01p_tx_pipe.address);
 
   nRF24L01p_tx_pipe.data = src;
   nRF24L01p_tx_pipe.remaining = count;
-  nRF24L01p_tx_pipe.pipe = pipe;
 
-  // TODO: Fill TX FIFO, then start transmitting.
+  // Fill TX FIFO, then start transmitting.
   nRF24L01p_process_tx_payload();
 
   return 0;
@@ -918,47 +933,11 @@ int nRF24L01p_config_pipe(byte pipe,
                           long long unsigned int address,
                           byte payload_width)
 {
-  int ret = 0;
-  switch (pipe)
-  {
-    case 0:
-      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P0, address);
-      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P0,
-                                            payload_width);
-      break;
-    case 1:
-      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P1, address);
-      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P1,
-                                            payload_width);
-      break;
-    case 2:
-      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P2, address);
-      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P2,
-                                            payload_width);
-      break;
-    case 3:
-      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P3, address);
-      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P3,
-                                            payload_width);
-      break;
-    case 4:
-      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P4, address);
-      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P4,
-                                            payload_width);
-      break;
-    case 5:
-      ret |= nRF24L01p_config_address(nRF24L01p_REGISTER_RX_ADDR_P5, address);
-      ret |= nRF24L01p_config_payload_width(nRF24L01p_REGISTER_RX_PW_P5,
-                                            payload_width);
-      break;
-    default:
-      ret = -1;
-  }
+  nRF24L01p_rx_pipes[pipe].address = address;
+  nRF24L01p_rx_pipes[pipe].payload_width = payload_width;
+  nRF24L01p_rx_pipes[pipe].configured = TRUE;
 
-  if (ret == 0)
-    nRF24L01p_rx_pipes[pipe].configured = TRUE;
-
-  return ret;
+  return 0;
 }
 
 
@@ -1026,7 +1005,7 @@ int nRF24L01p_set_register8(byte address, byte data)
 int nRF24L01p_set_register8_bits(byte address, byte mask, byte value)
 {
   byte reg = nRF24L01p_get_register8(address);
-  reg = (reg & ~mask) | value;
+  reg = (reg & ~mask) | (value & mask);
   return nRF24L01p_set_register8(address, reg);
 }
 

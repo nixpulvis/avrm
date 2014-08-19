@@ -22,18 +22,20 @@ int main(void)
 
   // Enable pipe 0.
   nRF24L01p_config_pipe(nRF24L01p_PIPE_0, 0xE7E7E7E7E7, 32);
+  nRF24L01p_config_pipe(nRF24L01p_PIPE_1, 0xD7D7D7D7D7, 32);
 
   // Set RX mode.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
 
-  byte str[32];
-  nRF24L01p_read(str, 32, nRF24L01p_PIPE_0);
+  byte str[50];
+  nRF24L01p_read(str, 50, nRF24L01p_PIPE_0);
+
   while (1)
   {
     if (nRF24L01p_read_status(nRF24L01p_PIPE_0))
     {
       printf("%s\n", str);
-      nRF24L01p_read(str, 32, nRF24L01p_PIPE_0);
+      nRF24L01p_read(str, 50, nRF24L01p_PIPE_0);
     }
   }
 
