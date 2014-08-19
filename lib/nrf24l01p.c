@@ -102,6 +102,9 @@ void nRF24L01p_process_tx_payload()
   {
     // When we are finished sending we disable the device.
     nRF24L01p_disable();
+
+    // Turn off the pipe.
+    nRF24L01p_config_rx(0x01 << nRF24L01p_tx_pipe.pipe, FALSE);
   }
   else
   {
