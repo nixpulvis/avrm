@@ -35,6 +35,8 @@ int main(void)
     nRF24L01p_write((byte *) str, 50, nRF24L01p_PIPE_1);
     count++;
     delay_ms(1000);
+    nRF24L01p_write((byte *) "test", 5, nRF24L01p_PIPE_0);
+    delay_ms(1000);
   }
 
   return 0;
