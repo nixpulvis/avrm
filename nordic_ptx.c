@@ -29,9 +29,9 @@ int main(void)
   int count = 0;
   while (1)
   {
-    char str[50];
-    snprintf(str, 50, "%d - is transmission %d.", count, count);
-    nRF24L01p_write((byte *) str, 50, nRF24L01p_PIPE_0);
+    char str[32];
+    snprintf(str, 32, "%d - is transmission %d.", count, count);
+    nRF24L01p_write((byte *) str, 32, nRF24L01p_PIPE_0);
     count++;
     delay_ms(1000);
   }

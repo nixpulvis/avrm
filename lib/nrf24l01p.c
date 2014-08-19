@@ -210,13 +210,25 @@ ISR (INT0_vect)
     //       since I'm 99% sure we can't trust updated
     //       pipe numbers in the same interrupt anyway.
 
-    while (!nRF24L01p_rx_fifo_is_empty())
-    {
-      nRF24L01p_status_fetch();
-      byte pipe = nRF24L01p_status_pipe_ready();
-      if (pipe <= 5) nRF24L01p_process_rx_payload(pipe);
-      nRF24L01p_status_rx_ready_clear();
-    }
+    // INVESTIGATION:
+    // For some reason the packet is coming in fine, but it's ACK is
+    // either not getting sent properly, or is not being received
+    // properly.
+    //
+    byte payload_width = 32;
+    nRF24L01p_rx_fifo_read(nRF24L01p_rx_pipes[0].data, payload_width);
+    nRF24L01p_rx_pipes[0].data = nRF24L01p_rx_pipes[0].data + payload_width;
+    nRF24L01p_rx_pipes[0].remaining = nRF24L01p_rx_pipes[0].remaining - payload_width;
+    nRF24L01p_status_rx_ready_clear();
+    // TODO: DELETE ABOVE.
+
+    // while (!nRF24L01p_rx_fifo_is_empty())
+    // {
+    //   nRF24L01p_status_fetch();
+    //   byte pipe = nRF24L01p_status_pipe_ready();
+    //   if (pipe <= 5) nRF24L01p_process_rx_payload(pipe);
+    //   nRF24L01p_status_rx_ready_clear();
+    // }
   }
 
   // TODO: Implement advice from Appendix E for automatic
@@ -801,7 +813,7 @@ int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe)
     return -2;
 
   // TODO: Think through calling read, while already reading.
-  //       We probably need to disable the CE here for the configs.
+  nRF24L01p_disable();
 
   nRF24L01p_rx_pipes[pipe].data = dst;
   nRF24L01p_rx_pipes[pipe].remaining = count;

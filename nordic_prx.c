@@ -26,14 +26,14 @@ int main(void)
   // Set RX mode.
   nRF24L01p_config_transceiver_mode(nRF24L01p_VALUE_CONFIG_PRIM_RX);
 
-  byte str[50];
-  nRF24L01p_read(str, 50, nRF24L01p_PIPE_0);
+  byte str[32];
+  nRF24L01p_read(str, 32, nRF24L01p_PIPE_0);
   while (1)
   {
     if (nRF24L01p_read_status(nRF24L01p_PIPE_0))
     {
       printf("%s\n", str);
-      nRF24L01p_read(str, 50, nRF24L01p_PIPE_0);
+      nRF24L01p_read(str, 32, nRF24L01p_PIPE_0);
     }
   }
 
