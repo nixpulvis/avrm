@@ -195,12 +195,12 @@
 
 // Pipes
 
-#define nRF24L01p_PIPE_0 (1 << 0)
-#define nRF24L01p_PIPE_1 (1 << 1)
-#define nRF24L01p_PIPE_2 (1 << 2)
-#define nRF24L01p_PIPE_3 (1 << 3)
-#define nRF24L01p_PIPE_4 (1 << 4)
-#define nRF24L01p_PIPE_5 (1 << 5)
+#define nRF24L01p_PIPE_0 0
+#define nRF24L01p_PIPE_1 1
+#define nRF24L01p_PIPE_2 2
+#define nRF24L01p_PIPE_3 3
+#define nRF24L01p_PIPE_4 4
+#define nRF24L01p_PIPE_5 5
 
 #include <stdlib.h>
 #include <string.h>
@@ -231,15 +231,21 @@ int nRF24L01p_init(int ce, int irq);
 //
 int nRF24L01p_config_rx_dr_interrupt(bool value);
 
+// TODO: nRF24L01p_get_rx_dr_interrupt
+
 // nRF24L01p_config_tx_ds_interrupt
 // Enables or disables the TX data sent interrupt.
 //
 int nRF24L01p_config_tx_ds_interrupt(bool value);
 
+// TODO: nRF24L01p_get_tx_ds_interrupt
+
 // nRF24L01p_config_max_rt_interrupt
 // Enables or disables the max retries interrupt.
 //
 int nRF24L01p_config_max_rt_interrupt(bool value);
+
+// TODO: nRF24L01p_get_max_rt_interrupt
 
 // nRF24L01p_config_crc
 // Sets the device to use or not use the CRC.
@@ -249,6 +255,8 @@ int nRF24L01p_config_max_rt_interrupt(bool value);
 //
 int nRF24L01p_config_crc(byte value);
 
+// TODO: nRF24L01p_get_crc
+
 // nRF24L01p_config_crc_count
 // Set the number of bits for the CRC.
 //
@@ -257,6 +265,8 @@ int nRF24L01p_config_crc(byte value);
 //
 int nRF24L01p_config_crc_count(byte value);
 
+// TODO: nRF24L01p_get_crc_count
+
 // nRF24L01p_config_power
 // Set the device into either Power Down or into Standby-I.
 //
@@ -264,6 +274,8 @@ int nRF24L01p_config_crc_count(byte value);
 //                nRF24L01p_VALUE_CONFIG_PWR_DOWN
 //
 int nRF24L01p_config_power(byte value);
+
+// TODO: nRF24L01p_get_power
 
 // nRF24L01p_config_transceiver_mode
 // Set the device to be either PRX or PTX. Both
@@ -274,6 +286,8 @@ int nRF24L01p_config_power(byte value);
 //                nRF24L01p_VALUE_CONFIG_PRIM_RX
 //
 int nRF24L01p_config_transceiver_mode(byte value);
+
+// TODO: nRF24L01p_get_transceiver_mode
 
 // EN_AA
 
@@ -286,6 +300,8 @@ int nRF24L01p_config_transceiver_mode(byte value);
 //
 int nRF24L01p_config_auto_ack(byte mask, bool value);
 
+// TODO: nRF24L01p_get_auto_ack
+
 // EN_RXADDR
 
 // nRF24L01p_config_rx
@@ -296,6 +312,8 @@ int nRF24L01p_config_auto_ack(byte mask, bool value);
 // value - Either TRUE or FALSE.
 //
 int nRF24L01p_config_rx(byte mask, bool value);
+
+// TODO: nRF24L01p_get_rx
 
 // SETUP_AW
 
@@ -310,6 +328,8 @@ int nRF24L01p_config_rx(byte mask, bool value);
 //
 int nRF24L01p_config_address_width(byte value);
 
+// TODO: nRF24L01p_get_address_width
+
 // SETUP_RETR
 
 // nRF24L01p_config_retransmit_delay
@@ -321,6 +341,8 @@ int nRF24L01p_config_address_width(byte value);
 //
 int nRF24L01p_config_retransmit_delay(byte value);
 
+// TODO: nRF24L01p_get_retransmit_delay
+
 // nRF24L01p_config_retransmit_count
 // Set the number of auto retries before giving up.
 //
@@ -328,6 +350,8 @@ int nRF24L01p_config_retransmit_delay(byte value);
 //                nRF24L01p_VALUE_SETUP_RETR_ARC_15
 //
 int nRF24L01p_config_retransmit_count(byte value);
+
+// TODO: nRF24L01p_get_retransmit_count
 
 // RF_CH
 
@@ -338,6 +362,8 @@ int nRF24L01p_config_retransmit_count(byte value);
 // value - Megahertz offset from 2.4GHz, (0-127)
 //
 int nRF24L01p_config_channel(byte value);
+
+// TODO: nRF24L01p_get_channel
 
 // RF_SETUP
 
@@ -353,6 +379,8 @@ int nRF24L01p_config_channel(byte value);
 //
 int nRF24L01p_config_air_data_rate(byte value);
 
+// TODO: nRF24L01p_get_air_data_rate
+
 // nRF24L01p_config_output_power
 // Set the RF power.
 //
@@ -362,6 +390,8 @@ int nRF24L01p_config_air_data_rate(byte value);
 //                nRF24L01p_VALUE_RF_SETUP_RF_PWR_0dBm
 //
 int nRF24L01p_config_output_power(byte value);
+
+// TODO: nRF24L01p_get_output_power
 
 // TODO: LNA_HCURR
 
@@ -393,6 +423,21 @@ int nRF24L01p_config_output_power(byte value);
 //
 int nRF24L01p_config_address(byte reg, long long unsigned int address);
 
+// nRF24L01p_get_address
+// Returns the configured address for a RX pipe or TX. The
+// width of this address is determined by the address width
+// configuration.
+//
+// reg - nRF24L01p_REGISTER_RX_ADDR_P0 or
+//       nRF24L01p_REGISTER_RX_ADDR_P1 or
+//       nRF24L01p_REGISTER_RX_ADDR_P2 or
+//       nRF24L01p_REGISTER_RX_ADDR_P3 or
+//       nRF24L01p_REGISTER_RX_ADDR_P4 or
+//       nRF24L01p_REGISTER_RX_ADDR_P5 or
+//       nRF24L01p_REGISTER_TX_ADDR.
+//
+long long unsigned int nRF24L01p_get_address(byte reg);
+
 // RX_PW_P(0-5)
 
 // nRF24L01p_config_payload_width
@@ -411,6 +456,19 @@ int nRF24L01p_config_address(byte reg, long long unsigned int address);
 //
 int nRF24L01p_config_payload_width(byte reg, byte width);
 
+// nRF24L01p_get_payload_width
+// Return the configured width of the payload for
+// the given payload width pipe register.
+//
+// reg - One of nRF24L01p_REGISTER_RX_PW_P0 or
+//              nRF24L01p_REGISTER_RX_PW_P1 or
+//              nRF24L01p_REGISTER_RX_PW_P2 or
+//              nRF24L01p_REGISTER_RX_PW_P3 or
+//              nRF24L01p_REGISTER_RX_PW_P4 or
+//              nRF24L01p_REGISTER_RX_PW_P5
+//
+byte nRF24L01p_get_payload_width(byte reg);
+
 // FIFO_STATUS - Not used for configuration, see fifo_status functions.
 
 // DYNPD
@@ -422,80 +480,6 @@ int nRF24L01p_config_payload_width(byte reg, byte width);
 // TODO: EN_DPL
 // TODO: EN_ACK_PAY
 // TODO: EN_DYN_ACK
-
-// PIPE HELPER FUNCTIONS
-////////////////////////
-
-// nRF24L01p_is_pipe_enabled
-// Checks the status of the a pipe, returning TRUE
-// when the pipe has been enabled, and FALSE otherwise.
-//
-// pipe - One of nRF24L01p_PIPE_0 or
-//               nRF24L01p_PIPE_1 or
-//               nRF24L01p_PIPE_2 or
-//               nRF24L01p_PIPE_3 or
-//               nRF24L01p_PIPE_4 or
-//               nRF24L01p_PIPE_5.
-//
-bool nRF24L01p_is_pipe_enabled(byte pipe);
-
-// nRF24L01p_payload_width
-// Returns the number of bytes the given pipe's payloads are.
-//
-// pipe - One of nRF24L01p_PIPE_0 or
-//               nRF24L01p_PIPE_1 or
-//               nRF24L01p_PIPE_2 or
-//               nRF24L01p_PIPE_3 or
-//               nRF24L01p_PIPE_4 or
-//               nRF24L01p_PIPE_5.
-//
-byte nRF24L01p_payload_width(byte pipe);
-
-// nRF24L01p_address
-// Returns the address of the given pipe.
-//
-// pipe - One of nRF24L01p_PIPE_0 or
-//               nRF24L01p_PIPE_1 or
-//               nRF24L01p_PIPE_2 or
-//               nRF24L01p_PIPE_3 or
-//               nRF24L01p_PIPE_4 or
-//               nRF24L01p_PIPE_5.
-//
-long long unsigned int nRF24L01p_address(byte pipe);
-
-// nRF24L01p_enable_pipe
-// Enable a pipe to read from the given address.
-//
-// TODO:
-// It's worth mentioning that this function function allocates
-// a receiving buffer, so don't use more pipes than you need.
-//
-// pipe - One of nRF24L01p_PIPE_0 or
-//               nRF24L01p_PIPE_1 or
-//               nRF24L01p_PIPE_2 or
-//               nRF24L01p_PIPE_3 or
-//               nRF24L01p_PIPE_4 or
-//               nRF24L01p_PIPE_5.
-// address - The address to read from, matching the address set
-//           by the TX using nRF24L01p_config_address.
-// payload_width - A value between 1 and 32. TODO: Add dynamic option.
-//
-int nRF24L01p_enable_pipe(byte pipe,
-                          long long unsigned int address,
-                          byte payload_width);
-
-// nRF24L01p_disable_pipe
-// Disable a pipe, freeing allocated memory. This function does
-// not reset the address of the disabled pipe.
-//
-// pipe - One of nRF24L01p_PIPE_0 or
-//               nRF24L01p_PIPE_1 or
-//               nRF24L01p_PIPE_2 or
-//               nRF24L01p_PIPE_3 or
-//               nRF24L01p_PIPE_4 or
-//               nRF24L01p_PIPE_5.
-//
-int nRF24L01p_disable_pipe(byte pipe);
 
 // STATUS
 /////////
@@ -657,6 +641,7 @@ int nRF24L01p_read(byte *restrict dst, size_t count, byte pipe);
 
 // nRF24L01p_read_status
 // TODO: Write this.
+//
 int nRF24L01p_read_status(byte pipe);
 
 // nRF24L01p_read_sync
@@ -694,6 +679,27 @@ int nRF24L01p_write_status(void);
 // TODO: Write this.
 //
 int nRF24L01p_write_sync(const byte *restrict src, size_t count, byte pipe);
+
+// PIPE FUNCTIONS
+/////////////////
+
+// nRF24L01p_enable_pipe
+// Configure a pipe to read from the given address, with
+// a specified payload width.
+//
+// pipe - One of nRF24L01p_PIPE_0 or
+//               nRF24L01p_PIPE_1 or
+//               nRF24L01p_PIPE_2 or
+//               nRF24L01p_PIPE_3 or
+//               nRF24L01p_PIPE_4 or
+//               nRF24L01p_PIPE_5.
+// address - The address to read from, matching the address set
+//           by the TX using nRF24L01p_config_address.
+// payload_width - A value between 1 and 32. TODO: Add dynamic option.
+//
+int nRF24L01p_config_pipe(byte pipe,
+                          long long unsigned int address,
+                          byte payload_width);
 
 // Utility
 //////////
