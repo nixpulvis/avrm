@@ -42,6 +42,12 @@ int main(void)
   // Setup the MAX7221.
   MAX7221_init();
 
+  // Turn off decoding.
+  MAX7221_set_decode_mode(0);
+
+  // Turn down the brightness.
+  MAX7221_set_intensity(0x04);
+
   // Set the seed for the pseudo-random number generator
   // based on a saved, random value. We update the random
   // value every boot to keep it random, or more accurately,
