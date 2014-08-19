@@ -841,6 +841,12 @@ int nRF24L01p_read_status(byte pipe)
 //
 int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe)
 {
+  if (!nRF24L01p_rx_pipes[pipe].configured)
+    return -1;
+
+  if (!nRF24L01p_write_status())
+    return -2;
+
   // TODO: Dynamic width.
   switch (pipe)
   {
@@ -876,11 +882,7 @@ int nRF24L01p_write(const byte *restrict src, size_t count, byte pipe)
       break;
   }
 
-  if (!nRF24L01p_rx_pipes[pipe].configured)
-    return -1;
-
-  if (!nRF24L01p_write_status())
-    return -2;
+  nRF24L01p_config_rx(0x01 << pipe, TRUE);
 
   nRF24L01p_tx_pipe.data = src;
   nRF24L01p_tx_pipe.remaining = count;
