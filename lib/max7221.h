@@ -31,6 +31,9 @@
 
 #define MAX7221_SIZE 8
 
+#define MAX7221_INIT_NONE 0
+#define MAX7221_INIT_SANE 1
+
 #include <stdlib.h>
 #include <string.h>
 #include <avr/io.h>
@@ -39,10 +42,12 @@
 #include "avr.h"
 
 // MAX7221_init
-// Setup the MAX7221, running a 1 second test and clearing
-// the display registers.
+// Setup the MAX7221, setting some sane defaults if passed
+// MAX7221_SANE.
 //
-void MAX7221_init(void);
+// options - Either MAX7221_INIT_NONE or MAX7221_INIT_SANE.
+//
+void MAX7221_init(byte options);
 
 // Configuration Functions
 //////////////////////////

@@ -46,7 +46,7 @@ void wipe(void);
 int main(void)
 {
   // Setup the MAX7221.
-  MAX7221_init();
+  MAX7221_init(MAX7221_INIT_SANE);
 
   // Turn off decoding.
   MAX7221_set_decode_mode(0);

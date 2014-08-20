@@ -3,22 +3,18 @@
 //
 // MAX7221_init implementation.
 //
-void MAX7221_init(void)
+void MAX7221_init(byte options)
 {
   // Setup SPI communication for the MAX7221.
   spi_init();
 
-  // Set scan limiter to display all registers.
-  MAX7221_set_scan_limit(7);
-
-  // Set display intensity (0-F).
-  MAX7221_set_intensity(0x0F);
-
-  // Turn on display.
-  MAX7221_set_power(TRUE);
-
-  // Clear the display.
-  MAX7221_clear();
+  if (options == MAX7221_INIT_SANE)
+  {
+    MAX7221_set_scan_limit(7);
+    MAX7221_set_intensity(0x0F);
+    MAX7221_set_power(TRUE);
+    MAX7221_clear();
+  }
 }
 
 
