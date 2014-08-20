@@ -18,15 +18,12 @@ void MAX7221_init(void)
   MAX7221_set_power(TRUE);
 
   // Clear the display.
-  MAX7221_set_register(0x01, 0x00);
-  MAX7221_set_register(0x02, 0x00);
-  MAX7221_set_register(0x03, 0x00);
-  MAX7221_set_register(0x04, 0x00);
-  MAX7221_set_register(0x05, 0x00);
-  MAX7221_set_register(0x06, 0x00);
-  MAX7221_set_register(0x07, 0x00);
-  MAX7221_set_register(0x08, 0x00);
+  MAX7221_clear();
 }
+
+
+// Configuration Functions
+//////////////////////////
 
 
 //
@@ -79,49 +76,102 @@ int MAX7221_set_display_test(bool value)
 }
 
 
+// Display Functions
+////////////////////
+
+
 //
-// MAX7221_wipe implementation.
+// MAX7221_display_matrix implementation.
 //
-void MAX7221_wipe(void)
+int MAX7221_display_matrix(bool matrix[MAX7221_SIZE][MAX7221_SIZE])
 {
-  // Iterate the rows.
-  for (int y = 0; y < MAX7221_SIZE; y++)
-  {
-    // Set all cells in this row up to MAX7221_SIZE to on.
-    MAX7221_set_register(y + 1, pow(2, MAX7221_SIZE) - 1);
-    // Delay briefly to create a wipe effect.
-    _delay_ms(50);
-  }
-
-  // Iterate the rows, again.
-  for (int y = 0; y < MAX7221_SIZE; y++)
-  {
-    // Set all cells in this row to off.
-    MAX7221_set_register(y + 1, 0);
-    // Delay briefly to create a wipe effect.
-    _delay_ms(50);
-  }
-}
-
-
-//
-// MAX7221_display implementation.
-//
-void MAX7221_display(bool matrix[MAX7221_SIZE][MAX7221_SIZE])
-{
-  // Iterate the rows.
+  int ret = 0;
   for (byte y = 0; y < MAX7221_SIZE; y++)
-  {
-    // Create a byte where it's bits are equivalent to the contiguous
-    // values of the columns in this row.
-    byte data = 0;
-    for (byte x = 0; x < MAX7221_SIZE; x++)
-      data |= (matrix[x][y] << x);
+    ret |= MAX7221_display_vector(y, matrix[y]);
 
-    // Send the row to the MAX7221 which is indexed starting at 1.
-    MAX7221_set_register(y + 1, data);
-  }
+  return ret;
 }
+
+
+//
+// MAX7221_display_vector implementation.
+//
+int MAX7221_display_vector(byte row, bool vector[MAX7221_SIZE])
+{
+  // Create a byte where it's bits are equivalent to the contiguous
+  // values of the vector.
+  byte data = 0;
+  for (byte x = 0; x < MAX7221_SIZE; x++)
+    data |= (vector[x] << x);
+
+  // Display the byte.
+  return MAX7221_display_byte(row, data);
+}
+
+
+//
+// MAX7221_display_vector implementation.
+//
+int MAX7221_display_byte(byte row, byte value)
+{
+  if (0 > row || row > 7)
+    return -1;
+
+  // Display the value.
+  MAX7221_set_register(row + 1, value);
+
+  return 0;
+}
+
+
+//
+// MAX7221_display_bcd_digit implementation.
+//
+int MAX7221_display_bcd_digit(byte digit, byte value)
+{
+  if (0 > digit || digit > 7)
+    return -1;
+
+  // TODO: I'm pretty sure this logic is correct, but I'm on
+  // an airplane and who knows what my brain is doing.
+  if ((0 > value || value > 9) &&
+      (value != MAX7221_BCD_MINUS ||
+       value != MAX7221_BCD_E ||
+       value != MAX7221_BCD_H ||
+       value != MAX7221_BCD_L ||
+       value != MAX7221_BCD_P ||
+       value != MAX7221_BCD_BLANK))
+    return -1;
+
+  // Display the value.
+  MAX7221_set_register(digit + 1, value);
+
+  return 0;
+}
+
+
+// TODO: Write MAX7221_display_bcd_int.
+// TODO: Write MAX7221_display_bcd_float.
+
+
+//
+// MAX7221_clear implementation.
+//
+void MAX7221_clear(void)
+{
+  MAX7221_set_register(0x01, 0x00);
+  MAX7221_set_register(0x02, 0x00);
+  MAX7221_set_register(0x03, 0x00);
+  MAX7221_set_register(0x04, 0x00);
+  MAX7221_set_register(0x05, 0x00);
+  MAX7221_set_register(0x06, 0x00);
+  MAX7221_set_register(0x07, 0x00);
+  MAX7221_set_register(0x08, 0x00);
+}
+
+
+// Helper Functions
+///////////////////
 
 
 //

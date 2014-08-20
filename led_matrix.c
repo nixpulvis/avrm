@@ -37,6 +37,12 @@ void evolve(bool new_matrix[MATRIX_SIZE][MATRIX_SIZE],
 //
 byte neighbors(bool matrix[MATRIX_SIZE][MATRIX_SIZE], byte x, byte y);
 
+// wipe
+// Display a "cool" wipe effect.
+//
+void wipe(void);
+
+
 int main(void)
 {
   // Setup the MAX7221.
@@ -71,7 +77,7 @@ int main(void)
   while(1)
   {
     // Display the matrix.
-    MAX7221_display(matrix);
+    MAX7221_display_matrix(matrix);
 
     // Zero out new matrix.
     memset(new_matrix, 0, sizeof(new_matrix));
@@ -93,7 +99,7 @@ int main(void)
       _delay_ms(2000);
 
       // Display a screen wipe.
-      MAX7221_wipe();
+      wipe();
 
       // Make a new random seed matrix.
       randomize(matrix);
@@ -199,4 +205,28 @@ byte neighbors(bool matrix[MATRIX_SIZE][MATRIX_SIZE], byte x, byte y)
     }
   }
   return count;
+}
+
+//
+// wipe implementation.
+//
+void wipe(void)
+{
+  // Iterate the rows.
+  for (int y = 0; y < MAX7221_SIZE; y++)
+  {
+    // Set all cells in this row up to MAX7221_SIZE to on.
+    MAX7221_set_register(y + 1, pow(2, MAX7221_SIZE) - 1);
+    // Delay briefly to create a wipe effect.
+    _delay_ms(50);
+  }
+
+  // Iterate the rows, again.
+  for (int y = 0; y < MAX7221_SIZE; y++)
+  {
+    // Set all cells in this row to off.
+    MAX7221_set_register(y + 1, 0);
+    // Delay briefly to create a wipe effect.
+    _delay_ms(50);
+  }
 }
