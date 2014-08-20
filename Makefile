@@ -15,6 +15,10 @@ BAUD ?= 115200
 # The language we're building from (C or Assembly), default is C.
 LANGUAGE ?= c
 
+# Libraries, defaults to all.
+C_LIBS = $(wildcard lib/*.c)
+LIBS ?= $(C_LIBS:.c=)
+
 ################################
 
 # Probably shouldn't touch these.
@@ -42,9 +46,6 @@ AVRSIZE_FLAGS = -C
 ifneq ($(TARGET),)
 SOURCE = $(TARGET).$(LANGUAGE)
 endif
-
-# Libraries.
-C_LIBS = $(wildcard lib/*.c)
 
 ################################
 
@@ -95,7 +96,7 @@ clean:
 
 # .bin <- .o
 ifeq ($(LANGUAGE), c)
-%.bin: %.o $(C_LIBS:.c=.o)
+%.bin: %.o $(LIBS:=.o)
 	$(CC) -mmcu=$(MMCU) $? -o $@
 else
 %.bin: %.o

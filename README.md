@@ -25,12 +25,15 @@ It's important to me to make building things easy. I've made a Makefile which ai
 # at 115200.
 TARGET=blink make
 
-# Compile and upload "led_matrix.c"
+# Compile and upload "led_matrix.c".
 # This will upload to a Arduino mini pro.
 TARGET=led_matrix BAUD=57600 make
 
-# Assemble and upload "hand_coded_blink.asm"
+# Assemble and upload "hand_coded_blink.asm".
 TARGET=hand_coded_blink LANGUAGE=asm make
+
+# Make led_matrix.bin with only lib/avr and lib/max7221.
+LIBS="lib/avr lib/max7221" make led_matrix.bin
 ```
 
 TODO: Add info on all Makefile configuration ENV variables.
@@ -43,7 +46,7 @@ TODO: LED Matrix, Conway's Game of Life.
 
 I'm building some libraries as a part of this repository, as I need them. Anything possibly needed in more than one project is it's own library. Some of the libraries are for functionality of the AVR itself, and some are for external devices.
 
-All Libraries have their own set of header and source files, with a common name in the `/lib` directory. All projects get built with all libraries, but this is something that I aim to improve as I continue refining the Makefile.
+All Libraries have their own set of header and source files, with a common name in the `/lib` directory. By default all projects get built with all libraries, but this is something you can configure with the `LIBS` env variable.
 
 Libraries in this repository:
 
