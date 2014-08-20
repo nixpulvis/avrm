@@ -17,7 +17,7 @@ int main(void)
   _delay_us(nRF24L01p_TIMING_INITIAL_US);
 
   // Initialize the nRF24L01p.
-  nRF24L01p_init();
+  nRF24L01p_init(0, 0);
 
   // Common storage for register values.
   byte reg;
