@@ -7,7 +7,7 @@ MMCU   ?= atmega328p
 # Port to flash to.
 PORT ?= /dev/$(shell ls /dev/ | grep "tty\.usb" | sed -n 1p)
 
-# Flash rate.
+# UART baud rate.
 # 115200 - Arduino Uno
 # 57600  - Arduino Mini Pro
 BAUD ?= 115200
@@ -17,7 +17,7 @@ LANGUAGE ?= c
 
 ################################
 
-# Probably should touch these.
+# Probably shouldn't touch these.
 
 # The `gcc` executable.
 CC = avr-gcc
@@ -44,7 +44,6 @@ SOURCE = $(TARGET).$(LANGUAGE)
 endif
 
 # Libraries.
-# C_LIBS = avr max7221 nrf24l01p
 C_LIBS = $(wildcard lib/*.c)
 
 ################################
@@ -70,11 +69,8 @@ default: flash
 #
 # Given a hex file using `avrdude` this target flashes the AVR with the
 # new program contained in the hex file.
-#
-# This process does not involve setting fuse bits on the AVR, and does
-# not affect the bootloader.
-flash: check_target $(TARGET).hex
-	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(BAUD) -U flash:w:$(word 2,$^)
+flash: $(TARGET).hex
+	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(BAUD) -U flash:w:$<
 
 # serial
 #
@@ -82,12 +78,6 @@ flash: check_target $(TARGET).hex
 # through it's on-board UART.
 serial:
 	screen $(PORT) $(BAUD)
-
-# check_target
-#
-# Ensure there is a valid target.
-check_target:
-	@$ [ -f ./$(SOURCE) ] || (echo "Invalid TARGET \"$(TARGET)\"" && false)
 
 # size
 #
