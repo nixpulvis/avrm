@@ -20,20 +20,20 @@ Make sure you have these packages installed with Homebrew:
 It's important to me to make building things easy. I've made a Makefile which aims to make compiling and flashing AVRs as easy as possible. It tries to help you out too, for example it will find a `/dev/tty.usb*` device automatically.
 
 ```sh
-# Compile and upload "blink.c".
+# Compile and upload "projects/blink.c".
 # By default it sets the BAUD to be compatible with Arduino Uno's
 # at 115200.
-TARGET=blink make
+TARGET=projects/blink make flash
 
-# Compile and upload "led_matrix.c".
+# Compile and upload "projects/game_of_life.c".
 # This will upload to a Arduino mini pro.
-TARGET=led_matrix BAUD=57600 make
+TARGET=projects/game_of_life BAUD=57600 make flash
 
-# Assemble and upload "hand_coded_blink.asm".
-TARGET=hand_coded_blink LANGUAGE=asm make
+# Assemble and upload "projects/hand_coded_blink.asm".
+TARGET=projects/hand_coded_blink LANGUAGE=asm make flash
 
 # Make led_matrix.bin with only lib/avr and lib/max7221.
-LIBS="lib/avr lib/max7221" make led_matrix.bin
+LIBS="lib/avr lib/max7221" make projects/game_of_life.bin
 ```
 
 TODO: Add info on all Makefile configuration ENV variables.

@@ -26,6 +26,7 @@ LIBS ?= $(C_LIBS:.c=)
 # The `gcc` executable.
 CC = avr-gcc
 C_FLAGS = -Wall -Werror -pedantic -Os -std=c99
+C_HEADERS = -I.
 
 # The `as` executable.
 AS = avr-as
@@ -42,15 +43,16 @@ AVRDUDE_FLAGS = -F -V -c arduino -p ATMEGA328P
 AVRSIZE = avr-size
 AVRSIZE_FLAGS = -C
 
-# The source file.
-ifneq ($(TARGET),)
-SOURCE = $(TARGET).$(LANGUAGE)
-endif
+# List of projects. TODO: ASM projects.
+PROJECTS = $(wildcard projects/*.c)
+
+# List of tests.
+TESTS = $(wildcard test/**/*.c)
 
 ################################
 
-# The default task is to flash.
-default: flash
+# The default task is to build all projects.
+default: all
 
 ################################
 
@@ -65,6 +67,15 @@ default: flash
 ################################
 
 # Utility rules (not file based).
+
+# Build all the projects.
+#
+# TODO: Build asm too!
+#
+all: $(PROJECTS:.c=.bin)
+
+test: $(TESTS:.c=.hex)
+	@echo "foo"
 
 # flash
 #
@@ -88,7 +99,7 @@ size: $(TARGET).bin
 
 # Remove non-source files.
 clean:
-	rm -rf **/*.o *.o *.bin *.hex
+	rm -rf $(wildcard **/*.o) $(wildcard **/*.bin) $(wildcard **/*.hex) $(wildcard test/**/*.hex)
 
 ################################
 
@@ -97,7 +108,7 @@ clean:
 # .bin <- .o
 ifeq ($(LANGUAGE), c)
 %.bin: %.o $(LIBS:=.o)
-	$(CC) -mmcu=$(MMCU) $? -o $@
+	$(CC) $(C_FLAGS) -mmcu=$(MMCU) $? -o $@
 else
 %.bin: %.o
 	$(CC) -mmcu=$(MMCU) $? -o $@
@@ -105,12 +116,12 @@ endif
 
 # .asm <- .c
 %.asm: %.c
-	$(CC) -S $(C_FLAGS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
+	$(CC) -S $(C_HEADERS) $(C_FLAGS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
 
 # .o <- (.c | .asm)
 ifeq ($(LANGUAGE), c)
 %.o: %.c
-	$(CC) $(C_FLAGS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
+	$(CC) $(C_HEADERS) $(C_FLAGS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
 else
 %.o: %.asm
 	$(AS) -mmcu=$(MMCU) -o $@ $<
