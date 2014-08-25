@@ -1,6 +1,6 @@
 # AVR from Scratch
 
-Bare metal AVR tinkering using both C and Assembly. This project is a collection of some libraries and code for actual projects. The code is all either C99, or AVR assembly. One of the main goals of this project is to teach myself the needed concepts to write AVR code without the Arduino libraries. If it seems like I'm reinventing the wheel here, that's exactly the point. The other main goal is to make some cool projects, [led_matrix.c](https://github.com/nixpulvis/avr/blob/master/led_matrix.c) for example plays [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway's_Game_of_Life) on an 8x8 LED matrix.
+Bare metal AVR tinkering using both C and Assembly. This project is a collection of some libraries and code for actual projects. The code is all either C99, or AVR assembly. One of the main goals of this project is to teach myself the needed concepts to write AVR code without the Arduino libraries. If it seems like I'm reinventing the wheel here, that's exactly the point. The other main goal is to make some cool projects, [game_of_life.c](https://github.com/nixpulvis/avr/blob/master/projects/game_of_life.c) for example plays [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway's_Game_of_Life) on an 8x8 LED matrix.
 
 ## Getting Started
 
