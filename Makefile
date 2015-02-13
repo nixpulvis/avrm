@@ -5,7 +5,7 @@ DF_CPU ?= 16000000UL
 MMCU   ?= atmega328p
 
 # Port to flash to.
-PORT ?= /dev/$(shell ls /dev/ | grep "tty\.usb" | sed -n 1p)
+PORT ?= /dev/$(shell ls /dev/ | grep -i "tty\.\?usb" | sed -n 1p)
 
 # UART baud rate.
 # 115200 - Arduino Uno
