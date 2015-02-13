@@ -6,7 +6,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "lib/avr.h"
-#include "lib/nRF24L01p.h"
+#include "lib/nrf24l01p.h"
 
 int main(void)
 {
