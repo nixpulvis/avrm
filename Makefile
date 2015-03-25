@@ -28,7 +28,7 @@ AVRSIZE_FLAGS = -C
 # Pseudo rules.
 
 # These rules are not file based.
-.PHONY: install size clean
+.PHONY: install uninstall test size clean
 
 # Mark all .o files as intermediate.
 .INTERMEDIATE: $(LIBS:.c=.o)
@@ -41,32 +41,36 @@ AVRSIZE_FLAGS = -C
 default: all
 
 # Build the library.
-all: avr.a
+all: libavr.a
 
 # size
 #
 # Show information about target's size.
-size: avr.a
+size: libavr.a
 	$(AVRSIZE) $(AVRSIZE_FLAGS) --mcu=$(MMCU) $<
 
 # Remove non-source files.
 clean:
-	rm -rf avr.a $(wildcard **/*.o)
+	rm -rf libavr.a $(wildcard **/*.o)
 
-install: avr.a
+test:
+	$(CC) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) test/hello_world.c -lavr
+	rm a.out
+
+install: libavr.a
 	mkdir -p $(PREFIX)/avr/lib $(PREFIX)/avr/include
 	install $? $(PREFIX)/avr/lib
 	install lib/avr.h $(PREFIX)/avr/include
 
 uninstall:
-	rm $(PREFIX)/avr/lib/avr.a $(PREFIX)/avr/include/avr.h
+	rm $(PREFIX)/avr/lib/libavr.a $(PREFIX)/avr/include/avr.h
 
 ################################
 
 # File rules.
 
-# avr.a <- LIBS
-avr.a: $(LIBS:.c=.o)
+# libavr.a <- LIBS
+libavr.a: $(LIBS:.c=.o)
 	$(AR) rcs $@ $?
 
 # .o <- .c
