@@ -4,6 +4,8 @@ MMCU   ?= atmega328p
 
 LIBS = $(wildcard lib/*.c)
 
+PREFIX ?= /usr/local
+
 ################################
 
 # The `gcc` executable.
@@ -50,6 +52,14 @@ size: avr.a
 # Remove non-source files.
 clean:
 	rm -rf avr.a $(wildcard **/*.o)
+
+install: avr.a
+	mkdir -p $(PREFIX)/avr/lib $(PREFIX)/avr/include
+	install $? $(PREFIX)/avr/lib
+	install lib/avr.h $(PREFIX)/avr/include
+
+uninstall:
+	rm $(PREFIX)/avr/lib/avr.a $(PREFIX)/avr/include/avr.h
 
 ################################
 
