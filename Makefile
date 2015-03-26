@@ -13,9 +13,6 @@ CC = avr-gcc
 C_FLAGS = -Wall -Werror -pedantic -Os -std=c99
 C_HEADERS = -I.
 
-# The `as` executable.
-AS = avr-as
-
 # The `ar` archiver executable.
 AR = avr-ar
 
