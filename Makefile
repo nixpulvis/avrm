@@ -26,16 +26,13 @@ SRCS = $(wildcard lib/*.c)
 # Test files.
 TESTS = $(wildcard test/*.c)
 
-# Libraries needed.
-LIBS = -l$(LIBRARY)
-
 # The `gcc` executable.
 CC = avr-gcc
-C_FLAGS = -Wall -Werror -pedantic -Os -std=c99 -DF_CPU=$(DF_CPU) -mmcu=$(MMCU)
-
-# C flags for compiling with this library.
-C_AVR_INCLUDES = -I$(PREFIX)/include
-C_AVR_LIBS = -L$(PREFIX)/lib $(LIBS)
+CFLAGS = -Wall -Werror -pedantic -Os -std=c99 \
+         -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) \
+         -I$(PREFIX)/include
+LDFLAGS = -L$(PREFIX)/lib
+LDLIBS = -l$(LIBRARY)
 
 # The `obj-copy` executable.
 OBJ_COPY = avr-objcopy
@@ -60,7 +57,7 @@ AVRSIZE_FLAGS = -C
 .PHONY: install uninstall test size clean flash serial
 
 # Mark all .o files as intermediate.
-.INTERMEDIATE: $(SRCS:.c=.o) $(TARGET).hex $(TARGET).bin
+.INTERMEDIATE: $(SRCS:.c=.o) $(TARGET).hex
 
 ################################
 
@@ -70,15 +67,15 @@ AVRSIZE_FLAGS = -C
 default: all
 
 # Build the library.
-all: lib$(LIBRARY).a
+all: lib$(LIBRARY).a($(SRCS:.c=.o))
 
 # Show information about target's size.
-size: lib$(LIBRARY).a
+size: lib$(LIBRARY).a($(SRCS:.c=.o))
 	$(AVRSIZE) $(AVRSIZE_FLAGS) --mcu=$(MMCU) $<
 
 # Remove non-source files.
 clean:
-	find . -name '*.a' -or -name '*.o' -or -name '*.bin' -or -name '*.hex' | xargs rm
+	find . -name '*.a' -or -name '*.o' -or -name '*.hex' | xargs rm
 
 # Install this library into PREFIX on this system.
 install: all
@@ -91,8 +88,8 @@ uninstall:
 	rm $(PREFIX)/lib/lib$(LIBRARY).a $(PREFIX)/include/$(LIBRARY).h
 
 # Test this library (must be installed).
-test: $(TESTS:.c=.bin)
-	find . -name '*.bin' | xargs rm
+test: $(TESTS:.c=)
+	rm $?
 
 # Given a hex file using `avrdude` this target flashes the AVR with the
 # new program contained in the hex file.
@@ -108,18 +105,6 @@ serial:
 
 # File rules.
 
-# lib$(LIBRARY).a <- SRCS
-lib$(LIBRARY).a: $(SRCS:.c=.o)
-	$(AR) rcs $@ $?
-
-# .o <- .c
-%.o: %.c
-	$(CC) $(C_FLAGS) $(C_AVR_INCLUDES) -c $< -o $@
-
-# .bin <- .o
-%.bin: %.o
-	$(CC) $(C_FLAGS) $(C_AVR_INCLUDES) $? -o $@ $(C_AVR_LIBS)
-
-# .hex <- .bin
-%.hex: %.bin
+# *.hex <- *
+%.hex: %
 	$(OBJ_COPY) $(OBJ_COPY_FLAGS) $< $@
