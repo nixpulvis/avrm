@@ -1,8 +1,27 @@
-# Microcontroller options.
+# AVR
+#
+# This Makefile is designed to be used by both this library and any other
+# library or project targeting AVRs. There are a few configuration variables
+# which allow users to specify functionality of this Makefile.
+#
+# To use this makefile in other libraries or projects create a Makefile with
+# the contents:
+#
+# LIBRARY = <name>
+# include $(PREFIX)/Makefile
+
+################################
+
+# Configuration variables.
+
+# The running speed of the AVR, used for `_delay_ms` time calculations.
 DF_CPU ?= 16000000UL
+
+# AVR MCU type, see https://gcc.gnu.org/onlinedocs/gcc/AVR-Options.html.
 MMCU   ?= atmega328p
 
-# Port to flash to.
+# The system path to communicate via serial, used for both flashing and serial
+# monitoring. Defaults to the first port in /dev containing "tty.usb".
 PORT ?= /dev/$(shell ls /dev/ | grep "tty\.usb" | sed -n 1p)
 
 # Flashing baud rate.
