@@ -5,16 +5,19 @@ MMCU   ?= atmega328p
 # Port to flash to.
 PORT ?= /dev/$(shell ls /dev/ | grep "tty\.usb" | sed -n 1p)
 
-# UART baud rate.
+# Flashing baud rate.
 # 115200 - Arduino Uno
 # 57600  - Arduino Mini Pro
-BAUD ?= 115200
+AVRDUDE_BAUD ?= 115200
+
+# UART baud default baud rate.
+BAUD ?= 9600
 
 # The location for our library archives and headers.
 PREFIX ?= /usr/local/avr
 
 # The name of this library.
-LIBRARY = avr
+LIBRARY ?= avr
 
 ################################
 
@@ -32,7 +35,11 @@ CFLAGS = -Wall -Werror -pedantic -Os -std=c99 \
          -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) \
          -I$(PREFIX)/include
 LDFLAGS = -L$(PREFIX)/lib
-LDLIBS = -l$(LIBRARY)
+ifeq ($(LIBRARY),avr)
+LDLIBS = -lavr
+else
+LDLIBS = -lavr -l$(LIBRARY)
+endif
 
 # The `obj-copy` executable.
 OBJ_COPY = avr-objcopy
@@ -82,10 +89,15 @@ install: all
 	mkdir -p $(PREFIX)/lib $(PREFIX)/include
 	install lib$(LIBRARY).a $(PREFIX)/lib
 	install lib/$(LIBRARY).h $(PREFIX)/include
+ifeq ($(LIBRARY),avr)
+	install Makefile $(PREFIX)
+endif
 
 # Remove this library from PREFIX on this system.
 uninstall:
-	rm $(PREFIX)/lib/lib$(LIBRARY).a $(PREFIX)/include/$(LIBRARY).h
+	rm -f $(PREFIX)/lib/lib$(LIBRARY).a \
+	      $(PREFIX)/include/$(LIBRARY).h \
+	      $(PREFIX)/Makefile
 
 # Test this library (must be installed).
 test: $(TESTS:.c=)
@@ -94,7 +106,7 @@ test: $(TESTS:.c=)
 # Given a hex file using `avrdude` this target flashes the AVR with the
 # new program contained in the hex file.
 flash: $(TARGET).hex
-	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(BAUD) -U flash:w:$<
+	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(AVRDUDE_BAUD) -U flash:w:$<
 
 # Open up a screen session for communication with the AVR
 # through it's on-board UART.
