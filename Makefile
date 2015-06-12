@@ -64,7 +64,7 @@ AVRSIZE_FLAGS = -C
 .PHONY: install uninstall test size clean flash serial
 
 # Mark all .o files as intermediate.
-.INTERMEDIATE: $(SRCS:.c=.o) $(TARGET).hex
+.INTERMEDIATE: $(SRCS:.c=.o) $(TARGET).hex $(TARGET)
 
 ################################
 
@@ -95,18 +95,20 @@ endif
 
 # Remove this library from PREFIX on this system.
 uninstall:
-	rm -f $(PREFIX)/lib/lib$(LIBRARY).a \
-	      $(PREFIX)/include/$(LIBRARY).h \
-	      $(PREFIX)/Makefile
+	rm -f $(PREFIX)/lib/lib$(LIBRARY).a
+	rm -f $(PREFIX)/include/$(LIBRARY).h
+ifeq ($(LIBRARY),avr)
+	rm -f $(PREFIX)/Makefile
+endif
 
 # Test this library (must be installed).
-test: $(TESTS:.c=)
-	rm $?
+test: install $(TESTS:.c=)
+	rm $(TESTS:.c=)
 
 # Given a hex file using `avrdude` this target flashes the AVR with the
 # new program contained in the hex file.
-flash: $(TARGET).hex
-	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(AVRDUDE_BAUD) -U flash:w:$<
+flash: install $(TARGET).hex
+	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(AVRDUDE_BAUD) -U flash:w:$(TARGET).hex
 
 # Open up a screen session for communication with the AVR
 # through it's on-board UART.
