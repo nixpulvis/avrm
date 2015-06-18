@@ -21,6 +21,24 @@ void printb(void const * const ptr, size_t const size)
   }
 }
 
+//
+// bcd_to_dec implementation.
+//
+byte bcd_to_dec(byte data)
+{
+  // TODO: Bound checking.
+  return (((data & 0xF0) >> 4) * 10) + (data & 0x0F);
+}
+
+//
+// dec_to_bcd implementation.
+//
+byte dec_to_bcd(byte data)
+{
+  // TODO: Bound checking.
+  return (((data / 10) << 4) & 0xF0) | (data % 10);
+}
+
 
 // UART Functions
 /////////////////

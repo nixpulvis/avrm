@@ -34,6 +34,24 @@ typedef unsigned char byte;
 void printb(void const * const ptr, size_t const size);
 
 
+// bcd_to_dec
+// Convert a Binary Coded Digit into it's corresponding value.
+// TODO: Add support for the sign bit, allowing output range to be (-99 - 99).
+//
+// data - The BCD value to convert into normal decimal form.
+//
+// Returns the decimal value (0 - 99).
+byte bcd_to_dec(byte data);
+
+// dec_to_bcd
+// Convert a value into it's corresponding Binary Coded Digit.
+// TODO: Add support for the sign bit, allowing input range to be (-99 - 99).
+//
+// data - The decimal value (0 - 99) to convert into BCD form.
+//
+// Returns the BCD value.
+byte dec_to_bcd(byte data);
+
 // UART Functions
 /////////////////
 
