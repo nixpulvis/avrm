@@ -1,4 +1,5 @@
 #include <avr.h>
+#include <avr/uart.h>
 
 // Forward declarations.
 void assert(const char *name, bool test);

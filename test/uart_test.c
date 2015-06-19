@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <avr.h>
+#include <avr/uart.h>
 
 int main(void)
 {

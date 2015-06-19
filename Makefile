@@ -43,10 +43,10 @@ LIBRARY ?= avr
 # Probably shouldn't touch these.
 
 # Source files.
-SRCS = $(wildcard lib/*.c)
+SRCS = $(shell find lib -name '*.c')
 
 # Test files.
-TESTS = $(wildcard test/*.c)
+TESTS = $(shell find test -name '*.c')
 
 # The `gcc` executable.
 CC = avr-gcc
@@ -57,7 +57,7 @@ LDFLAGS = -L$(PREFIX)/lib
 ifeq ($(LIBRARY),avr)
 LDLIBS = -lavr
 else
-LDLIBS = -lavr -l$(LIBRARY)
+LDLIBS = -l$(LIBRARY) -lavr
 endif
 
 # The `obj-copy` executable.
@@ -94,10 +94,11 @@ default: all
 
 # Build the library.
 all: lib$(LIBRARY).a($(SRCS:.c=.o))
+	@echo $(SRCS)
 
 # Show information about target's size.
 size: lib$(LIBRARY).a($(SRCS:.c=.o))
-	$(AVRSIZE) $(AVRSIZE_FLAGS) --mcu=$(MMCU) $<
+	$(AVRSIZE) $(AVRSIZE_FLAGS) --mcu=$(MMCU) lib$(LIBRARY).a
 
 # Remove non-source files.
 clean:
@@ -108,6 +109,10 @@ install: all
 	mkdir -p $(PREFIX)/lib $(PREFIX)/include
 	install lib$(LIBRARY).a $(PREFIX)/lib
 	install lib/$(LIBRARY).h $(PREFIX)/include
+ifneq ($(wildcard lib/$(LIBRARY)/*.h),)
+	mkdir -p $(PREFIX)/include/$(LIBRARY)
+	install lib/$(LIBRARY)/*.h $(PREFIX)/include/$(LIBRARY)
+endif
 ifeq ($(LIBRARY),avr)
 	install Makefile $(PREFIX)
 endif
@@ -116,6 +121,7 @@ endif
 uninstall:
 	rm -f $(PREFIX)/lib/lib$(LIBRARY).a
 	rm -f $(PREFIX)/include/$(LIBRARY).h
+	rm -rf $(PREFIX)/include/$(LIBRARY)/
 ifeq ($(LIBRARY),avr)
 	rm -f $(PREFIX)/Makefile
 endif
