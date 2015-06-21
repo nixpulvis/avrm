@@ -46,13 +46,7 @@ TODO: LED Matrix, Conway's Game of Life.
 
 I'm building some libraries as a part of this repository, as I need them. Anything possibly needed in more than one project is it's own library. Some of the libraries are for functionality of the AVR itself, and some are for external devices.
 
-All Libraries have their own set of header and source files, with a common name in the `/lib` directory. By default all projects get built with all libraries, but this is something you can configure with the `LIBS` env variable.
-
-Libraries in this repository:
-
-- [avr](#avr)
-- [max7219](#max7219)
-- [nrf24l01p](#nrf24l01p)
+All Libraries have their own set of header and source files, with a common name in the `/lib` directory.
 
 ### avr
 
@@ -60,21 +54,23 @@ A collection of basic functions for the AVR. These functions work in harmony wit
 
 To view the API for this library read the [header file](https://github.com/nixpulvis/avr/blob/master/lib/avr.h).
 
-### max7219
+## Other Libraries
 
-> Not fully functional yet.
+In addition to the functions included in this library here are a few more libraries I've written for specific chip.
 
-A set of functions for using the [MAX7219CNG LED Display Driver](https://www.sparkfun.com/products/9622). This chip can control up to 8 digit 7-segment numeric LED displays, LED bar graphs, or 64 individual LEDs.
-
-To view the API for this library read the [header file](https://github.com/nixpulvis/avr/blob/master/lib/max7219.h).
+TODO: Links.
 
 ### nrf24l01p
 
-> Not fully functional yet.
-
 A set of functions for using the [Nordic Transceiver nRF24L01+ Module with RP-SMA](https://www.sparkfun.com/products/705).
 
-To view the API for this library read the [header file](https://github.com/nixpulvis/avr/blob/master/lib/nrf24l01p.h).
+### max7219
+
+A set of functions for using the [MAX7219 LED Display Driver](https://www.sparkfun.com/products/9622). This chip can control up to 8 digit 7-segment numeric LED displays, LED bar graphs, or 64 individual LEDs.
+
+### ds1307
+
+A set of functions for using the [DS1307 RTC](http://datasheets.maximintegrated.com/en/ds/DS1307.pdf).
 
 ## Reference
 
