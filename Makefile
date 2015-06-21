@@ -36,7 +36,7 @@ BAUD ?= 9600
 PREFIX ?= /usr/local/avr
 
 # The name of this library.
-LIBRARY ?= avr
+LIBRARY ?= avrm
 
 ################################
 
@@ -54,10 +54,10 @@ CFLAGS = -Wall -Werror -pedantic -Os -std=c99 \
          -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) \
          -I$(PREFIX)/include
 LDFLAGS = -L$(PREFIX)/lib
-ifeq ($(LIBRARY),avr)
-LDLIBS = -lavr
+ifeq ($(LIBRARY),avrm)
+LDLIBS = -lavrm
 else
-LDLIBS = -l$(LIBRARY) -lavr
+LDLIBS = -l$(LIBRARY) -lavrm
 endif
 
 # The `obj-copy` executable.
@@ -113,7 +113,7 @@ ifneq ($(wildcard lib/$(LIBRARY)/*.h),)
 	mkdir -p $(PREFIX)/include/$(LIBRARY)
 	install lib/$(LIBRARY)/*.h $(PREFIX)/include/$(LIBRARY)
 endif
-ifeq ($(LIBRARY),avr)
+ifeq ($(LIBRARY),avrm)
 	install Makefile $(PREFIX)
 endif
 
@@ -122,7 +122,7 @@ uninstall:
 	rm -f $(PREFIX)/lib/lib$(LIBRARY).a
 	rm -f $(PREFIX)/include/$(LIBRARY).h
 	rm -rf $(PREFIX)/include/$(LIBRARY)/
-ifeq ($(LIBRARY),avr)
+ifeq ($(LIBRARY),avrm)
 	rm -f $(PREFIX)/Makefile
 endif
 

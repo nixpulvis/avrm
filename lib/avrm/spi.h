@@ -1,11 +1,12 @@
 #ifndef __AVR_SPI_H__
 #define __AVR_SPI_H__
 
-#include <avr.h>
+#include <avr/interrupt.h>
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
-#include <avr/interrupt.h>
+
+#include "../avrm.h"
 
 #define SPI_INT            (0x01 << SPIE)
 #define SPI_DORD_MSB       (0x00 << DORD)

@@ -4,13 +4,11 @@
 #define BAUD 9600
 
 #include <avr/io.h>
-#include <avr.h>
 #include <stdio.h>
 #include <util/delay.h>
 #include <util/setbaud.h>
 
-// UART Functions
-/////////////////
+#include "../avrm.h"
 
 // uart_init
 // Initialize the UART bus. The bus is bound to STDIN and STDOUT, so

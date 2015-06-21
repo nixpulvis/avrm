@@ -1,4 +1,4 @@
-#include <avr/spi.h>
+#include <avrm/spi.h>
 
 int main(void)
 {

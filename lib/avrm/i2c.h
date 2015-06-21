@@ -1,14 +1,12 @@
 #ifndef __AVR_I2C_H__
 #define __AVR_I2C_H__
 
-#include <avr.h>
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
 #include <util/twi.h>
 
-// I2C Functions
-////////////////
+#include "../avrm.h"
 
 // I2C clock freqencies.
 #define I2C_SCL_100KHZ 100000UL
