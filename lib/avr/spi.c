@@ -3,19 +3,17 @@
 //
 // spi_init implementation.
 //
-void spi_init(void)
+void spi_init(byte config)
 {
-  // SS is output.
-  PORTB |= _BV(PORTB2);
-  DDRB |= _BV(DDB2);
+  if ((config >> MSTR) & 0x01)
+    DDRB = (1 << DDB5) | (1 << DDB3) | (1 << DDB2);
+  else
+    DDRB = (1 << DDB4);
 
-  // Set MOSI, SCK as output.
-  DDRB |= _BV(DDB3);
-  DDRB |= _BV(DDB5);
+  SPCR = config | (1 << SPE);
 
-  // Enable SPI, and set as master.
-  SPCR |= _BV(MSTR);
-  SPCR |= _BV(SPE);
+  if ((config >> SPIE) & 0x01)
+    sei();
 }
 
 
