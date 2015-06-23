@@ -94,7 +94,6 @@ default: all
 
 # Build the library.
 all: lib$(LIBRARY).a($(SRCS:.c=.o))
-	@echo $(SRCS)
 
 # Show information about target's size.
 size: lib$(LIBRARY).a($(SRCS:.c=.o))
