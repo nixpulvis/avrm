@@ -80,10 +80,10 @@ AVRSIZE_FLAGS = -C
 # Pseudo rules.
 
 # These rules are not file based.
-.PHONY: install uninstall test size clean flash serial
+.PHONY: install uninstall test size clean serial
 
 # Mark all .o files as intermediate.
-.INTERMEDIATE: $(SRCS:.c=.o) $(TARGET).hex $(TARGET)
+.INTERMEDIATE: $(SRCS:.c=.o) $(TESTS:.c=)
 
 ################################
 
@@ -131,8 +131,8 @@ test: install $(TESTS:.c=)
 
 # Given a hex file using `avrdude` this target flashes the AVR with the
 # new program contained in the hex file.
-flash: install $(TARGET).hex
-	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(AVRDUDE_BAUD) -U flash:w:$(TARGET).hex
+%.flash: %.hex
+	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(AVRDUDE_BAUD) -U flash:w:$<
 
 # Open up a screen session for communication with the AVR
 # through it's on-board UART.
