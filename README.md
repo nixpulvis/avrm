@@ -2,17 +2,15 @@
 
 [![Build Status](https://travis-ci.org/nixpulvis/avrm.svg?branch=master)](https://travis-ci.org/nixpulvis/avrm)
 
-This is a minimal and efficient set of functions for the AVR microcontrollers. Unlike the popular Arduino libraries which abstract away a lot of lower level details, this library doesn't do too much for you.
-
-Bare metal AVR tinkering using both C and Assembly. This project is a collection of some libraries and code for actual projects. The code is all either C99, or AVR assembly. One of the main goals of this project is to teach myself the needed concepts to write AVR code without the Arduino libraries. If it seems like I'm reinventing the wheel here, that's exactly the point. The other main goal is to make some cool projects, [game_of_life.c](https://github.com/nixpulvis/avr/blob/master/projects/game_of_life.c) for example plays [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway's_Game_of_Life) on an 8x8 LED matrix.
+This is a minimal and efficient set of functions for the AVR microcontrollers. Unlike the popular Arduino libraries which abstract away a lot of lower level details, this library doesn't do too much for you. The code is all either C99, or AVR assembly. One of the main goals of this project is to teach myself the needed concepts to write AVR code without the Arduino libraries. If it seems like I'm reinventing the wheel here, that's exactly the point. The other main goal is to write libraries which do not rely on Arduino for some parts.
 
 ## Getting Started
 
-I'm developing this project on OS X. If you are using another system, this project should still work for you. You will need to install the needed system dependencies yourself.
+I'm developing this project on both OS X, and Linux. Windows is simply not on my radar, and I'm uninterested in trying to support it in the build tooling.
 
 ### Installing Dependencies
 
-Make sure you have these packages installed with Homebrew:
+These instructions are for installing the needed dependencies on OS X, Linux documentation is coming soon™. Make sure you have these packages installed with Homebrew:
 
 - avr-binutils
 - avr-gcc
@@ -23,46 +21,24 @@ Make sure you have these packages installed with Homebrew:
 
 It's important to me to make building things easy. I've made a Makefile which aims to make compiling and flashing AVRs as easy as possible. It tries to help you out too, for example it will find a `/dev/tty.usb*` device automatically.
 
-```sh
-# Compile and upload "projects/blink.c".
-# By default it sets the BAUD to be compatible with Arduino Uno's
-# at 115200.
-TARGET=projects/blink make flash
-
-# Compile and upload "projects/game_of_life.c".
-# This will upload to a Arduino mini pro.
-TARGET=projects/game_of_life BAUD=57600 make flash
-
-# Assemble and upload "projects/hand_coded_blink.asm".
-TARGET=projects/hand_coded_blink LANGUAGE=asm make flash
-
-# Make led_matrix.bin with only lib/avr and lib/max7221.
-LIBS="lib/avr lib/max7221" make projects/game_of_life.bin
-```
-
-TODO: Add info on all Makefile configuration ENV variables.
-
-## Projects
-
-TODO: LED Matrix, Conway's Game of Life.
+TODO: Finish this.
 
 ## Libraries
 
-I'm building some libraries as a part of this repository, as I need them. Anything possibly needed in more than one project is it's own library. Some of the libraries are for functionality of the AVR itself, and some are for external devices.
+I'm building some libraries as a part of this repository, as I need them. Anything possibly needed in more than one project is it's own library. Some of the libraries are for functionality of the AVR itself.
 
 All Libraries have their own set of header and source files, with a common name in the `/lib` directory.
 
-### avr
+- [avrm](https://github.com/nixpulvis/avr/blob/master/lib/avrm.h)
+- [i2c](https://github.com/nixpulvis/avr/blob/master/lib/avrm/i2c.h)
+- [spi](https://github.com/nixpulvis/avr/blob/master/lib/avrm/spi.h)
+- [uart](https://github.com/nixpulvis/avr/blob/master/lib/avrm/i2c.h)
 
-A collection of basic functions for the AVR. These functions work in harmony with the functions included in the AVR toolkit.
-
-To view the API for this library read the [header file](https://github.com/nixpulvis/avr/blob/master/lib/avr.h).
-
-## Other Libraries
+## Other Firmware Libraries
 
 In addition to the functions included in this library here are a few more libraries I've written for specific chip.
 
-- [max7219](https://github.com/nixpulvis/max7219)
+- [max7221](https://github.com/nixpulvis/max7221)
 - [nrf24l01](https://github.com/nixpulvis/nrf24l01)
 - [ds1307](https://github.com/nixpulvis/ds1307)
 - [mpu9150](https://github.com/nixpulvis/mpu9150)
