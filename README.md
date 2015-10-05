@@ -62,19 +62,10 @@ To view the API for this library read the [header file](https://github.com/nixpu
 
 In addition to the functions included in this library here are a few more libraries I've written for specific chip.
 
-TODO: Links.
-
-### nrf24l01p
-
-A set of functions for using the [Nordic Transceiver nRF24L01+ Module with RP-SMA](https://www.sparkfun.com/products/705).
-
-### max7219
-
-A set of functions for using the [MAX7219 LED Display Driver](https://www.sparkfun.com/products/9622). This chip can control up to 8 digit 7-segment numeric LED displays, LED bar graphs, or 64 individual LEDs.
-
-### ds1307
-
-A set of functions for using the [DS1307 RTC](http://datasheets.maximintegrated.com/en/ds/DS1307.pdf).
+- [max7219](https://github.com/nixpulvis/max7219)
+- [nrf24l01](https://github.com/nixpulvis/nrf24l01)
+- [ds1307](https://github.com/nixpulvis/ds1307)
+- [mpu9150](https://github.com/nixpulvis/mpu9150)
 
 ## Reference
 
