@@ -52,6 +52,18 @@ void i2c_write(byte data){
   return;
 }
 
+int i2c_read_register(byte addr, byte rgstr, byte *buf, size_t len)
+{
+  i2c_start(addr, I2C_WRITE);
+  i2c_write(rgstr);
+  i2c_start(addr, I2C_READ);
+  for (int i = 0; i < len; i++)
+    buf[i] = i2c_read_ack();
+
+  // TODO: Errors?
+  return 0;
+}
+
 byte i2c_read_ack(void){
   // start TWI module and acknowledge data after reception
   TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWEA);

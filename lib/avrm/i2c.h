@@ -24,6 +24,9 @@ byte i2c_start(byte address, byte config);
 // i2c_write
 void i2c_write(byte data);
 
+// i2c_read_address
+int i2c_read_register(byte address, byte register, byte *buffer, size_t length);
+
 // i2c_read_ack
 byte i2c_read_ack(void);
 
