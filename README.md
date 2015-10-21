@@ -12,10 +12,10 @@ I'm developing this project on both OS X, and Linux. Windows is simply not on my
 
 These instructions are for installing the needed dependencies on OS X, Linux documentation is coming soon™. Make sure you have these packages installed with Homebrew:
 
-- avr-binutils
-- avr-gcc
-- avr-libc
-- avrdude
+```sh
+brew tap osx-cross/avr
+brew install avr-binutils avr-gcc avr-libc avrdude
+```
 
 ### Make
 
