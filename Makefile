@@ -2,8 +2,6 @@ PREFIX ?= /usr/local/Cellar
 LIBRARY ?= avrm
 VERSION ?= 0.0.3
 TARGET = $(PREFIX)/$(LIBRARY)/$(VERSION)
-
-# TODO: Remove ds1307 dep.
 DEPENDENCIES ?= $(TARGET)
 
 # The running speed of the AVR, used for `_delay_ms` time calculations.

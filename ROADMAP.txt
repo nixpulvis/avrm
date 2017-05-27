@@ -7,12 +7,10 @@ avrm/
   interrupt
   pwm
   rand
-
-  util
   memory
   counter?
   watchdog
-
+  util
 
 
 
