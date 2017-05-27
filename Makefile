@@ -1,8 +1,10 @@
+LIBRARY = avrm
+
 # The running speed of the AVR, used for `_delay_ms` time calculations.
 DF_CPU ?= 16000000UL
 
 # AVR MCU type, see https://gcc.gnu.org/onlinedocs/gcc/AVR-Options.html.
-MMCU   ?= atmega328p
+MMCU ?= atmega328p
 
 # The system path to communicate via serial, used for both flashing and serial
 # monitoring. Defaults to the first port in /dev containing "tty.usb".
@@ -17,8 +19,7 @@ AVRDUDE_BAUD ?= 57600
 BAUD ?= 9600
 
 CC = avr-gcc
-CFLAGS = -Wall -Werror -pedantic -Os -std=c99 \
-         -DF_CPU=$(DF_CPU) -mmcu=$(MMCU)
+CFLAGS = -Wall -Werror -pedantic -Os -std=c99 -DF_CPU=$(DF_CPU) -mmcu=$(MMCU)
 
 # The `obj-copy` executable.
 OBJ_COPY = avr-objcopy
@@ -34,6 +35,26 @@ AVRDUDE_FLAGS = -F -V -c arduino -p ATMEGA328P
 # The `avr-size` executable.
 AVRSIZE = avr-size
 AVRSIZE_FLAGS = -C
+
+# These rules are not file based.
+.PHONY: install test clean serial
+
+# Mark all .o files as intermediate.
+# .INTERMEDIATE: $(SRCS:.c=.o) $(TESTS:.c=)
+
+# Build the library.
+SRCS = $(shell find lib -name '*.c')
+all: lib$(LIBRARY).a($(SRCS:.c=.o))
+
+install:
+	@echo "TODO"
+
+TESTS = $(shell find test -name '*.c')
+test:
+	@echo "TODO"
+
+clean:
+	@echo "TODO"
 
 # Open up a screen session for communication with the AVR
 # through it's on-board UART.
