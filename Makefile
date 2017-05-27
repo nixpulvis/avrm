@@ -80,6 +80,9 @@ test: $(TESTS:.c=.o)
 	@echo "TODO: flash tests"
 	@echo "TODO: check output from serial"
 
+clean:
+	rm -f $(SRCS:.c=.o) lib$(LIBRARY).a
+
 # Open up a screen session for communication with the AVR
 # through it's on-board UART.
 serial:
