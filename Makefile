@@ -1,8 +1,7 @@
-PREFIX ?= /usr/local/Cellar
 LIBRARY ?= avrm
 VERSION ?= 0.0.3
-TARGET = $(PREFIX)/$(LIBRARY)/$(VERSION)
-DEPENDENCIES ?= $(TARGET)
+PREFIX ?= /usr/local/Cellar/$(LIBRARY)/$(VERSION)
+DEPENDENCIES ?= $(PREFIX)
 
 # The running speed of the AVR, used for `_delay_ms` time calculations.
 DF_CPU ?= 16000000UL
@@ -64,16 +63,16 @@ TESTS = $(shell find test -name '*.c')
 all: lib$(LIBRARY).a($(SRCS:.c=.o))
 
 install: all
-	mkdir -p $(TARGET)/lib $(TARGET)/include
-	install lib$(LIBRARY).a $(TARGET)/lib
-	install lib/$(LIBRARY).h $(TARGET)/include
+	mkdir -p $(PREFIX)/lib $(PREFIX)/include
+	install lib$(LIBRARY).a $(PREFIX)/lib
+	install lib/$(LIBRARY).h $(PREFIX)/include
 # TODO: https://github.com/nixpulvis/avrm/issues/2
 ifneq ($(wildcard lib/$(LIBRARY)/*.h),)
-	mkdir -p $(TARGET)/include/$(LIBRARY)
-	install lib/$(LIBRARY)/*.h $(TARGET)/include/$(LIBRARY)
+	mkdir -p $(PREFIX)/include/$(LIBRARY)
+	install lib/$(LIBRARY)/*.h $(PREFIX)/include/$(LIBRARY)
 endif
 ifeq ($(LIBRARY),avrm)
-	install Makefile $(TARGET)
+	install Makefile $(PREFIX)
 endif
 
 test: $(TESTS:.c=.o)
