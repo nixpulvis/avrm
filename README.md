@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/nixpulvis/avrm.svg?branch=master)](https://travis-ci.org/nixpulvis/avrm)
 
-This is a minimal and efficient set of functions for the AVR microcontrollers. Unlike the popular Arduino libraries which abstract away a lot of lower level details, this library doesn't do too much for you. The code is all either C99, or AVR assembly. One of the main goals of this project is to teach myself the needed concepts to write AVR code without the Arduino libraries. If it seems like I'm reinventing the wheel here, that's exactly the point. The other main goal is to write libraries which do not rely on Arduino for some parts.
+This is a minimal and efficient set of functions for the AVR microcontrollers. The code is all either C99, or AVR assembly. The main goal of this project is to write libraries which do not rely on Arduino.
 
 ## Getting Started
 
@@ -17,7 +17,7 @@ brew tap osx-cross/avr
 brew install avr-binutils avr-gcc avr-libc avrdude
 ```
 
-### Make
+<!-- ### Make
 
 It's important to me to make building things easy. I've made a Makefile which aims to make compiling and flashing AVRs as easy as possible. It tries to help you out too, for example it will find a `/dev/tty.usb*` device automatically.
 
@@ -43,18 +43,18 @@ make install
 env AVRDUDE_BAUD=57600 make test/uart_test.flash
 # Open a serial connection to the AVR.
 make serial
-```
+``` -->
 
 ## Libraries
 
-I'm building some libraries as a part of this repository, as I need them. Anything possibly needed in more than one project is it's own library. Some of the libraries are for functionality of the AVR itself.
+I'm building some facility libraries as a part of this repository, as I need them. Anything possibly needed in more than one project is it's own library. Some of the libraries are for functionality of the AVR itself.
 
 All Libraries have their own set of header and source files, with a common name in the `/lib` directory.
 
-- [avrm](https://github.com/nixpulvis/avr/blob/master/lib/avrm.h)
-- [i2c](https://github.com/nixpulvis/avr/blob/master/lib/avrm/i2c.h)
-- [spi](https://github.com/nixpulvis/avr/blob/master/lib/avrm/spi.h)
-- [uart](https://github.com/nixpulvis/avr/blob/master/lib/avrm/i2c.h)
+- [avrm](https://github.com/nixpulvis/avrm/blob/master/lib/avrm.h)
+- [i2c](https://github.com/nixpulvis/avrm/blob/master/lib/avrm/i2c.h)
+- [spi](https://github.com/nixpulvis/avrm/blob/master/lib/avrm/spi.h)
+- [uart](https://github.com/nixpulvis/avrm/blob/master/lib/avrm/uart.h)
 
 ## Other Firmware Libraries
 
