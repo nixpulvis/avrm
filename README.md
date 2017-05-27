@@ -17,19 +17,16 @@ brew tap osx-cross/avr
 brew install avr-binutils avr-gcc avr-libc avrdude
 ```
 
-<!-- ### Make
+### Make
 
 It's important to me to make building things easy. I've made a Makefile which aims to make compiling and flashing AVRs as easy as possible. It tries to help you out too, for example it will find a `/dev/tty.usb*` device automatically.
 
 ```sh
-make            # Compiles the library.
-make install    # Compiles the library, and installs it on the system.
-make test       # Compiles the library, installs it, and compiles the tests.
-make clean      # Removes compiled artifacts.
-make uninstall  # Removes the library from the system.
-
-make size             # Displays size information.
-make <program>.flash  # Compiles and flashes the <program> to a connected AVR.
+make                  # Compiles the library.
+make install          # Compiles the library, and installs it on the system.
+make test
+make <program>.size   # Displays size information for a program.
+make <program>.flash  # Compiles and flashes a program to a connected AVR.
 make serial           # Opens a `screen` session to a connected AVR.
 ```
 
@@ -38,12 +35,14 @@ Below is an example of how to get started.
 ```sh
 # Install the library.
 make install
+
 # Flash the uart test program. Remember that the baud rate is different for
 # various AVRs.
 env AVRDUDE_BAUD=57600 make test/uart_test.flash
+
 # Open a serial connection to the AVR.
 make serial
-``` -->
+```
 
 ## Libraries
 
