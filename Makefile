@@ -1,4 +1,10 @@
-LIBRARY = avrm
+PREFIX ?= /usr/local/Cellar
+LIBRARY ?= avrm
+VERSION ?= 0.0.3
+PATH = $(PREFIX)/$(LIBRARY)/$(VERSION)
+
+# TODO: Remove ds1307 dep.
+DEPENDENCIES ?= $(PATH)
 
 # The running speed of the AVR, used for `_delay_ms` time calculations.
 DF_CPU ?= 16000000UL
@@ -19,7 +25,15 @@ AVRDUDE_BAUD ?= 57600
 BAUD ?= 9600
 
 CC = avr-gcc
-CFLAGS = -Wall -Werror -pedantic -Os -std=c99 -DF_CPU=$(DF_CPU) -mmcu=$(MMCU)
+CFLAGS = -Wall -Werror -pedantic -Os -std=c99 \
+         -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) \
+				 $(DEPENDENCIES:%=-I%/include)
+LDFLAGS = -L$(DEPENDENCIES:%=-I%/lib)
+ifeq ($(LIBRARY),avrm)
+LDLIBS = -lavrm
+else
+LDLIBS = -l$(LIBRARY) -lavrm
+endif
 
 # The `obj-copy` executable.
 OBJ_COPY = avr-objcopy
@@ -39,17 +53,23 @@ AVRSIZE_FLAGS = -C
 # These rules are not file based.
 .PHONY: install test clean serial
 
+SRCS = $(shell find lib -name '*.c')
+TESTS = $(shell find test -name '*.c')
+
 # Mark all .o files as intermediate.
-# .INTERMEDIATE: $(SRCS:.c=.o) $(TESTS:.c=)
+.INTERMEDIATE: $(SRCS:.c=.o) $(TESTS:.c=)
 
 # Build the library.
-SRCS = $(shell find lib -name '*.c')
 all: lib$(LIBRARY).a($(SRCS:.c=.o))
 
-install:
-	@echo "TODO"
+install: all
+	mkdir -p $(PATH)/lib $(PATH)/include
+	install lib$(LIBRARY).a $(PATH)/lib
+	install lib/$(LIBRARY).h $(PATH)/include
+ifeq ($(LIBRARY),avrm)
+	install Makefile $(PATH)
+endif
 
-TESTS = $(shell find test -name '*.c')
 test: $(TESTS:.c=.o)
 	@echo "TODO: import avrm"
 	@echo "TODO: flash tests"
