@@ -1,10 +1,10 @@
 PREFIX ?= /usr/local/Cellar
 LIBRARY ?= avrm
 VERSION ?= 0.0.3
-PATH = $(PREFIX)/$(LIBRARY)/$(VERSION)
+TARGET = $(PREFIX)/$(LIBRARY)/$(VERSION)
 
 # TODO: Remove ds1307 dep.
-DEPENDENCIES ?= $(PATH)
+DEPENDENCIES ?= $(TARGET)
 
 # The running speed of the AVR, used for `_delay_ms` time calculations.
 DF_CPU ?= 16000000UL
@@ -28,7 +28,7 @@ CC = avr-gcc
 CFLAGS = -Wall -Werror -pedantic -Os -std=c99 \
          -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) \
 				 $(DEPENDENCIES:%=-I%/include)
-LDFLAGS = -L$(DEPENDENCIES:%=-I%/lib)
+LDFLAGS = $(DEPENDENCIES:%=-L%/lib)
 ifeq ($(LIBRARY),avrm)
 LDLIBS = -lavrm
 else
@@ -41,6 +41,9 @@ OBJ_COPY_FLAGS = -O ihex -R .eeprom
 
 # The `ar` archiver executable.
 AR = avr-ar
+
+# The `as` assembeler.
+AS = avr-as
 
 # The `avrdude` executable.
 AVRDUDE = avrdude
@@ -63,11 +66,16 @@ TESTS = $(shell find test -name '*.c')
 all: lib$(LIBRARY).a($(SRCS:.c=.o))
 
 install: all
-	mkdir -p $(PATH)/lib $(PATH)/include
-	install lib$(LIBRARY).a $(PATH)/lib
-	install lib/$(LIBRARY).h $(PATH)/include
+	mkdir -p $(TARGET)/lib $(TARGET)/include
+	install lib$(LIBRARY).a $(TARGET)/lib
+	install lib/$(LIBRARY).h $(TARGET)/include
+# TODO: https://github.com/nixpulvis/avrm/issues/2
+ifneq ($(wildcard lib/$(LIBRARY)/*.h),)
+	mkdir -p $(TARGET)/include/$(LIBRARY)
+	install lib/$(LIBRARY)/*.h $(TARGET)/include/$(LIBRARY)
+endif
 ifeq ($(LIBRARY),avrm)
-	install Makefile $(PATH)
+	install Makefile $(TARGET)
 endif
 
 test: $(TESTS:.c=.o)
@@ -80,6 +88,11 @@ test: $(TESTS:.c=.o)
 serial:
 	screen $(PORT) $(BAUD)
 
+# Given a binary program display information about how much memory it will
+# use to hold the program.
+%.size: %
+	$(AVRSIZE) $(AVRSIZE_FLAGS) $<
+
 # Given a hex file using `avrdude` this target flashes the AVR with the
 # new program contained in the hex file.
 %.flash: %.hex
@@ -88,3 +101,10 @@ serial:
 # *.hex <- *
 %.hex: %
 	$(OBJ_COPY) $(OBJ_COPY_FLAGS) $< $@
+
+# .asm <- .c
+%.asm: %.c
+	$(CC) $(C_FLAGS) -S $(C_HEADERS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
+
+%.o: %.asm
+	$(AS) -mmcu=$(MMCU) -o $@ $<
