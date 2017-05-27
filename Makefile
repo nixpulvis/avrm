@@ -50,11 +50,10 @@ install:
 	@echo "TODO"
 
 TESTS = $(shell find test -name '*.c')
-test:
-	@echo "TODO"
-
-clean:
-	@echo "TODO"
+test: $(TESTS:.c=.o)
+	@echo "TODO: import avrm"
+	@echo "TODO: flash tests"
+	@echo "TODO: check output from serial"
 
 # Open up a screen session for communication with the AVR
 # through it's on-board UART.
