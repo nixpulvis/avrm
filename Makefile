@@ -75,7 +75,7 @@ ifeq ($(LIBRARY),avrm)
 	install Makefile $(PREFIX)
 endif
 
-test: $(TESTS:.c=.o)
+test: install $(TESTS:.c=.o)
 	@echo "TODO: import avrm"
 	@echo "TODO: flash tests"
 	@echo "TODO: check output from serial"

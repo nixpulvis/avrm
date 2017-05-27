@@ -2,8 +2,6 @@
 language: c
 sudo: true
 
-env:
-  - PREFIX=/usr/local
 before_install:
   - sudo apt-get update -qq
 install:
