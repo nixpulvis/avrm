@@ -81,7 +81,7 @@ test: install $(TESTS:.c=.o)
 	@echo "TODO: check output from serial"
 
 clean:
-	rm -f $(SRCS:.c=.o) lib$(LIBRARY).a
+	rm -f $(SRCS:.c=.o) $(TESTS:.c=.o) lib$(LIBRARY).a
 
 # Open up a screen session for communication with the AVR
 # through it's on-board UART.
