@@ -1,5 +1,5 @@
 LIBRARY ?= avrm
-VERSION ?= 0.0.4
+VERSION ?= 0.0.5
 PREFIX ?= /usr/local/Cellar/$(LIBRARY)/$(VERSION)
 DEPENDENCIES ?= $(PREFIX)
 
