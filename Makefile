@@ -27,9 +27,9 @@ CFLAGS = -Wall -Werror -pedantic -Os -std=c99 \
 				 -I. $(DEPENDENCIES:%=-I%/include)
 LDFLAGS = -L. $(DEPENDENCIES:%=-L%/lib)
 ifeq ($(LIBRARY),avrm)
-LDLIBS = -lavrm
+LDLIBS ?= -lavrm
 else
-LDLIBS = -l$(LIBRARY) -lavrm
+LDLIBS ?= -l$(LIBRARY) -lavrm
 endif
 
 # The `obj-copy` executable.
