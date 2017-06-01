@@ -57,7 +57,7 @@ SRCS = $(shell find lib -name '*.c')
 TESTS = $(shell find test -name '*.c')
 
 # Mark all .o files as intermediate.
-.INTERMEDIATE: $(SRCS:.c=.o) $(TESTS:.c=)
+.INTERMEDIATE: $(SRCS:.c=.o) $(TESTS:.c=.hex)
 
 # Build the library.
 all: lib$(LIBRARY).a($(SRCS:.c=.o))
@@ -75,7 +75,7 @@ ifeq ($(LIBRARY),avrm)
 	install Makefile $(PREFIX)
 endif
 
-test: install $(TESTS:.c=.o)
+test: all $(TESTS:.c=.flash)
 	@echo "TODO: import avrm"
 	@echo "TODO: flash tests"
 	@echo "TODO: check output from serial"
@@ -87,6 +87,9 @@ clean:
 # through it's on-board UART.
 serial:
 	screen $(PORT) $(BAUD)
+
+%.test: %.flash
+	cat $(PORT)
 
 # Given a binary program display information about how much memory it will
 # use to hold the program.
