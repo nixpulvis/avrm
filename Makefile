@@ -90,7 +90,7 @@ serial:
 
 # Given a binary program display information about how much memory it will
 # use to hold the program.
-%.size: %
+%.size: %.bin
 	$(AVRSIZE) $(AVRSIZE_FLAGS) $<
 
 # Given a hex file using `avrdude` this target flashes the AVR with the
