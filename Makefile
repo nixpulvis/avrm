@@ -4,7 +4,7 @@ PREFIX ?= /usr/local/Cellar/$(LIBRARY)/$(VERSION)
 DEPENDENCIES ?= $(PREFIX)
 
 # The running speed of the AVR, used for `_delay_ms` time calculations.
-DF_CPU ?= 16000000UL
+F_CPU ?= 16000000UL
 
 # AVR MCU type, see https://gcc.gnu.org/onlinedocs/gcc/AVR-Options.html.
 MMCU ?= atmega328p
@@ -23,9 +23,9 @@ BAUD ?= 9600
 
 CC = avr-gcc
 CFLAGS = -Wall -Werror -pedantic -Os -std=c99 \
-         -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) \
-				 $(DEPENDENCIES:%=-I%/include)
-LDFLAGS = $(DEPENDENCIES:%=-L%/lib)
+         -DF_CPU=$(F_CPU) -mmcu=$(MMCU) \
+				 -I. $(DEPENDENCIES:%=-I%/include)
+LDFLAGS = -L. $(DEPENDENCIES:%=-L%/lib)
 ifeq ($(LIBRARY),avrm)
 LDLIBS = -lavrm
 else
@@ -99,12 +99,15 @@ serial:
 	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(AVRDUDE_BAUD) -U flash:w:$<
 
 # *.hex <- *
-%.hex: %
+%.hex: %.bin
 	$(OBJ_COPY) $(OBJ_COPY_FLAGS) $< $@
+
+%.bin: %.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 # .asm <- .c
 %.asm: %.c
-	$(CC) $(C_FLAGS) -S $(C_HEADERS) -DF_CPU=$(DF_CPU) -mmcu=$(MMCU) -c $< -o $@
+	$(CC) $(CFLAGS) -S $(C_HEADERS) -DF_CPU=$(F_CPU) -mmcu=$(MMCU) -c $< -o $@
 
 %.o: %.asm
 	$(AS) -mmcu=$(MMCU) -o $@ $<
