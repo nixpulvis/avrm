@@ -75,10 +75,7 @@ ifeq ($(LIBRARY),avrm)
 	install Makefile $(PREFIX)
 endif
 
-test: all $(TESTS:.c=.flash)
-	@echo "TODO: import avrm"
-	@echo "TODO: flash tests"
-	@echo "TODO: check output from serial"
+test: install $(TESTS:.c=.test)
 
 clean:
 	rm -f $(SRCS:.c=.o) $(TESTS:.c=.o) lib$(LIBRARY).a
@@ -89,7 +86,7 @@ serial:
 	screen $(PORT) $(BAUD)
 
 %.test: %.flash
-	cat $(PORT)
+	@echo "TODO: Read serial and check output"
 
 # Given a binary program display information about how much memory it will
 # use to hold the program.
