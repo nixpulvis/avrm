@@ -1,6 +1,9 @@
 LIBRARY ?= avrm
 VERSION ?= 0.0.5
-PREFIX ?= /usr/local/Cellar/$(LIBRARY)/$(VERSION)
+# TODO: Before commit, make this switch based on OS.
+# PREFIX = /usr/local/Cellar/$(LIBRARY)/$(VERSION)
+PREFIX = /usr/local/$(LIBRARY)/$(VERSION)
+
 DEPENDENCIES ?= $(PREFIX)
 
 # The running speed of the AVR, used for `_delay_ms` time calculations.
@@ -11,7 +14,7 @@ MMCU ?= atmega328p
 
 # The system path to communicate via serial, used for both flashing and serial
 # monitoring. Defaults to the first port in /dev containing "tty.usb".
-PORT ?= /dev/$(shell ls /dev/ | grep "tty\.usb" | sed -n 1p)
+PORT ?= /dev/$(shell ls /dev/ | grep -i "tty.*usb" | sed -n 1p)
 
 # Flashing baud rate.
 # 115200 - Arduino Uno
