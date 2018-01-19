@@ -4,6 +4,10 @@
 #include <avr/io.h>
 #include "../avrm.h"
 
+typedef enum {INPUT, OUTPUT} PinMode;
+
+void pin_mode(int pin, PinMode mode);
+
 void pin_in(void);
 
 // ```
