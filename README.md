@@ -95,7 +95,7 @@ The main purpose of this library is to facilitate making cool projects of course
 
 - [clock](https://github.com/nixpulvis/clock)
 - [led-cube](https://github.com/nixpulvis/led-cube)
-- [quadcopter](https://github.com/nixpulvis/led-cube)
+- [quadcopter](https://github.com/nixpulvis/quadcopter)
 - [synth](https://github.com/nixpulvis/synth) TODO: Awaiting ws2812 library.
 
 ## Reference
