@@ -2,7 +2,7 @@
 #define __AVR_PIN_H__
 
 #include <avr/io.h>
-#include <avrm.h>
+#include "../avrm.h"
 
 void pin_in(void);
 
