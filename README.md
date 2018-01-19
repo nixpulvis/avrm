@@ -50,11 +50,11 @@ brew tap osx-cross/avr
 brew install avr-binutils avr-gcc avr-libc avrdude
 ```
 
-Below is an example of how to get started.
+### Example
 
 ```sh
-# Install the library.
-sudo make install
+# Install the library. You may need to run this with `sudo`.
+make install
 
 # Flash the uart test program. Remember that the baud rate is different for
 # various AVRs.
