@@ -1,20 +1,20 @@
-avrm/
+*avrm/
+  *pin
+  *uart
+  *i2c
+  *spi
+  *shift
+  analog/pwm
   time
-  uart
-  i2c
-  spi
-  analog
   interrupt
-  pwm
   rand
   memory
-  counter?
+  ?counter
   watchdog
   util
 
-
-
-nrf24l01
 max7221
 ds1307
+nrf24l01
 mpu9150
+ws2812
