@@ -16,6 +16,16 @@ void pin_mode(int pin, PinMode mode) {
     }
 }
 
+bool pin_in(int pin) {
+    if (pin <= 7) {
+        return PIND & _BV(pin);
+    } else if (pin <= 13) {
+        return PINB & _BV(pin);
+    }
+
+    return FALSE;
+}
+
 void pin_out(int pin, bool value) {
     if (pin <= 7) {
         if (value) {

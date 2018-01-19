@@ -8,7 +8,7 @@ typedef enum {INPUT, OUTPUT} PinMode;
 
 void pin_mode(int pin, PinMode mode);
 
-void pin_in(void);
+bool pin_in(int pin);
 
 // ```
 // // Set the ATmega168/328p's port D's 0'th bit.
