@@ -4,6 +4,19 @@
 
 This is a minimal and efficient set of functions for the AVR microcontrollers. The code is all either C99, or AVR assembly. The main goal of this project is to write libraries which do not rely on Arduino.
 
+## Usage
+
+It's important to me to make building things easy. I've made a Makefile which aims to make compiling and flashing AVRs as easy as possible. It tries to help you out too, for example it will find a `/dev/tty.usb*` device automatically.
+
+```sh
+make                  # Compiles the library.
+make install          # Compiles the library, and installs it on the system.
+make test
+make <program>.size   # Displays size information for a program.
+make <program>.flash  # Compiles and flashes a program to a connected AVR.
+make serial           # Opens a `screen` session to a connected AVR.
+```
+
 ## Getting Started
 
 I'm developing this project on both OS X, and Linux. Windows is simply not on my radar, and I'm uninterested in trying to support it in the build tooling.
@@ -21,19 +34,6 @@ sudo pacman -S avr-libc avr-gcc avr-binutils avrdude screen
 ```sh
 brew tap osx-cross/avr
 brew install avr-binutils avr-gcc avr-libc avrdude
-```
-
-### Make
-
-It's important to me to make building things easy. I've made a Makefile which aims to make compiling and flashing AVRs as easy as possible. It tries to help you out too, for example it will find a `/dev/tty.usb*` device automatically.
-
-```sh
-make                  # Compiles the library.
-make install          # Compiles the library, and installs it on the system.
-make test
-make <program>.size   # Displays size information for a program.
-make <program>.flash  # Compiles and flashes a program to a connected AVR.
-make serial           # Opens a `screen` session to a connected AVR.
 ```
 
 Below is an example of how to get started.
