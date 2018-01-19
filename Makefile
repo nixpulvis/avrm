@@ -57,7 +57,7 @@ AVRSIZE_FLAGS = -C
 .PHONY: install test clean serial
 
 SRCS = $(shell find lib -name '*.c')
-TESTS = $(shell find test -name '*.c')
+TESTS = $(shell find tests -name '*.c')
 
 # Mark all .o files as intermediate.
 .INTERMEDIATE: $(SRCS:.c=.o) $(TESTS:.c=.hex)
