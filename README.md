@@ -9,12 +9,26 @@ This is a minimal and efficient set of functions for the AVR microcontrollers. T
 It's important to me to make building things easy. I've made a Makefile which aims to make compiling and flashing AVRs as easy as possible. It tries to help you out too, for example it will find a `/dev/tty.usb*` device automatically.
 
 ```sh
-make                  # Compiles the library.
-make install          # Compiles the library, and installs it on the system.
+# Compiles the library.
+make
+
+# Compiles the library, and installs it on the system.
+# NOTE: You may need to run this command with `sudo` if you don't have
+# write access to /usr/local.
+make install
+
+# Flash each test program to an AVR.
+# TODO: Validate output #10.
 make test
-make <program>.size   # Displays size information for a program.
-make <program>.flash  # Compiles and flashes a program to a connected AVR.
-make serial           # Opens a `screen` session to a connected AVR.
+
+# Displays size information for a program.
+make <program>.size
+
+# Compiles and flashes a program to a connected AVR.
+make <program>.flash
+
+# Opens a `screen` session to a connected AVR.
+make serial
 ```
 
 ## Getting Started

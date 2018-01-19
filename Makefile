@@ -89,7 +89,7 @@ serial:
 	screen $(PORT) $(BAUD)
 
 %.test: %.flash
-	@echo "TODO: Read serial and check output"
+	@echo "TODO: Read serial and check output #10"
 
 # Given a binary program display information about how much memory it will
 # use to hold the program.
