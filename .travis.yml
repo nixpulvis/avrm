@@ -7,4 +7,4 @@ before_install:
 install:
   - sudo apt-get install -qq gcc-avr binutils-avr avr-libc
 
-script: sudo make test
+script: sudo make install
