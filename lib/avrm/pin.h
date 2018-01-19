@@ -1,5 +1,5 @@
-#ifndef __AVR_PORT_H__
-#define __AVR_PORT_H__
+#ifndef __AVR_PIN_H__
+#define __AVR_PIN_H__
 
 #include <avr/io.h>
 #include <avrm.h>
