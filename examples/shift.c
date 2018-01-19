@@ -1,6 +1,4 @@
-#include <avr/io.h>
 #include <avrm.h>
-#include <avrm/pin.h>
 #include <avrm/shift.h>
 
 static const ShiftLatchConfig config = { 11, 12, 8 };
