@@ -50,12 +50,16 @@ brew tap osx-cross/avr
 brew install avr-binutils avr-gcc avr-libc avrdude
 ```
 
-### Example
+### Install AVRM
 
 ```sh
 # Install the library. You may need to run this with `sudo`.
 make install
+```
 
+### Example Firmware.
+
+```sh
 # Flash the uart test program. Remember that the baud rate is different for
 # various AVRs.
 env AVRDUDE_BAUD=57600 make examples/hello_world.flash
