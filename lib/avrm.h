@@ -5,11 +5,6 @@
 #include <stdio.h>
 #include <util/delay.h>
 
-// Macros
-/////////
-
-#define delay_ms(ms) (_delay_ms(ms))
-
 // Type Definitions
 ///////////////////
 
