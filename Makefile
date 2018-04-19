@@ -47,7 +47,7 @@ AS = avr-as
 
 # The `avrdude` executable.
 AVRDUDE = avrdude
-AVRDUDE_FLAGS = -F -V -c arduino -p ATMEGA328P
+AVRDUDE_FLAGS = -F -V -c arduino -p $(MMCU)
 
 # The `avr-size` executable.
 AVRSIZE = avr-size
