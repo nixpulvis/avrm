@@ -16,13 +16,25 @@ MMCU ?= atmega328p
 # monitoring. Defaults to the first port in /dev containing "tty.usb".
 PORT ?= /dev/$(shell ls /dev/ | grep -i "tty.*usb" | sed -n 1p)
 
+# UART baud default baud rate.
+BAUD ?= 9600
+
 # Flashing baud rate.
 # 115200 - Arduino Uno
 # 57600  - Arduino Mini Pro
 AVRDUDE_BAUD ?= 57600
 
-# UART baud default baud rate.
-BAUD ?= 9600
+# Programmer used to communicate with the AVR.
+# - arduino
+# - usbtiny
+AVRDUDE_PROGRAMMER ?= arduino
+
+# Partno of the device we're talking to.
+# - arduino
+# - t85 (ATTiny)
+AVRDUDE_PARTNO ?= arduino
+
+# -----------------------------------------------------------------------------
 
 CC = avr-gcc
 CFLAGS = -Wall -Werror -pedantic -Os -std=c99 \
@@ -47,7 +59,7 @@ AS = avr-as
 
 # The `avrdude` executable.
 AVRDUDE = avrdude
-AVRDUDE_FLAGS = -F -V -c arduino -p $(MMCU)
+AVRDUDE_FLAGS = -F -V -c $(PROGRAMMER) -p $(AVRDUDE_PARTNO)
 
 # The `avr-size` executable.
 AVRSIZE = avr-size
@@ -99,7 +111,12 @@ serial:
 # Given a hex file using `avrdude` this target flashes the AVR with the
 # new program contained in the hex file.
 %.flash: %.hex
+	echo $(PROGRAMMER)
+ifeq ($(PROGRAMMER),usbtiny)
+	$(AVRDUDE) $(AVRDUDE_FLAGS) -U flash:w:$<
+else
 	$(AVRDUDE) $(AVRDUDE_FLAGS) -P $(PORT) -b $(AVRDUDE_BAUD) -U flash:w:$<
+endif
 
 # *.hex <- *
 %.hex: %.bin
