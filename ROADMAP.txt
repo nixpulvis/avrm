@@ -4,6 +4,7 @@
   *i2c
   *spi
   *shift
+  *delay
   analog/pwm
   time
   interrupt
@@ -18,3 +19,4 @@ ds1307
 nrf24l01
 mpu9150
 ws2812
+msgeq7
