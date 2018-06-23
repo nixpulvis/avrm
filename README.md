@@ -152,4 +152,5 @@ include $(AVRM)/Makefile
 ## Reference
 
 - [avr-libc manual](http://www.nongnu.org/avr-libc/user-manual/pages.html)
+- [avrdude manual](https://www.nongnu.org/avrdude/user-manual/avrdude.html)
 
