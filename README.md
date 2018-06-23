@@ -76,13 +76,14 @@ make serial
 # Remember, `CTRL-a k` to exit screen.
 ```
 
-## Libraries
+## AVRM STD Libraries
 
-I'm building some facility libraries as a part of this repository, as I need
-them. Anything possibly needed in more than one project is it's own library.
-Some of the libraries are for functionality of the AVR itself.
+AVRM itself is made up of various C99 headers, and their implementations. Each
+"library" is meant to be somewhat self contained, and provide access to some
+underlying functionality of the AVR. External peripheral support is typically
+provided by an external library (see below).
 
-All Libraries have their own set of header and source files, with a common name
+All libraries have their own set of header and source files, with a common name
 in the `/lib` directory.
 
 - [avrm](https://github.com/nixpulvis/avrm/blob/master/lib/avrm.h)
@@ -92,16 +93,39 @@ in the `/lib` directory.
 - [uart](https://github.com/nixpulvis/avrm/blob/master/lib/avrm/uart.h)
 - [shift](https://github.com/nixpulvis/avrm/blob/master/lib/avrm/shift.h)
 
-## Other Firmware Libraries
+See the [ROADMAP.txt](ROADMAP.txt) for some insight into what's left to
+implement, and how things are organized. I generally only get around to writing
+things as I need thing however, so don't hold your breath. If you would like
+to help, please don't hessitate to open an issue, or jump right in with a PR.
 
-In addition to the functions included in this library here are a few more
-libraries I've written for specific chip.
+## External Libraries
+
+In addition to the built-in libraries included in AVRM, there are a few more
+libraries I've written for specific chips.
 
 - [max7221](https://github.com/nixpulvis/max7221)
 - [ds1307](https://github.com/nixpulvis/ds1307)
 - [nrf24l01](https://github.com/nixpulvis/nrf24l01)
 - [mpu9150](https://github.com/nixpulvis/mpu9150)
 - [ws2812](https://github.com/nixpulvis/ws2812)
+
+Writing external libraries is easy with AVRM, since the `Makefile` was designed
+to be used in an `include` statement in external libraries as well.
+
+```make
+# Describe our custom library.
+LIBRARY = some_fun_chip
+VERSION = 1.33.7
+
+# Target our installed AVRM.
+PREFIX = /usr/local/$(LIBRARY)/$(VERSION)
+AVRM = /usr/local/avrm/0.0.5
+DEPENDENCIES = $(PREFIX) $(AVRM)
+
+# Include the AVRM Makefile, which will use the variables above to work with
+# this library.
+include $(AVRM)/Makefile
+```
 
 ## Projects
 
@@ -112,6 +136,18 @@ course! Here's a list of some of mine.
 - [led-cube](https://github.com/nixpulvis/led-cube)
 - [quadcopter](https://github.com/nixpulvis/quadcopter)
 - [synth](https://github.com/nixpulvis/synth) TODO: Awaiting ws2812 library.
+
+TODO: #4
+
+```make
+AVRM = /usr/local/avrm/0.0.5
+DS1307 = /usr/local/ds1307/0.0.3
+MAX7221 = /usr/local/max7221/0.0.3
+DEPENDENCIES = $(DS1307) $(MAX7221) $(AVRM)
+LDLIBS = -lds1307 -lmax7221 -lavrm
+
+include $(AVRM)/Makefile
+```
 
 ## Reference
 

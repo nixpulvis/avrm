@@ -3,7 +3,7 @@
   *uart
   *i2c
   *spi
-  *shift
+  *shift  TODO: Move into external lib.
   *delay
   analog/pwm
   time
