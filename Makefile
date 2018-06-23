@@ -6,10 +6,16 @@ PREFIX = /usr/local/$(LIBRARY)/$(VERSION)
 
 DEPENDENCIES ?= $(PREFIX)
 
-# The running speed of the AVR, used for `_delay_ms` time calculations.
+# The running speed of the AVR in Hz, mostly used for `delay_ms` time
+# calculations.
 F_CPU ?= 16000000UL
 
-# AVR MCU type, see https://gcc.gnu.org/onlinedocs/gcc/AVR-Options.html.
+# AVR MCU type
+#
+# - atmega328p
+# - TODO: ATTiny
+#
+# For a complete list, see https://gcc.gnu.org/onlinedocs/gcc/AVR-Options.html.
 MMCU ?= atmega328p
 
 # The system path to communicate via serial, used for both flashing and serial
@@ -20,26 +26,34 @@ PORT ?= /dev/$(shell ls /dev/ | grep -i "tty.*usb" | sed -n 1p)
 BAUD ?= 9600
 
 # Flashing baud rate.
-# 115200 - Arduino Uno
-# 57600  - Arduino Mini Pro
+#
+# - 115200 (Arduino Uno)
+# - 57600  (Arduino Mini Pro)
 AVRDUDE_BAUD ?= 57600
 
 # Programmer used to communicate with the AVR.
+#
 # - arduino
 # - usbtiny
+#
+# For a complete list see `avrdude -c '?'`.
 AVRDUDE_PROGRAMMER ?= arduino
 
-# Partno of the device we're talking to.
-# - arduino
+# Partno of the device we're talking to. Typically related to the MMCU variable
+# defined above.
+#
+# - m328p (Typical Arduino)
 # - t85 (ATTiny)
-AVRDUDE_PARTNO ?= arduino
+#
+# For a complete list see `avrdude -p '?'`.
+AVRDUDE_PARTNO ?= m328p
 
 # -----------------------------------------------------------------------------
 
 CC = avr-gcc
 CFLAGS = -Wall -Werror -pedantic -Os -std=c99 \
          -DF_CPU=$(F_CPU) -mmcu=$(MMCU) \
-				 -I. $(DEPENDENCIES:%=-I%/include)
+	 -I. $(DEPENDENCIES:%=-I%/include)
 LDFLAGS = -L. $(DEPENDENCIES:%=-L%/lib)
 ifeq ($(LIBRARY),avrm)
 LDLIBS ?= -lavrm
@@ -59,7 +73,7 @@ AS = avr-as
 
 # The `avrdude` executable.
 AVRDUDE = avrdude
-AVRDUDE_FLAGS = -F -V -c $(PROGRAMMER) -p $(AVRDUDE_PARTNO)
+AVRDUDE_FLAGS = -F -V -c $(AVRDUDE_PROGRAMMER) -p $(AVRDUDE_PARTNO)
 
 # The `avr-size` executable.
 AVRSIZE = avr-size
