@@ -1,8 +1,10 @@
 LIBRARY ?= avrm
 VERSION ?= 0.0.5
-# TODO: Before commit, make this switch based on OS.
-# PREFIX = /usr/local/Cellar/$(LIBRARY)/$(VERSION)
-PREFIX = /usr/local/$(LIBRARY)/$(VERSION)
+ifeq ($(OS),Darwin)
+	PREFIX = /usr/local/$(LIBRARY)/$(VERSION)
+else
+	PREFIX = /usr/avr/$(LIBRARY)/$(VERSION)
+endif
 
 DEPENDENCIES ?= $(PREFIX)
 
