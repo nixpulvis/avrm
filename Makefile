@@ -94,7 +94,7 @@ TESTS = $(shell find tests -name '*.c')
 all: lib$(LIBRARY).a($(SRCS:.c=.o))
 
 install: all
-	mkdir -p $(PREFIX)/lib $(PREFIX)/include
+	mkdir -p $(PREFIX)/lib $(PREFIX)/include $(PREFIX)/share
 	install lib$(LIBRARY).a $(PREFIX)/lib
 	install lib/$(LIBRARY).h $(PREFIX)/include
 # TODO: https://github.com/nixpulvis/avrm/issues/2
@@ -102,8 +102,9 @@ ifneq ($(wildcard lib/$(LIBRARY)/*.h),)
 	mkdir -p $(PREFIX)/include/$(LIBRARY)
 	install lib/$(LIBRARY)/*.h $(PREFIX)/include/$(LIBRARY)
 endif
+# Install the template AVRM Makefile.
 ifeq ($(LIBRARY),avrm)
-	install Makefile $(PREFIX)
+	install Makefile $(PREFIX)/share
 endif
 
 test: install $(TESTS:.c=.test)
